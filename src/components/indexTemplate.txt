@@ -1,0 +1,20 @@
+<template>
+  <HeaderComponent></HeaderComponent>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="sidebar col-1"></div>
+      <div class="col-10">
+      </div>
+      <div class="sidebar col-1"></div>
+    </div>
+  </div>
+  <FooterComponent></FooterComponent>
+</template>
+
+<script setup>
+  import HeaderComponent from './components/MasterComponents/Header.vue'
+  import FooterComponent from './components/MasterComponents/Footer.vue'
+</script>
+
+<style scoped>
+</style>

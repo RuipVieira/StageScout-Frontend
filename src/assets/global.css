@@ -1,0 +1,102 @@
+* {
+    font-family: "Karla", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    color: #ee6c4d !important;
+}
+
+.container-fluid {
+    height: 100vh;
+}
+
+.row {
+    height: 100%;
+}
+
+.sidebar {
+    background-color: #3d5a80;
+}
+
+/*Data Table Class*/
+.n-space{
+    margin-top:15px;
+}
+
+/* Style to reduce the height of the table rows */
+.n-data-table tbody tr {
+    height: 20px !important; /* Adjust this value to make rows shorter or taller */
+}
+.n-data-table {
+    font-size: 12px; /* Adjust the font size as needed */
+}
+
+.short-table {
+    font-size: 11px !important;
+}
+
+/* Optional: Modify the padding inside cells to make rows appear more compact */
+.n-data-table td {
+    padding: 4px 10px; /* Adjust padding to make the table cells more compact */
+}
+
+.page-content-container {
+    margin-top: 50px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+
+    h1{
+        font-size: 32px;
+        margin-bottom: 16px;
+    }
+
+    p {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+}
+
+.btn-container {
+    margin: 15px;
+}
+
+.form-control:focus {
+    border-color: #3d5a80 !important;
+    box-shadow: 0 0 0 .10rem #3d5a80 !important;
+}
+
+.form-check-input:focus {
+    border-color: #3d5a80 !important;
+    box-shadow: 0 0 0 .10rem #3d5a80 !important;
+}
+
+.form-check-input:checked {
+    background-color: #3d5a80 !important;
+    border-color: #3d5a80 !important;
+}
+
+.btn-cancelar {
+    background-color: #ee6c4d !important;
+    border-color: #ee6c4d !important;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background-color: #3d5a80 !important;
+    border-color: #3d5a80 !important;
+}
+
+.form-container {
+    border: none !important;
+}
