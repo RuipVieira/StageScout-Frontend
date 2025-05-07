@@ -38,11 +38,8 @@
             let loginModalActive = ref(false);
             let registerModalActive = ref(false);
 
-            const perfilDropdownRef = ref(null);  
-
             return {
-                loginModalActive, registerModalActive, authState,
-                perfilDropdownRef
+                loginModalActive, registerModalActive, authState
             }
         },
 
@@ -71,6 +68,7 @@
                 localStorage.removeItem('isLoggedIn');
                 authState.isLoggedIn = false;
                 Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
+                this.showDropdown = false;
             },
             toggleDropdown() {
                 this.showDropdown = !this.showDropdown;
