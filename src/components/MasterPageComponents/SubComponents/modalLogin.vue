@@ -6,16 +6,17 @@
                     <i @click="closeLoginModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
                         <h2 class="mb-3 text-center">Login</h2>
-                        <form action="/login" method="post">
+                        <form @submit.prevent="login">
                             <div class="form-control form-container text-center">
-                                <label for="loginemail" class="form-label">Endereço E-mail</label>
-                                <input type="email" id="loginemail" name="loginemail" class="form-control" required>
-                                <label for="loginpassword" class="form-label">Palavra Passe</label>
-                                <input type="password" id="loginpassword" name="loginpassword" class="form-control" required>
+                                <label for="loginEmail" class="form-label">Endereço E-mail</label>
+                                <input v-model="loginEmail" type="email" id="loginEmail" class="form-control" required />
+
+                                <label for="loginPassword" class="form-label">Palavra Passe</label>
+                                <input v-model="loginPassword" type="password" id="loginPassword" class="form-control" required />
                             </div>
                             <div class="btn-container text-center">
                                 <button type="button" class="btn btn-danger btn-cancelar" @click="closeLoginModal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" @click="closeLoginModal">Confirmar</button>
+                                <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
                     </div>
@@ -27,7 +28,17 @@
 
 
 <script>
+    import axios from 'axios';
+    import Swal from 'sweetalert2';
+
     export default {
+        data() {
+            return {
+                loginEmail: '',
+                loginPassword: '',
+            };
+        },
+
         props: ['loginModalActive'],
         setup(props, { emit }) {
             const closeLoginModal = () => {
@@ -35,6 +46,44 @@
             }
 
             return { closeLoginModal }
+        },
+        methods: {
+            isValidEmail(email) {
+                //regex validação de email
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            },
+            isValidPassword(password) {
+                //Regex valida password com os seguintes parametros: pelo menos 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo especial.
+                const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+                return re.test(password);
+            },
+            async login() {
+                // Validações
+                if (!this.isValidEmail(this.loginEmail)) {
+                    Swal.fire('Erro', 'Por favor insira um e-mail válido.', 'error');
+                    return;
+                }
+
+                if (!this.isValidPassword(this.loginPassword)) {
+                    Swal.fire('Erro', 'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.', 'error');
+                    return;
+                }
+
+                try {
+                    await axios.post('https://localhost:7216/api/account/login', {
+                        email: this.loginEmail,
+                        password: this.loginPassword,
+                    });
+
+                    Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
+                    this.closeLoginModal();
+                } catch (error) {
+                    const message =
+                        error.response?.data?.message || 'Erro de login. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
+                }
+            },
         }
     }
 </script>

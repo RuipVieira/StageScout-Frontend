@@ -6,7 +6,7 @@
                     <i @click="closeRegisterModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
                         <h2 class="mb-3 text-center">Registar</h2>
-                        <form @submit.prevent="submitForm">
+                        <form @submit.prevent="register">
                             <div class="form-control form-container text-center">
                                 <label for="registerEmail" class="form-label">Endereço E-mail</label>
                                 <input type="email" v-model="registerEmail" id="registerEmail" class="form-control" required>
@@ -62,7 +62,7 @@
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 return re.test(password);
             },
-            async submitForm() {
+            async register() {
                 // Validações
                 if (!this.isValidEmail(this.registerEmail)) {
                     Swal.fire('Erro', 'Por favor insira um e-mail válido.', 'error');
@@ -85,7 +85,7 @@
                         password: this.registerPassword,
                     });
 
-                    Swal.fire('Sucesso', 'Conta registrada com sucesso!', 'success');
+                    Swal.fire('Sucesso', 'Conta registada com sucesso!', 'success');
                     this.closeRegisterModal();
                 } catch (error) {
                     const message =
