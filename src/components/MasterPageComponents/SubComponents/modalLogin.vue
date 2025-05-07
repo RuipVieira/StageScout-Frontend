@@ -30,6 +30,7 @@
 <script>
     import axios from 'axios';
     import Swal from 'sweetalert2';
+    import { authState } from '../../../auth';
 
     export default {
         data() {
@@ -76,6 +77,9 @@
                         password: this.loginPassword,
                     });
 
+                    authState.isLoggedIn = true;
+                    localStorage.setItem('isLoggedIn', 'true');
+
                     Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
                     this.closeLoginModal();
                 } catch (error) {
@@ -83,7 +87,7 @@
                         error.response?.data?.message || 'Erro de login. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
-            },
+            }
         }
     }
 </script>

@@ -3,11 +3,12 @@
         <nav>
             <ul style="float:right;">
                 <li><a href="/artist" type="button">ArtistDetails</a></li>
-                <li><a href="/event" type="button">EventDetails</a></li>    
+                <li><a href="/event" type="button">EventDetails</a></li>
                 <li><a href="/search" type="button">EventsSearch</a></li>
                 <li><a href="/following" type="button">FollowingLists</a></li>
-                <li><a href="#" @click="openLoginModal()" type="button">Login</a></li>
-                <li><a href="#" @click="openRegisterModal()" type="button">Register</a></li>
+                <li><a href="#" v-if="!authState.isLoggedIn" @click="openLoginModal()" type="button">Login</a></li>
+                <li><a href="#" v-if="!authState.isLoggedIn" @click="openRegisterModal()" type="button">Register</a></li>
+                <li><a href="#" v-if="authState.isLoggedIn" @click="logout()" type="button">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -16,6 +17,8 @@
 
 <script>
     import { ref } from 'vue';
+    import { authState } from '../../auth';
+    import Swal from 'sweetalert2';
 
     export default {
         name: 'HeaderComponent',
@@ -26,8 +29,18 @@
             let registerModalActive = ref(false);
 
             return {
-                loginModalActive, registerModalActive
+                loginModalActive, registerModalActive, authState
             }
+        },
+
+        data() {
+            return {
+                isLoggedIn: false
+            };
+        },
+
+        mounted() {
+            this.checkLoginStatus();
         },
 
         methods: {
@@ -36,9 +49,16 @@
             },
             openRegisterModal() {
                 this.$emit('openRegisterModal');
+            },
+            checkLoginStatus() {
+                this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            },
+            logout() {
+                localStorage.removeItem('isLoggedIn');
+                authState.isLoggedIn = false;
+                Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
             }
         }
-        
     }
 </script>
 
