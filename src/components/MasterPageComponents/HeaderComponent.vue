@@ -1,6 +1,9 @@
 ﻿<template>
     <header class="fixed-header">
         <nav>
+            <ul style="float:left;">
+                <li><a href="/" type="button">StageScout</a></li>
+            </ul>
             <ul style="float:right;">
                 <!-- Testing -->
                 <li><a href="/artist" type="button">ArtistDetails</a></li>
@@ -66,6 +69,9 @@
             },
             logout() {
                 localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('profileId');
+
+                authState.profileId = null;
                 authState.isLoggedIn = false;
                 Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
                 this.showDropdown = false;

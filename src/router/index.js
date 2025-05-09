@@ -32,18 +32,13 @@ const routes = [
         component: SearchView
     },
     {
-        path: '/following',
-        name: 'following',
-        component: FollowingView
-    },
-    {
-        path: '/artist',
-        name: 'artist',
+        path: '/artist/:id',
+        name: 'ArtistDetails',
         component: ArtistDetailsView
     },
     {
-        path: '/event',
-        name: 'event',
+        path: '/event/:id',
+        name: 'EventDetails',
         component: EventDetailsView
     },
     {

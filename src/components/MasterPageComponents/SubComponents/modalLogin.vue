@@ -72,7 +72,7 @@
                 }
 
                 try {
-                    await axios.post('https://localhost:7216/api/account/login', {
+                    const response = await axios.post('https://localhost:7216/api/account/login', {
                         email: this.loginEmail,
                         password: this.loginPassword,
                     });
@@ -80,8 +80,12 @@
                     authState.isLoggedIn = true;
                     localStorage.setItem('isLoggedIn', 'true');
 
-                    Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
+                    authState.profileId = response.data;
+                    localStorage.setItem('profileId', response.data);
+
                     this.closeLoginModal();
+
+                    Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de login. Tente novamente.';
