@@ -77,7 +77,6 @@
         },
         methods: {
             async profile() {
-                console.log(this.profileNaturalidade);
                 try {
                     await axios.post('https://localhost:7216/api/account/EditProfile', {
                         PerfilId: localStorage.getItem('profileId'),
@@ -114,7 +113,6 @@
                             profileId: localStorage.getItem('profileId')
                         }
                     });
-                    console.log(response.data);
                     this.profileName = response.data.name;
                     this.profileBirthDate = response.data.birthDate;
                     this.profileGender = response.data.generoId;

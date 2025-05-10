@@ -18,7 +18,7 @@
                     <a href="#" @click.prevent="toggleDropdown">Perfil ▼</a>
                     <ul v-if="showDropdown" class="dropdown-menu" ref="perfilDropdown">
                         <li><a href="#" @click="openProfileModal()" type="button">Editar Perfil</a></li>
-                        <li><a href="#">Mudar Password</a></li>
+                        <li><a href="#" @click="openChangePassModal()">Mudar Password</a></li>
                         <li><a href="#" @click.prevent="logout">Logout</a></li>
                     </ul>
                 </li>
@@ -41,9 +41,10 @@
             let loginModalActive = ref(false);
             let registerModalActive = ref(false);
             let profileModalActive = ref(false);
+            let changePassModalActive = ref(false);
 
             return {
-                loginModalActive, registerModalActive, profileModalActive, authState
+                loginModalActive, registerModalActive, profileModalActive, changePassModalActive, authState,
             }
         },
 
@@ -67,6 +68,9 @@
             },
             openProfileModal() {
                 this.$emit('openProfileModal');
+            },
+            openChangePassModal() {
+                this.$emit('openChangePassModal');
             },
             checkLoginStatus() {
                 this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';

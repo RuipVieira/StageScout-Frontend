@@ -1,5 +1,5 @@
 ﻿<template>
-    <HeaderComponent @openLoginModal="toggleLoginModal" @openRegisterModal="toggleRegisterModal" @openProfileModal="toggleProfileModal"></HeaderComponent>
+    <HeaderComponent @openLoginModal="toggleLoginModal" @openRegisterModal="toggleRegisterModal" @openProfileModal="toggleProfileModal" @openChangePassModal="toggleChangePassModal"></HeaderComponent>
     <div class="container-fluid">
         <ModalLogin @closeLoginModal="toggleLoginModal" :loginModalActive="modalLoginActive">
         </ModalLogin>
@@ -7,6 +7,8 @@
         </ModalRegister>
         <ModalProfile @closeProfileModal="toggleProfileModal" :profileModalActive="modalProfileActive">
         </ModalProfile>
+        <ModalChangePass @closeChangePassModal="toggleChangePassModal" :changePassModalActive="modalChangePassActive">
+        </ModalChangePass>
         <div class="row">
             <div class="sidebar col-1"></div>
             <div class="col-10">
@@ -24,6 +26,7 @@
     import ModalLogin from '@/components/MasterPageComponents/SubComponents/modalLogin.vue'
     import ModalRegister from '@/components/MasterPageComponents/SubComponents/modalRegister.vue'
     import ModalProfile from '@/components/MasterPageComponents/SubComponents/modalProfileEditor.vue'
+    import ModalChangePass from '@/components/MasterPageComponents/SubComponents/modalChangePass.vue'
 
     import { ref } from 'vue';
     export default {
@@ -32,15 +35,17 @@
             ModalRegister,
             HeaderComponent,
             FooterComponent,
-            ModalProfile
+            ModalProfile,
+            ModalChangePass
         },
         setup() {
             let modalLoginActive = ref(false);
             let modalRegisterActive = ref(false);
             let modalProfileActive = ref(false);
+            let modalChangePassActive = ref(false);
 
             return {
-                modalLoginActive, modalRegisterActive,modalProfileActive
+                modalLoginActive, modalRegisterActive, modalProfileActive, modalChangePassActive
             }
         },
         methods: {
@@ -55,6 +60,10 @@
             toggleProfileModal() {
                 this.modalProfileActive = !this.modalProfileActive;
                 return this.modalProfileActive
+            },
+            toggleChangePassModal() {
+                this.modalChangePassActive = !this.modalChangePassActive;
+                return this.modalChangePassActive
             },
         }
     }
