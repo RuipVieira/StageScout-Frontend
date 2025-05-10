@@ -146,7 +146,6 @@
 
         methods: {
             async GetFollowedEntities() {
-                console.log(authState);
                 try {
                     const response = await axios.get('https://localhost:7216/api/home/GetFollowedEntities', {
                         params: {

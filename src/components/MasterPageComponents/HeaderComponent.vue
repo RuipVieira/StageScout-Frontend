@@ -17,7 +17,7 @@
                 <li v-if="authState.isLoggedIn" class="perfil-dropdown">
                     <a href="#" @click.prevent="toggleDropdown">Perfil ▼</a>
                     <ul v-if="showDropdown" class="dropdown-menu" ref="perfilDropdown">
-                        <li><a href="#">Editar Perfil</a></li>
+                        <li><a href="#" @click="openProfileModal()" type="button">Editar Perfil</a></li>
                         <li><a href="#">Mudar Password</a></li>
                         <li><a href="#" @click.prevent="logout">Logout</a></li>
                     </ul>
@@ -29,7 +29,7 @@
 
 
 <script>
-    import { ref, onMounted, onBeforeUnmount } from 'vue';
+    import { ref } from 'vue';
     import { authState } from '../../auth';
     import Swal from 'sweetalert2';
 
@@ -40,9 +40,10 @@
         setup() {
             let loginModalActive = ref(false);
             let registerModalActive = ref(false);
+            let profileModalActive = ref(false);
 
             return {
-                loginModalActive, registerModalActive, authState
+                loginModalActive, registerModalActive, profileModalActive, authState
             }
         },
 
@@ -63,6 +64,9 @@
             },
             openRegisterModal() {
                 this.$emit('openRegisterModal');
+            },
+            openProfileModal() {
+                this.$emit('openProfileModal');
             },
             checkLoginStatus() {
                 this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
