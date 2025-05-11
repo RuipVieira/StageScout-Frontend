@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/public/HomePage.vue'
-import SearchView from '../views/public/EventsSearch.vue'
-import FollowingView from '../views/public/FollowingLists.vue'
-import ArtistDetailsView from '../views/public/ArtistDetails.vue'
+import EventSearch from '../views/public/EventSearch.vue'
+import PerformerSearch from '../views/public/PerformerSearch.vue'
+import PerformerDetailsView from '../views/public/PerformerDetails.vue'
 import EventDetailsView from '../views/public/EventDetails.vue'
 
 import BackOfficeHomeView from '../views/BackOffice/HomePage.vue'
@@ -16,7 +16,7 @@ import AdminEditEventView from '../views/Admin/EditEvent.vue'
 import AdminEventDetailsView from '../views/Admin/EventDetails.vue'
 import AdminTicketsListView from '../views/Admin/TicketsList.vue'
 import AdminUsersListView from '../views/Admin/UsersList.vue'
-import AdminArtistsListView from '../views/Admin/ArtistsList.vue'
+import AdminPerformersListView from '../views/Admin/PerformersList.vue'
 import AdminEventsListView from '../views/Admin/EventsList.vue'
 
 //todo - add params on urls
@@ -27,19 +27,24 @@ const routes = [
         component: HomeView
     },
     {
-        path: '/search',
-        name: 'search',
-        component: SearchView
-    },
-    {
-        path: '/artist/:id',
-        name: 'ArtistDetails',
-        component: ArtistDetailsView
-    },
-    {
         path: '/event/:id',
         name: 'EventDetails',
         component: EventDetailsView
+    },
+    {
+        path: '/events',
+        name: 'EventSearch',
+        component: EventSearch
+    },
+    {
+        path: '/performer',
+        name: 'PerformerSearch',
+        component: PerformerSearch
+    },
+    {
+        path: '/performer/:id',
+        name: 'PerformerDetails',
+        component: PerformerDetailsView
     },
     {
         path: '/backoffice',
@@ -92,9 +97,9 @@ const routes = [
         component: AdminUsersListView
     },
     {
-        path: '/admin/artists',
-        name: 'adminartists',
-        component: AdminArtistsListView
+        path: '/admin/performers',
+        name: 'adminPerformers',
+        component: AdminPerformersListView
     },
     {
         path: '/admin/events',

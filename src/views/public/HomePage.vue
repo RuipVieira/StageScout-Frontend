@@ -25,35 +25,48 @@
         </div>
         <div class="card shadow-sm mb-4 fixed-card-top" v-if="authState.isLoggedIn">
             <div class="card-header">
-                <h5 class="mb-0">Próximos Eventos</h5>
+                <h5 class="mb-0">A Seguir</h5>
             </div>
             <div class="card-body">
                 <div class="row">
+                    <!-- Left: Events Table -->
                     <div class="col-md-6">
-                        <h6>Eventos Seguidos</h6>
-                        <n-space vertical>
-                            <n-data-table :onRowClick="GoToEventDetails" class="short-table" :columns="eventsColumns" :data="followedEvents"
-                                          :pagination="{
-                               pageSize: eventsPagination.pageSize,
-                               page: eventsPagination.page,
-                               pageCount: Math.ceil(followedEvents.length / eventsPagination.pageSize),
-                               onChange: onEventsPageChange
-                           }" />
-                        </n-space>
+                        <h6>Eventos</h6>
+                        <el-table :data="followedEvents" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
+                            <el-table-column prop="nome" label="Nome" width="250"></el-table-column>
+                            <el-table-column prop="local" label="Local" width="200"></el-table-column>
+                            <el-table-column prop="dataInicio" label="Início" width="100"></el-table-column>
+                            <el-table-column prop="dataFim" label="Fim" width="100"></el-table-column>
+                            <el-table-column prop="estado" label="Estado" width="100"></el-table-column>
+                        </el-table>
+
+                        <!-- Pagination -->
+                        <el-pagination :current-page="eventsPagination.page"
+                                       :page-size="eventsPagination.pageSize"
+                                       :total="followedEvents.length"
+                                       @current-change="onEventsPageChange"
+                                       layout="prev, pager, next">
+                        </el-pagination>
                     </div>
 
-                    <!-- Right: Albums Table -->
+                    <!-- Right: Artists Table -->
                     <div class="col-md-6">
-                        <h6>Artistas Seguidos</h6>
-                        <n-space vertical>
-                            <n-data-table :onRowClick="GoToArtistDetails" class="short-table" :columns="artistsColumns" :data="followedArtists"
-                                          :pagination="{
-                               pageSize: artistsPagination.pageSize,
-                               page: artistsPagination.page,
-                               pageCount: Math.ceil(followedArtists.length / artistsPagination.pageSize),
-                               onChange: onArtistsPageChange
-                           }" />
-                        </n-space>
+                        <h6>Artistas</h6>
+                        <el-table :data="followedArtists" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
+                            <el-table-column prop="nomePerformer" label="Performer" width="200"></el-table-column>
+                            <el-table-column prop="nomeEvento" label="Evento" width="225"></el-table-column>
+                            <el-table-column prop="palco" label="Palco" width="125"></el-table-column>
+                            <el-table-column prop="data" label="Data" width="100"></el-table-column>
+                            <el-table-column prop="hora" label="Hora" width="100"></el-table-column>
+                        </el-table>
+
+                        <!-- Pagination -->
+                        <el-pagination :current-page="artistsPagination.page"
+                                       :page-size="artistsPagination.pageSize"
+                                       :total="followedArtists.length"
+                                       @current-change="onArtistsPageChange"
+                                       layout="prev, pager, next">
+                        </el-pagination>
                     </div>
                 </div>
             </div>
@@ -64,28 +77,27 @@
 <script>
     import { authState } from '../../auth';
     import Swal from 'sweetalert2';
-    import { ref, watch } from 'vue'
-    import { NDataTable, NSpace } from 'naive-ui'
-    import { useRouter } from 'vue-router'
+    import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
     import axios from 'axios';
 
     export default {
         name: 'HeaderComponent',
-        components: {
-            NDataTable,
-            NSpace
-        },
         setup() {
+            const router = useRouter();
+
+            // Pagination State
             const eventsPagination = ref({
                 page: 1,
-                pageSize: 6
+                pageSize: 6,
             });
 
             const artistsPagination = ref({
                 page: 1,
-                pageSize: 6
+                pageSize: 6,
             });
 
+            // Pagination Change Handlers
             const onEventsPageChange = (page) => {
                 eventsPagination.value.page = page;
             };
@@ -94,22 +106,31 @@
                 artistsPagination.value.page = page;
             };
 
+            const GoToEventDetails = (rowData) => {
+                router.push({ name: 'EventDetails', params: { id: rowData.id } });
+            };
+
+            const GoToArtistDetails = (rowData) => {
+                router.push({ name: 'PerformerDetails', params: { id: rowData.id } });
+            };
+
+            // Columns Configuration
             const artistsColumns = [
-                { title: 'Id', key: 'Id' },
-                { title: 'Performer', key: 'NomePerformer' },
-                { title: 'Evento', key: 'NomeEvento' },
-                { title: 'Palco', key: 'Palco' },
-                { title: 'Data', key: 'Data' },
-                { title: 'Hora', key: 'Hora' },
+                { title: 'Id', key: 'id' },
+                { title: 'Performer', key: 'nomePerformer' },
+                { title: 'Evento', key: 'nomeEvento' },
+                { title: 'Palco', key: 'palco' },
+                { title: 'Data', key: 'data' },
+                { title: 'Hora', key: 'hora' },
             ];
 
             const eventsColumns = [
-                { title: 'Id', key: 'Id' },
-                { title: 'Nome', key: 'Nome' },
-                { title: 'Local', key: 'Local' },
-                { title: 'Data de Início', key: 'DataInicio' },
-                { title: 'Data de Fim', key: 'DataFim' },
-                { title: 'Estado', key: 'Estado' },
+                { title: 'Id', key: 'id' },
+                { title: 'Nome', key: 'nome' },
+                { title: 'Local', key: 'local' },
+                { title: 'Data de Início', key: 'dataInicio' },
+                { title: 'Data de Fim', key: 'dataFim' },
+                { title: 'Estado', key: 'estado' },
             ];
 
             return {
@@ -120,6 +141,8 @@
                 artistsColumns,
                 eventsColumns,
                 authState,
+                GoToEventDetails,
+                GoToArtistDetails,
             };
         },
 
@@ -135,7 +158,7 @@
                 if (authState.isLoggedIn) {
                     this.GetFollowedEntities();
                 }
-            }
+            },
         },
 
         mounted() {
@@ -149,37 +172,23 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/home/GetFollowedEntities', {
                         params: {
-                            profileId: localStorage.getItem('profileId')
-                        }
+                            profileId: localStorage.getItem('profileId'),
+                        },
                     });
 
-                    this.followedEvents = response.data.FollowedEventsList;
-                    this.followedArtists = response.data.FollowedPerformerEventsList;
+                    this.followedEvents = response.data.followedEventsList || [];
+                    this.followedArtists = response.data.followedPerformerEventsList || [];
                 } catch (error) {
-                    console.error('Error fetching followed entities:', error);
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            GoToEventDetails(rowData, rowIndex) {
-                console.log('Clicked row:', rowData) // debug log
-                router.push({ name: 'EventDetails', params: { id: rowData.id } })
-            },
-
-            GoToArtistDetails(rowData, rowIndex) {
-                router.push({ name: 'ArtistDetails', params: { id: rowData.id } })
-            }
-        }
-    }
+        },
+    };
 </script>
 
-<style>
+<style scoped>
     .about-container {
         margin: 2%;
-    }
-
-    .short-table .n-data-table .n-data-table-tr {
-        cursor: pointer !important;
     }
 </style>

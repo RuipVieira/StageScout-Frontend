@@ -26,28 +26,22 @@ html, body {
     background-color: #3d5a80;
 }
 
-/*Data Table Class*/
-.n-space{
-    margin-top:15px;
+.el-table {
+    border: 1px solid #ebeef5;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 14px;
 }
 
-/* Style to reduce the height of the table rows */
-.n-data-table tbody tr {
-    height: 20px !important; /* Adjust this value to make rows shorter or taller */
-}
-.n-data-table {
-    font-size: 12px; /* Adjust the font size as needed */
-}
+    .el-table th {
+        background-color: #f5f7fa;
+        color: #303133;
+        font-weight: 600;
+    }
 
-.short-table {
-    font-size: 11px !important;
+.el-pagination {
+    margin-top: 10px; 
 }
-
-/* Optional: Modify the padding inside cells to make rows appear more compact */
-.n-data-table td {
-    padding: 4px 10px; /* Adjust padding to make the table cells more compact */
-}
-
 .page-content-container {
     margin-top: 50px;
 }

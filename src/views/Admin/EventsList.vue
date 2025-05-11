@@ -35,37 +35,39 @@
                     </div>
                 </div>
             </form>
-            <n-space vertical>
-                <n-data-table :columns="columns"
-                              :data="events"
-                              :pagination="{
-                                pageSize: 10,
-                                showSizePicker: false,
-                                page: pagination.page,
-                                pageCount: Math.ceil(events.length / pagination.pageSize),
-                                onChange: onPageChange
-                              }" />
-            </n-space>
+
+            <!-- Element Plus Table -->
+            <el-table :data="paginatedData" stripe style="width: 100%">
+                <el-table-column prop="nome" label="Nome"></el-table-column>
+                <el-table-column prop="location" label="Local"></el-table-column>
+                <el-table-column prop="startDate" label="Data de Início"></el-table-column>
+                <el-table-column prop="endDate" label="Data de Conclusão"></el-table-column>
+            </el-table>
+
+            <!-- Element Plus Pagination -->
+            <el-pagination :current-page="pagination.page"
+                           :page-size="pagination.pageSize"
+                           :total="events.length"
+                           @current-change="onPageChange"
+                           layout="prev, pager, next, jumper, ->, total">
+            </el-pagination>
         </div>
     </div>
 </template>
 
+
 <script>
-    import { NDataTable, NSpace } from 'naive-ui';
+    import { ref, computed } from 'vue';
+    import { ElTable, ElTableColumn, ElPagination } from 'element-plus'; // Import Element Plus components
 
     export default {
         components: {
-            NDataTable,
-            NSpace,
+            ElTable,
+            ElTableColumn,
+            ElPagination,
         },
         data() {
             return {
-                columns: [
-                    { title: 'Nome', key: 'nome' },
-                    { title: 'Local', key: 'location' },
-                    { title: 'Data de Início', key: 'startDate' },
-                    { title: 'Data de Conclusão', key: 'endDate' },
-                ],
                 events: [
                     { nome: "Primavera Sound Porto 2025", location: 'Parque da Cidade - Porto, Portugal', startDate: '12/05/2025', endDate: '15/05/2025' },
                     { nome: "Primavera Sound Porto 2025", location: 'Parque da Cidade - Porto, Portugal', startDate: '12/05/2025', endDate: '15/05/2025' },
@@ -81,15 +83,7 @@
                 ],
                 pagination: {
                     page: 1,
-                    pageSize: 10, // Set page size to 5 items per page
-                },
-                paginationConfig: {
-                    prevText: 'Anterior',
-                    nextText: 'Próximo',
-                    firstText: 'Primeiro',
-                    lastText: 'Último',
-                    showingText: 'A mostrar',
-                    ofText: 'de',
+                    pageSize: 10, // Set page size to 10 items per page
                 },
             };
         },
@@ -107,6 +101,7 @@
         },
     };
 </script>
+
 
 <style scoped>
     .custom-no-data-text {

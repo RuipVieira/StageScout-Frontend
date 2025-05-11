@@ -1,13 +1,11 @@
 <template>
     <div class="page-content-container py-4 px-3">
-        <!-- Top Card: Event Info and Tables -->
         <div class="card shadow-sm mb-4 fixed-card-top">
             <div class="card-header">
                 <h5 class="mb-0">{{ event.nome }}</h5>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Left: General Info -->
                     <div class="col-md-6">
                         <h6>Informação Geral</h6>
                         <div class="mb-2">
@@ -26,34 +24,38 @@
                             <label class="form-label mb-0 small">Estado</label>
                             <div class="text-muted">{{ event.estado }}</div>
                         </div>
+                        <div class="btn-container">
+                            <button v-if="followerState" type="button" class="btn btn-danger btn-cancelar" @click="ToggleFollowState">Deixar de Seguir</button>
+                            <button v-else type="submit" class="btn btn-primary" @click="ToggleFollowState">Seguir</button>
+                        </div>
                     </div>
 
-                    <!-- Middle: Band Members Table -->
                     <div class="col-md-3 border-start">
                         <h6>Artistas Confirmados</h6>
-                        <n-space vertical>
-                            <n-data-table class="short-table" :columns="performersColumns" :data="event.performers"
-                                          :pagination="{
-                                               pageSize: performersPagination.pageSize,
-                                               page: performersPagination.page,
-                                               pageCount: Math.ceil(event.performers.length / performersPagination.pageSize),
-                                               onChange: onPerformersPageChange
-                                           }" />
-                        </n-space>
+                        <el-table :data="paginatedPerformers" @row-click="GoToPerformerDetails" class="short-table" size="small" border>
+                            <el-table-column prop="id" label="id" v-if="false" />
+                            <el-table-column prop="groupName" label="Performer" width="250" />
+                            <el-table-column prop="date" label="Data" />
+                        </el-table>
+                        <el-pagination layout="prev, pager, next"
+                                       :total="event.performers.length"
+                                       :page-size="performersPagination.pageSize"
+                                       :current-page="performersPagination.page"
+                                       @current-change="onPerformersPageChange"
+                                       size="small" />
                     </div>
 
-                    <!-- Right: Albums Table -->
                     <div class="col-md-3 border-start">
                         <h6>Palcos</h6>
-                        <n-space vertical>
-                            <n-data-table class="short-table" :columns="arenasColumns" :data="event.arenas"
-                                          :pagination="{
-                                               pageSize: arenasPagination.pageSize,
-                                               page: arenasPagination.page,
-                                               pageCount: Math.ceil(event.arenas.length / arenasPagination.pageSize),
-                                               onChange: onArenasPageChange
-                                           }" />
-                        </n-space>
+                        <el-table :data="paginatedPalcos" class="short-table" size="small" border>
+                            <el-table-column prop="nome" label="Nome" />
+                        </el-table>
+                        <el-pagination layout="prev, pager, next"
+                                       :total="event.palcos.length"
+                                       :page-size="palcosPagination.pageSize"
+                                       :current-page="palcosPagination.page"
+                                       @current-change="onPalcosPageChange"
+                                       size="small" />
                     </div>
                 </div>
             </div>
@@ -64,20 +66,21 @@
                 <h6 class="mb-0">Avaliações</h6>
             </div>
             <div class="card-body">
-                <n-space vertical>
-                    <n-data-table :columns="eventColumns"
-                                  :data="event.upcomingEvents"
-                                  :pagination="{
-                                      pageSize: eventsPagination.pageSize,
-                                      page: eventsPagination.page,
-                                      pageCount: Math.ceil(event.upcomingEvents.length / eventsPagination.pageSize),
-                                      onChange: onEventsPageChange
-                                  }" />
-                </n-space>
+                <el-table :data="paginatedEvents" size="small" border>
+                    <el-table-column prop="date" label="Data" />
+                    <el-table-column prop="location" label="Local" />
+                    <el-table-column prop="event" label="Evento" />
+                </el-table>
+                <el-pagination layout="prev, pager, next"
+                               :total="event.upcomingEvents.length"
+                               :page-size="eventsPagination.pageSize"
+                               :current-page="eventsPagination.page"
+                               @current-change="onEventsPageChange"
+                               size="small" />
             </div>
         </div>
 
-        <div v-else class="card shadow-sm fixed-card warning-card">
+        <div v-else class="card shadow-sm fixed-card warning-card" style="height: 150px;">
             <div class="card-header">
                 <h6 class="mb-0">Avaliações</h6>
             </div>
@@ -91,108 +94,128 @@
 </template>
 
 <script>
-    import { ref } from 'vue'
-    import { NDataTable, NSpace } from 'naive-ui'
+    import Swal from 'sweetalert2';
+    import axios from 'axios';
+    import { authState } from '../../auth';
 
     export default {
-        components: {
-            NDataTable,
-            NSpace
-        },
         name: 'EventDetails',
         setup() {
-            const eventsPagination = ref({
-                page: 1,
-                pageSize: 5
-            });
-
-            const performersPagination = ref({
-                page: 1,
-                pageSize: 4
-            });
-
-            const arenasPagination = ref({
-                page: 1,
-                pageSize: 4
-            });
-
-            const onEventsPageChange = (page) => {
-                eventsPagination.value.page = page;
-            };
-
-            const onPerformersPageChange = (page) => {
-                performersPagination.value.page = page;
-            };
-
-            const onArenasPageChange = (page) => {
-                arenasPagination.value.page = page;
-            };
-
-            const performersColumns = [
-                { title: 'Performer', key: 'groupName' },
-                { title: 'Data', key: 'date' },
-            ];
-
-            const arenasColumns = [
-                { title: 'Nome', key: 'name' },
-            ];
-
-            const eventColumns = [
-                { title: 'Data', key: 'date' },
-                { title: 'Local', key: 'location' },
-                { title: 'Evento', key: 'event' }
-            ];
-
-            const event = {
-                nome: 'Primavera Sound Porto 2025',
-                promotora: 'Pic Nic Produções',
-                local: 'Parque da Cidade - Porto, Portugal',
-                dataInicio: '12/06/2025',
-                dataFim: '15/06/2025',
-                estado: 'A Preencher Cartaz', 
-                performers: [
-                    { groupName: 'Deftones', date: '13/06/2025' },
-                    { groupName: 'Magdalena Bay', date: '12/06/2025' },
-                    { groupName: 'Denzel Curry', date: '13/06/2025' },
-                    { groupName: 'David Bruno', date: '14/06/2025' },
-                    { groupName: 'Charlie XCX', date: '12/06/2025' },
-                    { groupName: 'Fontaines D.C.', date: '14/06/2025' },
-                ],
-                arenas: [
-                    { name: 'Palco Vodafone' }, { name: 'Palco Super Bock' }, { name: 'Palco Plenitude' }
-                ],
-                upcomingEvents: [
-                    { date: '05/102025', location: 'Los Angeles - CA, EUA', event: 'The Roxy' },
-                    { date: '12/10/2025', location: 'Chicago - IL, EUA', event: 'Metro' },
-                    { date: '12/10/2025', location: 'Austin - TX, EUA', event: 'Mohawk' },
-                    { date: '12/10/2025', location: 'New York - NY, EUA', event: 'Bowery Ballroom' },
-                    { date: '12/10/2025', location: 'Austin - TX, EUA', event: 'Mohawk' },
-                    { date: '12/10/2025', location: 'New York - NY, EUA', event: 'Bowery Ballroom' }
-                ]
-            };
-
             return {
-                event,
-                eventsPagination,
-                performersPagination,
-                arenasPagination,
-                onEventsPageChange,
-                onPerformersPageChange,
-                onArenasPageChange,
-                performersColumns,
-                arenasColumns,
-                eventColumns
+                authState
+            }
+        },
+        data() {
+            return {
+                eventsPagination: { page: 1, pageSize: 5 },
+                performersPagination: { page: 1, pageSize: 6 },
+                palcosPagination: { page: 1, pageSize: 6 },
+                followerState: false,
+                event: {
+                    performers: [],
+                    palcos: [],
+                    upcomingEvents: []
+                }
             };
-        }
-    }
+        },
+
+        mounted() {
+            const eventId = this.$route.params.id;
+            this.fetchEventDetails(eventId);
+            this.checkFollowerStatus(eventId);
+        },
+
+        computed: {
+            paginatedPerformers() {
+                const start = (this.performersPagination.page - 1) * this.performersPagination.pageSize;
+                return this.event.performers.slice(start, start + this.performersPagination.pageSize);
+            },
+            paginatedPalcos() {
+                const start = (this.palcosPagination.page - 1) * this.palcosPagination.pageSize;
+                return this.event.palcos.slice(start, start + this.palcosPagination.pageSize);
+            },
+            paginatedEvents() {
+                const start = (this.eventsPagination.page - 1) * this.eventsPagination.pageSize;
+                return this.event.upcomingEvents.slice(start, start + this.eventsPagination.pageSize);
+            }
+        },
+
+        methods: {
+            onEventsPageChange(page) {
+                this.eventsPagination.page = page;
+            },
+            onPerformersPageChange(page) {
+                this.performersPagination.page = page;
+            },
+            onPalcosPageChange(page) {
+                this.palcosPagination.page = page;
+            },
+            GoToPerformerDetails(row) {
+                this.$router.push({ name: 'PerformerDetails', params: { id: row.id } })
+            },
+            async fetchEventDetails(eventId) {
+                try {
+                    const response = await axios.get('https://localhost:7216/api/Events/GetEventDetails', {
+                        params: {
+                            eventId: eventId
+                        }
+                    });
+
+                    this.event = response.data || [];
+                } catch (error) {
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
+                    Swal.fire('Erro', message, 'error')
+                }
+            },
+            async ToggleFollowState() {
+                try {
+                    const response = await axios.post('https://localhost:7216/api/Events/ToggleFollowEvent', {
+                        EventId: this.$route.params.id,
+                        ProfileId: localStorage.getItem('profileId')
+                    });
+
+                    if (response.data.seguidor == true) {
+                        this.followerState = true;
+                        Swal.fire('Sucesso', 'Começou a seguir este evento.', 'success')
+                    } else {
+                        this.followerState = false;
+                        Swal.fire('Sucesso', 'Deixou de seguir este evento.', 'success')
+                    }
+                } catch (error) {
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
+                    Swal.fire('Erro', message, 'error')
+                }
+            },
+            async checkFollowerStatus() {
+                try {
+                    const response = await axios.post('https://localhost:7216/api/Events/CheckFollowingStatus', {
+                        EventId: this.$route.params.id,
+                        ProfileId: localStorage.getItem('profileId')
+                    });
+
+                    if (response.data.seguidor == true) {
+                        this.followerState = true;
+                    } else {
+                        this.followerState = false;
+                    }
+
+                } catch (error) {
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
+                    Swal.fire('Erro', message, 'error')
+                }
+            }
+        },
+    };
 </script>
+
+
 
 <style scoped>
     .fixed-card-top {
         width: 100%;
-        height: 370px; 
+        height: 370px;
         overflow: hidden;
-        margin-bottom: 1rem; 
+        margin-bottom: 1rem;
     }
 
         .fixed-card-top .card-body {

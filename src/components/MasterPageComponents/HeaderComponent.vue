@@ -6,10 +6,8 @@
             </ul>
             <ul style="float:right;">
                 <!-- Testing -->
-                <li><a href="/artist" type="button">ArtistDetails</a></li>
-                <li><a href="/event" type="button">EventDetails</a></li>
-                <li><a href="/search" type="button">EventsSearch</a></li>
-                <li><a href="/following" type="button">FollowingLists</a></li>
+                <li><a @click="GoToEventSearch()" type="button">Pesquisar Eventos</a></li>
+                <li><a @click="GoToPerformerSearch()" type="button">Pesquisar Performers</a></li>
                 <!-- Testing -->
 
                 <li><a href="#" v-if="!authState.isLoggedIn" @click="openLoginModal()" type="button">Login</a></li>
@@ -32,19 +30,21 @@
     import { ref } from 'vue';
     import { authState } from '../../auth';
     import Swal from 'sweetalert2';
+    import { useRouter } from 'vue-router';
 
     export default {
         name: 'HeaderComponent',
         components: {
         },
         setup() {
+            const router = useRouter();
             let loginModalActive = ref(false);
             let registerModalActive = ref(false);
             let profileModalActive = ref(false);
             let changePassModalActive = ref(false);
 
             return {
-                loginModalActive, registerModalActive, profileModalActive, changePassModalActive, authState,
+                loginModalActive, registerModalActive, profileModalActive, changePassModalActive, authState, router
             }
         },
 
@@ -60,6 +60,12 @@
         },
 
         methods: {
+            GoToEventSearch() {
+                this.router.push({ name: 'EventSearch' })
+            },
+            GoToPerformerSearch() {
+                this.router.push({ name: 'PerformerSearch' })
+            },
             openLoginModal() {
                 this.$emit('openLoginModal');
             },

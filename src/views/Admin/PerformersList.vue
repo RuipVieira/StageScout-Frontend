@@ -35,37 +35,38 @@
                     </div>
                 </div>
             </form>
-            <n-space vertical>
-                <n-data-table :columns="columns"
-                              :data="events"
-                              :pagination="{
-                                pageSize: 10,
-                                showSizePicker: false,
-                                page: pagination.page,
-                                pageCount: Math.ceil(events.length / pagination.pageSize),
-                                onChange: onPageChange
-                              }" />
-            </n-space>
+
+            <!-- Element Plus Table -->
+            <el-table :data="paginatedData" stripe style="width: 100%" @row-click="onRowClick">
+                <el-table-column prop="id" label="#" width="80"></el-table-column>
+                <el-table-column prop="nome" label="Nome"></el-table-column>
+                <el-table-column prop="email" label="Email"></el-table-column>
+                <el-table-column prop="status" label="Status"></el-table-column>
+            </el-table>
+
+            <!-- Element Plus Pagination -->
+            <el-pagination :current-page="pagination.page"
+                           :page-size="pagination.pageSize"
+                           :total="events.length"
+                           @current-change="onPageChange"
+                           layout="prev, pager, next, jumper, ->, total">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
-    import { NDataTable, NSpace } from 'naive-ui';
+    import { ref, computed } from 'vue';
+    import { ElTable, ElTableColumn, ElPagination } from 'element-plus'; // Import Element Plus components
 
     export default {
         components: {
-            NDataTable,
-            NSpace,
+            ElTable,
+            ElTableColumn,
+            ElPagination,
         },
         data() {
             return {
-                columns: [
-                    { title: '#', key: 'id' },
-                    { title: 'Nome', key: 'nome' },
-                    { title: 'Email', key: 'email' },
-                    { title: 'Status', key: 'status' },
-                ],
                 events: [
                     { id: 1, nome: 'Ana Silva', email: 'ana@email.com', status: 'Ativo' },
                     { id: 2, nome: 'João Costa', email: 'joao@email.com', status: 'Inativo' },
@@ -81,15 +82,7 @@
                 ],
                 pagination: {
                     page: 1,
-                    pageSize: 10, // Set page size to 5 items per page
-                },
-                paginationConfig: {
-                    prevText: 'Anterior',
-                    nextText: 'Próximo',
-                    firstText: 'Primeiro',
-                    lastText: 'Último',
-                    showingText: 'A mostrar',
-                    ofText: 'de',
+                    pageSize: 10, // Set page size to 10 items per page
                 },
             };
         },
@@ -103,6 +96,10 @@
         methods: {
             onPageChange(newPage) {
                 this.pagination.page = newPage;
+            },
+            onRowClick(rowData) {
+                console.log("Row clicked:", rowData);
+                // You can handle the row click event here (for navigation or other actions)
             },
         },
     };
