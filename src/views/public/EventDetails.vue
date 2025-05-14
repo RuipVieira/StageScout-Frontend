@@ -60,28 +60,33 @@
                                        size="small" />
 
                         <div class="btn-container">
-                            <button v-if="event.estado == 'Indefinido'" type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
+                            <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div v-if="event.estado === 'Concluído'" class="card shadow-sm fixed-card">
+        <div v-if="event.estado === 'Concluído'" style="height: 100%;" class="card shadow-sm fixed-card">
             <div class="card-header">
                 <h6 class="mb-0">Avaliações</h6>
             </div>
             <div class="card-body">
-                <el-table :data="paginatedEvents" size="small" border>
-                    <el-table-column prop="date" label="Data" />
-                    <el-table-column prop="location" label="Local" />
-                    <el-table-column prop="event" label="Evento" />
+                <el-table :data="paginatedAvaliacoes" size="small" border>
+                    <el-table-column prop="nomeAvaliador" label="Nome" />
+                    <el-table-column prop="dataSubmissao" label="Data" />
+                    <el-table-column prop="ratingCartaz" label="Cartaz" />
+                    <el-table-column prop="ratingOrganizacao" label="Organização" />
+                    <el-table-column prop="ratingAcessos" label="Acessos" />
+                    <el-table-column prop="ratingPerformers" label="Performers" />
+                    <el-table-column prop="performerMVP" label="Melhor Performance" />
+                    <el-table-column prop="observacoes" label="Observações" />
                 </el-table>
                 <el-pagination layout="prev, pager, next"
-                               :total="event.upcomingEvents.length"
-                               :page-size="eventsPagination.pageSize"
-                               :current-page="eventsPagination.page"
-                               @current-change="onEventsPageChange"
+                               :total="event.avaliacoes.length"
+                               :page-size="avaliacoesPagination.pageSize"
+                               :current-page="avaliacoesPagination.page"
+                               @current-change="onAvaliacoesPageChange"
                                size="small" />
             </div>
         </div>
@@ -97,10 +102,9 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive">
-        </ModalEventCalendar>
-    </div>
+    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive">
+    </ModalEventCalendar>
+
 </template>
 
 <script>
@@ -124,14 +128,14 @@
         },
         data() {
             return {
-                eventsPagination: { page: 1, pageSize: 5 },
+                avaliacoesPagination: { page: 1, pageSize: 5 },
                 performersPagination: { page: 1, pageSize: 6 },
                 palcosPagination: { page: 1, pageSize: 4 },
                 followerState: false,
                 event: {
                     performers: [],
                     palcos: [],
-                    upcomingEvents: []
+                    avaliacoes: []
                 }
             };
         },
@@ -151,15 +155,15 @@
                 const start = (this.palcosPagination.page - 1) * this.palcosPagination.pageSize;
                 return this.event.palcos.slice(start, start + this.palcosPagination.pageSize);
             },
-            paginatedEvents() {
-                const start = (this.eventsPagination.page - 1) * this.eventsPagination.pageSize;
-                return this.event.upcomingEvents.slice(start, start + this.eventsPagination.pageSize);
+            paginatedAvaliacoes() {
+                const start = (this.avaliacoesPagination.page - 1) * this.avaliacoesPagination.pageSize;
+                return this.event.avaliacoes.slice(start, start + this.avaliacoesPagination.pageSize);
             }
         },
 
         methods: {
-            onEventsPageChange(page) {
-                this.eventsPagination.page = page;
+            onAvaliacoesPageChange(page) {
+                this.avaliacoesPagination.page = page;
             },
             onPerformersPageChange(page) {
                 this.performersPagination.page = page;
