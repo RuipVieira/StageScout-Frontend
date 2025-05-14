@@ -5,11 +5,8 @@
                 <li><a href="/" type="button">StageScout</a></li>
             </ul>
             <ul style="float:right;">
-                <!-- Testing -->
-                <li><a @click="GoToEventSearch()" type="button">Pesquisar Eventos</a></li>
-                <li><a @click="GoToPerformerSearch()" type="button">Pesquisar Performers</a></li>
-                <!-- Testing -->
-
+                <li><a v-if="authState.isLoggedIn" @click="GoToEventSearch()" type="button">Pesquisar Eventos</a></li>
+                <li><a v-if="authState.isLoggedIn" @click="GoToPerformerSearch()" type="button">Pesquisar Performers</a></li>
                 <li><a href="#" v-if="!authState.isLoggedIn" @click="openLoginModal()" type="button">Login</a></li>
                 <li><a href="#" v-if="!authState.isLoggedIn" @click="openRegisterModal()" type="button">Register</a></li>
                 <li v-if="authState.isLoggedIn" class="perfil-dropdown">

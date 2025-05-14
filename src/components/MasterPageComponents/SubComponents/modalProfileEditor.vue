@@ -21,10 +21,16 @@
                                     </option>
                                 </select>
 
-                                <label for="profileNaturalidade" class="form-label">Naturalidade</label>
-                                <select id="profileNaturalidade" v-model="profileNaturalidade" class="form-control">
+                                <label for="profileNacionalidade" class="form-label">Nacionalidade</label>
+                                <select id="profileNacionalidade" v-model="profileNacionalidade" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
+                                    </option>
+                                </select>
+                                <label for="profileNaturalidade" class="form-label">Naturalidade</label>
+                                <select id="profileNaturalidade" v-model="profileNaturalidade" class="form-control" :disabled="!profileNacionalidade">>
+                                    <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
+                                        {{ district.descricao }}
                                     </option>
                                 </select>
                             </div>
@@ -53,7 +59,8 @@
                 profileName: '',
                 profileBirthDate: '',
                 profileGender: '',
-                profileNaturalidade: '',
+                profileNacionalidade: '',
+                selectedNationDistricts: [],
                 nationsList: [],
                 gendersList: [
                     { id: '1', name: 'Indefinido' },
@@ -74,6 +81,13 @@
         mounted() {
             this.GetNations();
             this.GetProfileDetails();
+        },
+        watch: {
+            profileNacionalidade(newVal) {
+                const selectedNation = this.nationsList.find(nation => nation.id === newVal);
+                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
+                //this.profileNaturalidade = '';
+            },
         },
         methods: {
             async profile() {
@@ -99,6 +113,7 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/Account/GetAllNations');
                     this.nationsList = response.data;
+                    console.log(this.nationsList);
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
@@ -107,21 +122,24 @@
             },
 
             async GetProfileDetails() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Account/GetProfileDetails', {
-                        params: {
-                            profileId: localStorage.getItem('profileId')
-                        }
-                    });
-                    this.profileName = response.data.name;
-                    this.profileBirthDate = response.data.birthDate;
-                    this.profileGender = response.data.generoId;
-                    this.profileNaturalidade = response.data.naturalidadeId;
+                if (authState.isLoggedIn) {
+                    try {
+                        const response = await axios.get('https://localhost:7216/api/Account/GetProfileDetails', {
+                            params: {
+                                profileId: localStorage.getItem('profileId')
+                            }
+                        });
+                        this.profileName = response.data.name;
+                        this.profileBirthDate = response.data.birthDate;
+                        this.profileGender = response.data.generoId;
+                        this.profileNacionalidade = response.data.nacionalidadeId;
+                        this.profileNaturalidade = response.data.naturalidadeId;
 
-                } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
+                    } catch (error) {
+                        const message =
+                            error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                        Swal.fire('Erro', message, 'error');
+                    }
                 }
             }
         }
