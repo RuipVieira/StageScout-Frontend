@@ -31,7 +31,7 @@
                     <!-- Middle: Band Members Table -->
                     <div class="col-md-4 border-start">
                         <h6>Membros</h6>
-                        <el-table :data="pagedMembers" class="short-table" style="width: 100%" size="small" border>
+                        <el-table :data="pagedMembers" empty-text="Nenhum dado disponível" class="short-table" style="width: 100%" size="small" border>
                             <el-table-column prop="nome" label="Nome" />
                             <el-table-column prop="nacionalidade" label="Nacionalidade" />
                             <el-table-column prop="ativo" label="Membro Atual">
@@ -50,7 +50,7 @@
                     <!-- Right: Albums Table -->
                     <div class="col-md-4 border-start">
                         <h6>Álbuns</h6>
-                        <el-table :data="pagedAlbums" class="short-table" style="width: 100%" size="small" border>
+                        <el-table :data="pagedAlbums" empty-text="Nenhum dado disponível" class="short-table" style="width: 100%" size="small" border>
                             <el-table-column prop="titulo" label="Título" />
                             <el-table-column prop="anoLancamento" label="Ano Lançamento" />
                         </el-table>
@@ -70,7 +70,7 @@
                 <h6 class="mb-0">Próximos Eventos</h6>
             </div>
             <div class="card-body">
-                <el-table :data="pagedEvents" style="width: 100%" @row-click="GoToEventDetails">
+                <el-table :data="pagedEvents" empty-text="Nenhum dado disponível" style="width: 100%" @row-click="GoToEventDetails">
                     <el-table-column prop="id" label="id" v-if="false" />
                     <el-table-column prop="nome" label="Nome" />
                     <el-table-column prop="local" label="Local" />

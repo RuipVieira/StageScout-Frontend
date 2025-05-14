@@ -28,7 +28,8 @@
                                     </option>
                                 </select>
                                 <label for="profileNaturalidade" class="form-label">Naturalidade</label>
-                                <select id="profileNaturalidade" v-model="profileNaturalidade" class="form-control" :disabled="!profileNacionalidade">>
+                                <select id="profileNaturalidade" v-model="profileNaturalidade" class="form-control" :disabled="!profileNacionalidade">
+                                    >
                                     <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
                                         {{ district.descricao }}
                                     </option>
@@ -54,6 +55,8 @@
     import { authState } from '../../../auth';
 
     export default {
+        name: 'ProfileModal',
+        props: ['profileModalActive'],
         data() {
             return {
                 profileName: '',
@@ -67,30 +70,33 @@
                     { id: '1', name: 'Indefinido' },
                     { id: '2', name: 'Masculino' },
                     { id: '3', name: 'Feminino' },
-                    { id: '4', name: 'Não Binário' },
+                    { id: '4', name: 'Não Binário' }
                 ],
+                authState: authState
             };
         },
-        props: ['profileModalActive'],
-        setup(props, { emit }) {
-            const closeProfileModal = () => {
-                emit('closeProfileModal');
-            }
-
-            return { closeProfileModal, authState }
-        },
-        mounted() {
-            this.GetNations();
-            this.GetProfileDetails();
-        },
         watch: {
+            profileModalActive(newVal) {
+                if (newVal) {
+                    this.GetProfileDetails();
+                    this.GetNations();
+                }
+            },
             profileNacionalidade(newVal) {
                 const selectedNation = this.nationsList.find(nation => nation.id === newVal);
                 this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
-                //this.profileNaturalidade = '';
-            },
+            }
         },
         methods: {
+            closeProfileModal() {
+                this.profileName = '';
+                this.profileBirthDate = '';
+                this.profileGender = '';
+                this.profileNacionalidade = '';
+                this.profileNaturalidade = '';
+                this.$emit('closeProfileModal');
+            },
+
             async profile() {
                 try {
                     await axios.post('https://localhost:7216/api/account/EditProfile', {
@@ -98,7 +104,7 @@
                         Nome: this.profileName,
                         DataNascimento: this.profileBirthDate,
                         NaturalidadeId: this.profileNaturalidade,
-                        GeneroId: this.profileGender,
+                        GeneroId: this.profileGender
                     });
 
                     Swal.fire('Sucesso', 'Perfil Editado com sucesso!', 'success');
@@ -122,13 +128,14 @@
             },
 
             async GetProfileDetails() {
-                if (authState.isLoggedIn) {
+                if (this.authState.isLoggedIn) {
                     try {
                         const response = await axios.get('https://localhost:7216/api/Account/GetProfileDetails', {
                             params: {
                                 profileId: localStorage.getItem('profileId')
                             }
                         });
+
                         this.profileName = response.data.name;
                         this.profileBirthDate = response.data.birthDate;
                         this.profileGender = response.data.generoId;
@@ -143,8 +150,9 @@
                 }
             }
         }
-    }
+    };
 </script>
+
 
 <style scoped>
     .modal-animation-enter-active,

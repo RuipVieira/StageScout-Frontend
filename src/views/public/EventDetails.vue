@@ -32,7 +32,7 @@
 
                     <div class="col-md-3 border-start">
                         <h6>Artistas Confirmados</h6>
-                        <el-table :data="paginatedPerformers" @row-click="GoToPerformerDetails" class="short-table" size="small" border>
+                        <el-table empty-text="Nenhum dado disponível" :data="paginatedPerformers" @row-click="GoToPerformerDetails" class="short-table" size="small" border>
                             <el-table-column prop="id" label="id" v-if="false" />
                             <el-table-column prop="groupName" label="Performer" width="250" />
                             <el-table-column prop="date" label="Data" />
@@ -49,7 +49,7 @@
 
                     <div class="col-md-3 border-start">
                         <h6>Palcos</h6>
-                        <el-table :data="paginatedPalcos" class="short-table" size="small" border>
+                        <el-table empty-text="Nenhum dado disponível" :data="paginatedPalcos" class="short-table" size="small" border>
                             <el-table-column prop="nome" label="Nome" />
                         </el-table>
                         <el-pagination layout="prev, pager, next"
@@ -72,16 +72,50 @@
                 <h6 class="mb-0">Avaliações</h6>
             </div>
             <div class="card-body">
-                <el-table :data="paginatedAvaliacoes" size="small" border>
+                <el-table empty-text="Nenhum dado disponível" :data="paginatedAvaliacoes" size="small" border>
                     <el-table-column prop="nomeAvaliador" label="Nome" />
-                    <el-table-column prop="dataSubmissao" label="Data" />
-                    <el-table-column prop="ratingCartaz" label="Cartaz" />
-                    <el-table-column prop="ratingOrganizacao" label="Organização" />
-                    <el-table-column prop="ratingAcessos" label="Acessos" />
-                    <el-table-column prop="ratingPerformers" label="Performers" />
+                    <el-table-column prop="dataSubmissao"
+                                     label="Data"
+                                     width="90">
+                        <template #default="{ row }">
+                            {{ new Date(row.dataSubmissao).toLocaleDateString() }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Cartaz" width="130">
+                        <template #default="{ row }">
+                            <el-rate :model-value="row.ratingCartaz" disabled :max="5" />
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="Organização" width="130">
+                        <template #default="{ row }">
+                            <el-rate :model-value="row.ratingOrganizacao" disabled :max="5" />
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="Acessos" width="130">
+                        <template #default="{ row }">
+                            <el-rate :model-value="row.ratingAcessos" disabled :max="5" />
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="Performers" width="130">
+                        <template #default="{ row }">
+                            <el-rate :model-value="row.ratingPerformers" disabled :max="5" />
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="performerMVP" label="Melhor Performance" />
-                    <el-table-column prop="observacoes" label="Observações" />
+                    <el-table-column label="Observações">
+                        <template #default="{ row }">
+                            <el-tooltip class="item" effect="dark" :content="row.observacoes" placement="top">
+                                <span class="truncate-text">{{ row.observacoes }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
                 </el-table>
+                <div class="btn-container" v-if="this.event.reviewedByUser == false">
+                    <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-danger btn-cancelar" @click="openSubmitReviewModal()">Avaliar</button>
+                </div>
                 <el-pagination layout="prev, pager, next"
                                :total="event.avaliacoes.length"
                                :page-size="avaliacoesPagination.pageSize"
@@ -102,9 +136,8 @@
             </div>
         </div>
     </div>
-    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive">
-    </ModalEventCalendar>
-
+    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive"/>
+    <ModalSubmitReview @submitReviewCompleted="handleSubmitReviewCompleted" :modalSubmitReviewActive="modalSubmitReviewActive" />
 </template>
 
 <script>
@@ -112,23 +145,25 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { authState } from '../../auth';
-    import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue'
+    import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue';
+    import ModalSubmitReview from '@/components/PublicComponents/SubComponents/modalSubmitReview.vue';
 
     export default {
         name: 'EventDetails',
         components: {
-            ModalEventCalendar
+            ModalEventCalendar, ModalSubmitReview
         },
         setup() {
             let modalEventCalendarActive = ref(false);
+            let modalSubmitReviewActive = ref(false);
 
             return {
-                authState, modalEventCalendarActive
+                authState, modalEventCalendarActive, modalSubmitReviewActive
             }
         },
         data() {
             return {
-                avaliacoesPagination: { page: 1, pageSize: 5 },
+                avaliacoesPagination: { page: 1, pageSize: 4 },
                 performersPagination: { page: 1, pageSize: 6 },
                 palcosPagination: { page: 1, pageSize: 4 },
                 followerState: false,
@@ -174,6 +209,16 @@
             GoToPerformerDetails(row) {
                 this.$router.push({ name: 'PerformerDetails', params: { id: row.id } })
             },
+            handleSubmitReviewCompleted() {
+                this.toggleModalSubmitReview();   // This closes the modal
+                this.refreshEventDetails();       // This reloads the event data
+            },
+            toggleModalSubmitReview() {
+                this.modalSubmitReviewActive = !this.modalSubmitReviewActive;
+            },
+            refreshEventDetails() {
+                this.fetchEventDetails(this.$route.params.id);
+            },
             toggleModalEventCalendar() {
                 this.modalEventCalendarActive = !this.modalEventCalendarActive;
                 return this.modalEventCalendarActive;
@@ -181,15 +226,20 @@
             openEventCalendarModal() {
                 this.modalEventCalendarActive = true;
             },
+            openSubmitReviewModal() {
+                this.modalSubmitReviewActive = true;
+            },
             async fetchEventDetails(eventId) {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Events/GetEventDetails', {
                         params: {
-                            eventId: eventId
+                            eventId: eventId,
+                            profileId: localStorage.getItem('profileId')
                         }
                     });
 
                     this.event = response.data || [];
+                    console.log(this.event);
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
                     Swal.fire('Erro', message, 'error')
@@ -239,6 +289,15 @@
 
 
 <style scoped>
+    .truncate-text {
+        display: inline-block;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+
     .fixed-card-top {
         width: 100%;
         height: 370px;

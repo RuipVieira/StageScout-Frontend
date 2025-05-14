@@ -32,7 +32,7 @@
                     <!-- Left: Events Table -->
                     <div class="col-md-6">
                         <h6>Eventos</h6>
-                        <el-table :data="followedEvents" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
+                        <el-table :data="followedEvents" empty-text="Nenhum dado disponível" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
                             <el-table-column prop="nome" label="Nome" width="250"></el-table-column>
                             <el-table-column prop="local" label="Local" width="200"></el-table-column>
                             <el-table-column prop="dataInicio" label="Início" width="100"></el-table-column>
@@ -52,7 +52,7 @@
                     <!-- Right: Artists Table -->
                     <div class="col-md-6">
                         <h6>Artistas</h6>
-                        <el-table :data="followedArtists" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
+                        <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
                             <el-table-column prop="nomePerformer" label="Performer" width="200"></el-table-column>
                             <el-table-column prop="nomeEvento" label="Evento" width="225"></el-table-column>
                             <el-table-column prop="palco" label="Palco" width="125"></el-table-column>

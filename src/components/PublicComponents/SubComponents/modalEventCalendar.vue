@@ -9,7 +9,7 @@
                         <transition name="fade-slide" mode="out-in">
                             <div v-if="currentDay" :key="currentDayIndex" class="table-scroll-wrapper">
                                 <h5 class="text-center">{{ currentDay.data }}</h5>
-                                <el-table :data="[{}]" border style="min-width: 800px">
+                                <el-table :data="[{}]" empty-text="Nenhum dado disponível" border style="min-width: 800px">
                                     <el-table-column v-for="palco in currentDay.palcos"
                                                      :key="palco.nome"
                                                      :label="palco.nome"

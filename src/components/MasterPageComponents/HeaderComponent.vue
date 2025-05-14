@@ -86,6 +86,8 @@
                 authState.isLoggedIn = false;
                 Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
                 this.showDropdown = false;
+
+                this.router.push({ name: 'home' })
             },
             toggleDropdown() {
                 this.showDropdown = !this.showDropdown;

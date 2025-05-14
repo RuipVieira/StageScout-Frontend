@@ -22,7 +22,6 @@
                             <label for="eventPerformer" class="form-label">Artista</label>
                             <input type="text" id="eventPerformer" name="eventPerformer" class="form-control">
                         </div>
-                        <!-- Checkbox aligned with other fields, label next to input -->
                         <div class="d-flex align-items-center" style="min-height: 38px;">
                             <label for="eventIsOver" class="form-label me-2 mb-0">A Decorrer</label>
                             <input type="checkbox" id="eventIsOver" name="eventIsOver" class="form-check-input mt-0">
@@ -36,15 +35,13 @@
                 </div>
             </form>
 
-            <!-- Element Plus Table -->
-            <el-table :data="paginatedData" stripe style="width: 100%">
+            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%">
                 <el-table-column prop="nome" label="Nome"></el-table-column>
                 <el-table-column prop="location" label="Local"></el-table-column>
                 <el-table-column prop="startDate" label="Data de Início"></el-table-column>
                 <el-table-column prop="endDate" label="Data de Conclusão"></el-table-column>
             </el-table>
 
-            <!-- Element Plus Pagination -->
             <el-pagination :current-page="pagination.page"
                            :page-size="pagination.pageSize"
                            :total="events.length"

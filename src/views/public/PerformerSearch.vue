@@ -30,7 +30,7 @@
                 </div>
             </form>
 
-            <el-table :data="paginatedData" stripe style="width: 100%;" class="mt-4" @row-click="GoToPerformerDetails" :default-sort="{ prop: 'nome', order: 'ascending' }">
+            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToPerformerDetails" :default-sort="{ prop: 'nome', order: 'ascending' }">
                 <el-table-column prop="nome" label="Nome" width="540" />
                 <el-table-column prop="generoMusical" label="Género Musical" width="250" />
                 <el-table-column prop="nacionalidade" label="Nacionalidade" width="300" />

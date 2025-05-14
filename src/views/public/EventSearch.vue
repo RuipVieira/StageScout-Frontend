@@ -30,7 +30,7 @@
                 </div>
             </form>
 
-            <el-table :data="paginatedData" stripe style="width: 100%;" class="mt-4" @row-click="GoToEventDetails">
+            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToEventDetails">
                 <el-table-column prop="nome" label="Nome" />
                 <el-table-column prop="local" label="Local" />
                 <el-table-column prop="dataInicio" label="Data de Início" />
@@ -38,7 +38,7 @@
                 <el-table-column prop="estado" label="Estado" />
                 <el-table-column prop="terminado" label="A Decorrer">
                     <template #default="{ row }">
-                        <span>{{ row.terminado ? 'Sim' : 'Não' }}</span>
+                        <span>{{ row.terminado ? 'Não' : 'Sim' }}</span>
                     </template>
                 </el-table-column>
             </el-table>
