@@ -60,6 +60,7 @@
                 profileBirthDate: '',
                 profileGender: '',
                 profileNacionalidade: '',
+                profileNaturalidade: '',
                 selectedNationDistricts: [],
                 nationsList: [],
                 gendersList: [
@@ -113,7 +114,6 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/Account/GetAllNations');
                     this.nationsList = response.data;
-                    console.log(this.nationsList);
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';

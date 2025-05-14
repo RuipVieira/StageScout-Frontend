@@ -45,6 +45,8 @@
                                        size="small" />
                     </div>
 
+
+
                     <div class="col-md-3 border-start">
                         <h6>Palcos</h6>
                         <el-table :data="paginatedPalcos" class="short-table" size="small" border>
@@ -56,6 +58,10 @@
                                        :current-page="palcosPagination.page"
                                        @current-change="onPalcosPageChange"
                                        size="small" />
+
+                        <div class="btn-container">
+                            <button v-if="event.estado == 'Indefinido'" type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,25 +97,36 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive">
+        </ModalEventCalendar>
+    </div>
 </template>
 
 <script>
     import Swal from 'sweetalert2';
+    import { ref } from 'vue';
     import axios from 'axios';
     import { authState } from '../../auth';
+    import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue'
 
     export default {
         name: 'EventDetails',
+        components: {
+            ModalEventCalendar
+        },
         setup() {
+            let modalEventCalendarActive = ref(false);
+
             return {
-                authState
+                authState, modalEventCalendarActive
             }
         },
         data() {
             return {
                 eventsPagination: { page: 1, pageSize: 5 },
                 performersPagination: { page: 1, pageSize: 6 },
-                palcosPagination: { page: 1, pageSize: 6 },
+                palcosPagination: { page: 1, pageSize: 4 },
                 followerState: false,
                 event: {
                     performers: [],
@@ -152,6 +169,13 @@
             },
             GoToPerformerDetails(row) {
                 this.$router.push({ name: 'PerformerDetails', params: { id: row.id } })
+            },
+            toggleModalEventCalendar() {
+                this.modalEventCalendarActive = !this.modalEventCalendarActive;
+                return this.modalEventCalendarActive;
+            },
+            openEventCalendarModal() {
+                this.modalEventCalendarActive = true;
             },
             async fetchEventDetails(eventId) {
                 try {
