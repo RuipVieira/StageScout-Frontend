@@ -81,6 +81,7 @@
             logout() {
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('profileId');
+                localStorage.removeItem('role');
 
                 authState.profileId = null;
                 authState.isLoggedIn = false;

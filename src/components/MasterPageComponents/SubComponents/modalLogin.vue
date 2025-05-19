@@ -81,6 +81,7 @@
                     localStorage.setItem('isLoggedIn', 'true');
 
                     authState.profileId = response.data;
+                    localStorage.setItem('role', role);
                     localStorage.setItem('profileId', response.data);
 
                     this.closeLoginModal();

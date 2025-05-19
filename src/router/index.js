@@ -4,6 +4,7 @@ import EventSearch from '../views/public/EventSearch.vue'
 import PerformerSearch from '../views/public/PerformerSearch.vue'
 import PerformerDetailsView from '../views/public/PerformerDetails.vue'
 import EventDetailsView from '../views/public/EventDetails.vue'
+import UnauthorizedView from '../views/public/Unauthorized.vue'
 
 import BackOfficeHomeView from '../views/BackOffice/HomePage.vue'
 import BackOfficeCreateEventView from '../views/BackOffice/CreateEvent.vue'
@@ -29,88 +30,125 @@ const routes = [
     {
         path: '/event/:id',
         name: 'EventDetails',
-        component: EventDetailsView
+        component: EventDetailsView,
+        meta: { requiresAuth: true, roles: ['user', 'promoter', 'admin'] }
     },
     {
         path: '/events',
         name: 'EventSearch',
-        component: EventSearch
+        component: EventSearch,
+        meta: { requiresAuth: true, roles: ['user', 'promoter', 'admin'] }
     },
     {
         path: '/performer',
         name: 'PerformerSearch',
-        component: PerformerSearch
+        component: PerformerSearch,
+        meta: { requiresAuth: true, roles: ['user', 'promoter', 'admin'] }
     },
     {
         path: '/performer/:id',
         name: 'PerformerDetails',
-        component: PerformerDetailsView
+        component: PerformerDetailsView,
+        meta: { requiresAuth: true, roles: ['user', 'promoter', 'admin'] }
     },
     {
         path: '/backoffice',
         name: 'backoffice',
-        component: BackOfficeHomeView
+        component: BackOfficeHomeView,
+        meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/eventcreate',
         name: 'backofficeeventcreate',
-        component: BackOfficeCreateEventView
+        component: BackOfficeCreateEventView,
+        meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/edit',
         name: 'backofficeedit',
-        component: BackOfficeEditEventView
+        component: BackOfficeEditEventView,
+        meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/stats',
         name: 'backofficestats',
-        component: BackOfficeEventStatsView
+        component: BackOfficeEventStatsView,
+        meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/admin',
         name: 'admin',
-        component: AdminHomeView
+        component: AdminHomeView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/eventcreate',
         name: 'admineventcreate',
-        component: AdminCreateEventView
+        component: AdminCreateEventView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/edit',
         name: 'adminedit',
-        component: AdminEditEventView
+        component: AdminEditEventView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/event',
         name: 'admineventdetails',
-        component: AdminEventDetailsView
+        component: AdminEventDetailsView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/tickets',
         name: 'admintickets',
-        component: AdminTicketsListView
+        component: AdminTicketsListView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/users',
         name: 'adminusers',
-        component: AdminUsersListView
+        component: AdminUsersListView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/performers',
         name: 'adminPerformers',
-        component: AdminPerformersListView
+        component: AdminPerformersListView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/events',
         name: 'adminevents',
-        component: AdminEventsListView
+        component: AdminEventsListView,
+        meta: { requiresAuth: true, roles: ['admin'] }
     },
+    {
+        path: '/restrito',
+        name: 'unauthorized',
+        component: UnauthorizedView,
+    }
 ]
 
 const router = createRouter({
     history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+    const role = localStorage.getItem('role')
+
+    if (to.meta.requiresAuth) {
+        if (!role) {
+            next({ path: '/' })
+        } else if (to.meta.roles && !to.meta.roles.includes(role)) {
+            next({ path: '/restrito' })
+        } else {
+            next()
+        }
+    } else {
+        next()
+    }
 })
 
 export default router
