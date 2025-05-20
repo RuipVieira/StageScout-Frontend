@@ -2,18 +2,40 @@
     <header class="fixed-header">
         <nav>
             <ul style="float:left;">
-                <li><a href="/" type="button">StageScout</a></li>
+                <li v-if="authState.isLoggedIn && authState.role === 'user'">
+                    <a href="/" type="button">StageScout</a>
+                </li>
+                <li v-else-if="authState.isLoggedIn && authState.role === 'admin'">
+                    <a href="/admin" type="button">StageScout</a>
+                </li>
+                <li v-else-if="authState.isLoggedIn && authState.role === 'promoter'">
+                    <a href="/backoffice" type="button">StageScout</a>
+                </li>
             </ul>
             <ul style="float:right;">
-                <li><a v-if="authState.isLoggedIn" @click="GoToEventSearch()" type="button">Pesquisar Eventos</a></li>
-                <li><a v-if="authState.isLoggedIn" @click="GoToPerformerSearch()" type="button">Pesquisar Performers</a></li>
-                <li><a href="#" v-if="!authState.isLoggedIn" @click="openLoginModal()" type="button">Login</a></li>
-                <li><a href="#" v-if="!authState.isLoggedIn" @click="openRegisterModal()" type="button">Register</a></li>
+                <li>
+                    <a v-if="authState.isLoggedIn && authState.role === 'user'" @click="GoToEventSearch" type="button">
+                        Pesquisar Eventos
+                    </a>
+                </li>
+                <li>
+                    <a v-if="authState.isLoggedIn && authState.role === 'user'" @click="GoToPerformerSearch" type="button">
+                        Pesquisar Performers
+                    </a>
+                </li>
+                <li>
+                    <a href="#" v-if="!authState.isLoggedIn" @click="openLoginModal" type="button">Login</a>
+                </li>
+                <li>
+                    <a href="#" v-if="!authState.isLoggedIn" @click="openRegisterModal" type="button">Register</a>
+                </li>
                 <li v-if="authState.isLoggedIn" class="perfil-dropdown">
-                    <a href="#" @click.prevent="toggleDropdown">Perfil ▼</a>
+                    <a href="#" @click.prevent="toggleDropdown">A Sua Conta ▼</a>
                     <ul v-if="showDropdown" class="dropdown-menu" ref="perfilDropdown">
-                        <li><a href="#" @click="openProfileModal()" type="button">Editar Perfil</a></li>
-                        <li><a href="#" @click="openChangePassModal()">Mudar Password</a></li>
+                        <li>
+                            <a v-if="authState.role === 'user'" href="#" @click="openProfileModal" type="button">Editar Perfil</a>
+                        </li>
+                        <li><a href="#" @click="openChangePassModal">Mudar Password</a></li>
                         <li><a href="#" @click.prevent="logout">Logout</a></li>
                     </ul>
                 </li>
@@ -22,46 +44,38 @@
     </header>
 </template>
 
-
 <script>
-    import { ref } from 'vue';
     import { authState } from '../../auth';
     import Swal from 'sweetalert2';
-    import { useRouter } from 'vue-router';
 
     export default {
         name: 'HeaderComponent',
-        components: {
-        },
-        setup() {
-            const router = useRouter();
-            let loginModalActive = ref(false);
-            let registerModalActive = ref(false);
-            let profileModalActive = ref(false);
-            let changePassModalActive = ref(false);
-
-            return {
-                loginModalActive, registerModalActive, profileModalActive, changePassModalActive, authState, router
-            }
-        },
 
         data() {
             return {
-                isLoggedIn: false,
-                showDropdown: false
+                showDropdown: false,
             };
         },
 
+        computed: {
+            authState() {
+                return authState;
+            }
+        },
+
         mounted() {
-            this.checkLoginStatus();
+            // Optionally update state on page refresh
+            authState.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            authState.role = localStorage.getItem('role') || null;
+            authState.profileId = localStorage.getItem('profileId') || null;
         },
 
         methods: {
             GoToEventSearch() {
-                this.router.push({ name: 'EventSearch' })
+                this.$router.push({ name: 'EventSearch' });
             },
             GoToPerformerSearch() {
-                this.router.push({ name: 'PerformerSearch' })
+                this.$router.push({ name: 'PerformerSearch' });
             },
             openLoginModal() {
                 this.$emit('openLoginModal');
@@ -75,9 +89,6 @@
             openChangePassModal() {
                 this.$emit('openChangePassModal');
             },
-            checkLoginStatus() {
-                this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            },
             logout() {
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('profileId');
@@ -85,17 +96,20 @@
 
                 authState.profileId = null;
                 authState.isLoggedIn = false;
-                Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
+                authState.role = null;
+
                 this.showDropdown = false;
 
-                this.router.push({ name: 'home' })
+                Swal.fire('Sucesso', 'Logout efectuado com sucesso!', 'success');
+                this.$router.push({ name: 'home' });
             },
             toggleDropdown() {
                 this.showDropdown = !this.showDropdown;
             }
         }
-    }
+    };
 </script>
+
 
 <style scoped>
     .dropdown-menu {
@@ -108,10 +122,10 @@
         list-style: none;
         padding: 0;
         margin: 0;
-        z-index: 10; 
-        display: block; 
-        visibility: visible; 
-        opacity: 1; 
+        z-index: 10;
+        display: block;
+        visibility: visible;
+        opacity: 1;
     }
 
         .dropdown-menu[style*="display: none"] {
@@ -119,19 +133,19 @@
         }
 
         .dropdown-menu li {
-            padding: 6px 12px; 
+            padding: 6px 12px;
             font-size: 14px;
         }
 
             .dropdown-menu li:last-child {
-                border-bottom: none; 
+                border-bottom: none;
             }
 
             .dropdown-menu li a {
                 display: block;
-                color: #333; 
+                color: #333;
                 text-decoration: none;
-                transition: background-color 0.2s ease; 
+                transition: background-color 0.2s ease;
             }
 
     .fixed-header {
@@ -162,6 +176,7 @@
                     text-decoration: none;
                     font-size: 18px;
                 }
+
                     .fixed-header nav ul li a:hover {
                         color: #ee6c4d; /* Lighter background on hover */
                     }

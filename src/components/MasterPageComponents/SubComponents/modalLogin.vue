@@ -33,6 +33,8 @@
     import { authState } from '../../../auth';
 
     export default {
+        props: ['loginModalActive'],
+
         data() {
             return {
                 loginEmail: '',
@@ -40,34 +42,41 @@
             };
         },
 
-        props: ['loginModalActive'],
-        setup(props, { emit }) {
-            const closeLoginModal = () => {
-                emit('closeLoginModal');
-            }
-
-            return { closeLoginModal }
-        },
         methods: {
+            closeLoginModal() {
+                const role = localStorage.getItem('role');
+
+                if (role === 'promoter') {
+                    this.$router.push({ name: 'BackOfficeHomeView' });
+                } else if (role === 'admin') {
+                    this.$router.push({ name: 'AdminHomeView' });
+                }
+
+                this.$emit('closeLoginModal');
+            },
+
             isValidEmail(email) {
-                //regex validação de email
                 const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return re.test(email);
             },
+
             isValidPassword(password) {
-                //Regex valida password com os seguintes parametros: pelo menos 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo especial.
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 return re.test(password);
             },
+
             async login() {
-                // Validações
                 if (!this.isValidEmail(this.loginEmail)) {
                     Swal.fire('Erro', 'Por favor insira um e-mail válido.', 'error');
                     return;
                 }
 
                 if (!this.isValidPassword(this.loginPassword)) {
-                    Swal.fire('Erro', 'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.', 'error');
+                    Swal.fire(
+                        'Erro',
+                        'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.',
+                        'error'
+                    );
                     return;
                 }
 
@@ -77,25 +86,47 @@
                         password: this.loginPassword,
                     });
 
-                    authState.isLoggedIn = true;
-                    localStorage.setItem('isLoggedIn', 'true');
+                    if (response.data.estadoId == 1) {
+                        Swal.fire('Erro', 'A conta está bloqueada. Contacte o suporte.', 'error');
+                    } else {
+                        authState.isLoggedIn = true;
+                        localStorage.setItem('isLoggedIn', 'true');
 
-                    authState.profileId = response.data;
-                    localStorage.setItem('role', role);
-                    localStorage.setItem('profileId', response.data);
+                        authState.role = response.data.TipoContaId;
+                        authState.profileId = response.data.perfilId;
 
-                    this.closeLoginModal();
+                        switch (response.data.tipoContaId) {
+                            case 1:
+                                authState.role = 'admin';
+                                localStorage.setItem('role', 'admin');
+                                break;
+                            case 2:
+                                authState.role = 'promoter';
+                                localStorage.setItem('role', 'promoter');
+                                break;
+                            case 3:
+                                authState.role = 'user';
+                                localStorage.setItem('role', 'user');
+                                break;
+                            default:
+                                localStorage.setItem('role', 'user');
+                        }
 
-                    Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
+                        localStorage.setItem('profileId', response.data.perfilId);
+
+                        Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
+
+                        this.closeLoginModal();
+                    }
                 } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de login. Tente novamente.';
+                    const message = error.response?.data?.message || 'Erro de login. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             }
         }
-    }
+    };
 </script>
+
 
 <style scoped>
     .modal-animation-enter-active,

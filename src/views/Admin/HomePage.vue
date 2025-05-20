@@ -1,18 +1,94 @@
 ﻿<template>
     <div class="page-content-container">
-        <div class="text-center">
-            <h1 class="mb-3">StageScout</h1>
-            <p class="lead">
-                A StageScout é uma ferramenta de aglomeração de informação, promoção de eventos e levantamento de opiniões, desenvolvida como projeto final de licenciatura de Engenharia Informática, obtido na universidade ISTEC Porto.
-                As principais funções da StageScout são:
-                ● Atuar como ponto de encontro de toda a informação essencial dos festivais e eventos, a serem realizados em todo o país.
-                ● Plataforma de notícias e atualizações dos conteúdos dos eventos e festivais de música.
-                ● Ferramenta de levantamento de opiniões e avaliações, obtidas por influência direta dos clientes/utilizadores.
-                ● Plataforma de gestão de informação e levantamento de dados estatísticos, para uso por parte das promotoras e organizadoras de eventos e festivais.
-                A plataforma será desenvolvida de forma intuitiva e responsiva, onde os seus utilizadores poderão pesquisar facilmente pelos eventos e festivais que mais lhes interessam, criar a sua própria conta de utilizador para guardar uma lista de eventos para ainda mais fácil acesso e, também, poder inserir o seu feedback e avaliação dos eventos que presenciou.
-            </p>
+        <h1 class="mb-4 text-center">StageScout - Administração</h1>
+        <div class="row">
+            <div v-for="entity in entities" :key="entity.name" class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ entity.name }}</h5>
+                        <div class="d-flex gap-2 mt-3">
+                            <button v-if="entity.name === 'Localidades'"
+                                    class="btn btn-success"
+                                    @click="$emit('openNationalityCreateModal')">
+                                Nova Nacionalidade
+                            </button>
+                            <button v-if="entity.name === 'Localidades'"
+                                    class="btn btn-info"
+                                    @click="$emit('openDistrictCreateModal')">
+                                Nova Naturalidade
+                            </button>
+                            <button v-else
+                                    class="btn btn-success"
+                                    @click="$emit(entity.createModal)">
+                                Criar Novo
+                            </button>
+                            <button class="btn btn-primary" @click="goTo(entity.manageRoute)">Gerir e Editar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
-<script></script>
+<script>
+    export default {
+        name: 'AdminDashboard',
+        data() {
+            return {
+                entities: [
+                    { name: 'Albums', createModal: 'openAlbumCreateModal', manageRoute: 'AdminAlbumSearch' },
+                    { name: 'Artistas', createModal: 'openArtistCreateModal', manageRoute: 'AdminArtistSearch' },
+                    { name: 'Eventos', createModal: 'openEventCreateModal', manageRoute: 'AdminEventSearch' },
+                    { name: 'Géneros Musicais', createModal: 'openGenreCreateModal', manageRoute: 'AdminGenreSearch' },
+                    { name: 'Localizações', createModal: 'openVenueCreateModal', manageRoute: 'AdminVenueSearch' },
+                    { name: 'Nacionalidades e Naturalidades', createModal: null, manageRoute: 'AdminLocationSearch' },
+                    { name: 'Performers', createModal: 'openPerformerCreateModal', manageRoute: 'AdminPerformerSearch' },
+                    { name: 'Promotoras', createModal: 'openPromoterCreateModal', manageRoute: 'AdminPromoterSearch' },
+                    { name: 'Utilizadores', createModal: 'openUserCreateModal', manageRoute: 'AdminUserSearch' }
+                ]
+            };
+        },
+        methods: {
+            goTo(routeName) {
+                this.$router.push({ name: routeName });
+            }
+        }
+    };
+</script>
+
+<style scoped>
+    .page-content-container {
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .d-flex {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .btn {
+        width: 48%;
+    }
+
+    @media (max-width: 768px) {
+        .col-md-4 {
+            width: 100%;
+        }
+    }
+</style>

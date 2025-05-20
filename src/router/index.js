@@ -12,15 +12,19 @@ import BackOfficeEditEventView from '../views/BackOffice/EditEvent.vue'
 import BackOfficeEventStatsView from '../views/BackOffice/EventStatistics.vue'
 
 import AdminHomeView from '../views/Admin/HomePage.vue'
-import AdminCreateEventView from '../views/Admin/CreateEvent.vue'
-import AdminEditEventView from '../views/Admin/EditEvent.vue'
-import AdminEventDetailsView from '../views/Admin/EventDetails.vue'
-import AdminTicketsListView from '../views/Admin/TicketsList.vue'
-import AdminUsersListView from '../views/Admin/UsersList.vue'
-import AdminPerformersListView from '../views/Admin/PerformersList.vue'
-import AdminEventsListView from '../views/Admin/EventsList.vue'
+import AdminAlbumSearch from '../views/Admin/AlbumSearch.vue'
+import AdminArtistSearch from '../views/Admin/ArtistSearch.vue'
+import AdminEventSearch from '../views/Admin/EventSearch.vue'
+import AdminGenreSearch from '../views/Admin/GenreSearch.vue'
+import AdminNacionalidadeSearch from '../views/Admin/NacionalidadeSearch.vue'
+import AdminPerformerSearch from '../views/Admin/PerformerSearch.vue'
+import AdminPromoterSearch from '../views/Admin/PromoterSearch.vue'
+import AdminUserSearch from '../views/Admin/UserSearch.vue'
+import AdminVenueSearch from '../views/Admin/VenueSearch.vue'
+import AdminEventDetails from '../views/Admin/EventDetails.vue'
+import AdminPerformerDetails from '../views/Admin/PerformerDetails.vue'
 
-//todo - add params on urls
+
 const routes = [
     {
         path: '/',
@@ -53,74 +57,98 @@ const routes = [
     },
     {
         path: '/backoffice',
-        name: 'backoffice',
+        name: 'BackOfficeHomeView',
         component: BackOfficeHomeView,
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/eventcreate',
-        name: 'backofficeeventcreate',
+        name: 'BackOfficeCreateEventView',
         component: BackOfficeCreateEventView,
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/edit',
-        name: 'backofficeedit',
+        name: 'BackOfficeEditEventView',
         component: BackOfficeEditEventView,
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/backoffice/stats',
-        name: 'backofficestats',
+        name: 'BackOfficeEventStatsView',
         component: BackOfficeEventStatsView,
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
         path: '/admin',
-        name: 'admin',
+        name: 'AdminHomeView',
         component: AdminHomeView,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
-        path: '/admin/eventcreate',
-        name: 'admineventcreate',
-        component: AdminCreateEventView,
+        path: '/admin/albums',
+        name: 'AdminAlbumSearch',
+        component: AdminAlbumSearch,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
-        path: '/admin/edit',
-        name: 'adminedit',
-        component: AdminEditEventView,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    {
-        path: '/admin/event',
-        name: 'admineventdetails',
-        component: AdminEventDetailsView,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    {
-        path: '/admin/tickets',
-        name: 'admintickets',
-        component: AdminTicketsListView,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    {
-        path: '/admin/users',
-        name: 'adminusers',
-        component: AdminUsersListView,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    {
-        path: '/admin/performers',
-        name: 'adminPerformers',
-        component: AdminPerformersListView,
+        path: '/admin/artists',
+        name: 'AdminArtistSearch',
+        component: AdminArtistSearch,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
         path: '/admin/events',
-        name: 'adminevents',
-        component: AdminEventsListView,
+        name: 'AdminEventSearch',
+        component: AdminEventSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/genres',
+        name: 'AdminGenreSearch',
+        component: AdminGenreSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/nationalities',
+        name: 'AdminNacionalidadeSearch',
+        component: AdminNacionalidadeSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/performers',
+        name: 'AdminPerformerSearch',
+        component: AdminPerformerSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/promoters',
+        name: 'AdminPromoterSearch',
+        component: AdminPromoterSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/users',
+        name: 'AdminUserSearch',
+        component: AdminUserSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/venues',
+        name: 'AdminVenueSearch',
+        component: AdminVenueSearch,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/event/:id',
+        name: 'AdminEventDetails',
+        component: AdminEventDetails,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/performer/:id',
+        name: 'AdminPerformerDetails',
+        component: AdminPerformerDetails,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
