@@ -1,18 +1,18 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateArtistActive" class="modal">
+        <div v-show="modalCreateNaturalityActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateArtistActive" class="modal-inner">
-                    <i @click="closeCreateArtistModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreateNaturalityActive" class="modal-inner">
+                    <i @click="closeCreateNaturalityModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Artista</h2>
+                        <h2 class="mb-3 text-center">Novo Naturalitya</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="artistName" class="form-label">Nome</label>
-                                <input type="text" v-model="artistName" id="artistName" class="form-control" required>
+                                <label for="naturalityName" class="form-label">Nome</label>
+                                <input type="text" v-model="naturalityName" id="naturalityName" class="form-control" required>
 
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
+                                <label for="naturalityNacionalidade" class="form-label">Nacionalidade</label>
+                                <select id="naturalityNacionalidade" v-model="naturalityNacionalidade" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
                                     </option>
@@ -20,7 +20,7 @@
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateArtistModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateNaturalityModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -36,17 +36,17 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateArtistModal',
-        props: ['modalCreateArtistActive'],
+        name: 'CreateNaturalityModal',
+        props: ['modalCreateNaturalityActive'],
         data() {
             return {
                 nationsList: [],
-                artistName: '',
-                artistNacionalidade: '',
+                naturalityName: '',
+                naturalityNacionalidade: '',
             };
         },
         watch: {
-            modalCreateArtistActive(val) {
+            modalCreateNaturalityActive(val) {
                 if (val) {
                     this.GetNations();
                 }
@@ -65,23 +65,23 @@
             },
             async create() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
+                    await axios.post('https://localhost:7216/api/Admin/CreateNaturality', {
+                        Nome: this.naturalityName,
+                        NacionalidadeId: this.naturalityNacionalidade
                     });
 
-                    Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
-                    this.closeCreateArtistModal();
+                    Swal.fire('Sucesso', 'Naturalidade criada com sucesso!', 'success');
+                    this.closeCreateNaturalityModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateArtistModal() {
-                this.artistName = '';
-                this.artistNacionalidade = '';
-                this.$emit('closeCreateArtistModal');
+            closeCreateNaturalityModal() {
+                this.NaturalityName = '';
+                this.NaturalityNacionalidade = '';
+                this.$emit('closeCreateNaturalityModal');
             },
         }
     };

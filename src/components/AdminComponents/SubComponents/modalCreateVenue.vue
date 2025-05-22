@@ -1,26 +1,33 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateArtistActive" class="modal">
+        <div v-show="modalCreateVenueActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateArtistActive" class="modal-inner">
-                    <i @click="closeCreateArtistModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreateVenueActive" class="modal-inner">
+                    <i @click="closeCreateVenueModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Artista</h2>
+                        <h2 class="mb-3 text-center">Novo Venue</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="artistName" class="form-label">Nome</label>
-                                <input type="text" v-model="artistName" id="artistName" class="form-control" required>
+                                <label for="venueName" class="form-label">Nome</label>
+                                <input type="text" v-model="venueName" id="venueName" class="form-control" required>
 
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
+                                <label for="venueNacionalidade" class="form-label">Nacionalidade</label>
+                                <select id="venueNacionalidade" v-model="venueNacionalidade" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
+                                    </option>
+                                </select>
+                                <label for="venueNaturalidade" class="form-label">Naturalidade</label>
+                                <select id="venueNaturalidade" v-model="venueNaturalidade" class="form-control" :disabled="!venueNacionalidade">
+                                    >
+                                    <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
+                                        {{ district.descricao }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateArtistModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateVenueModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -36,20 +43,26 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateArtistModal',
-        props: ['modalCreateArtistActive'],
+        name: 'CreateVenueModal',
+        props: ['modalCreateVenueActive'],
         data() {
             return {
+                selectedNationDistricts: [],
                 nationsList: [],
-                artistName: '',
-                artistNacionalidade: '',
+                venueName: '',
+                venueNacionalidade: '',
+                venueNaturalidade: ''
             };
         },
         watch: {
-            modalCreateArtistActive(val) {
+            modalCreateVenueActive(val) {
                 if (val) {
                     this.GetNations();
                 }
+            },
+            venueNacionalidade(newVal) {
+                const selectedNation = this.nationsList.find(nation => nation.id === newVal);
+                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
             }
         },
         methods: {
@@ -65,23 +78,24 @@
             },
             async create() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
+                    await axios.post('https://localhost:7216/api/Admin/CreateVenue', {
+                        Nome: this.venueName,
+                        NaturalidadeId: this.venueNaturalidade
                     });
 
-                    Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
-                    this.closeCreateArtistModal();
+                    Swal.fire('Sucesso', 'Localização criada com sucesso!', 'success');
+                    this.closeCreateVenueModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateArtistModal() {
-                this.artistName = '';
-                this.artistNacionalidade = '';
-                this.$emit('closeCreateArtistModal');
+            closeCreateVenueModal() {
+                this.VenueName = '';
+                this.VenueNacionalidade = '';
+                this.VenueNaturalidade = '';
+                this.$emit('closeCreateVenueModal');
             },
         }
     };

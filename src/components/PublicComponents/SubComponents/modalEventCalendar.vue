@@ -30,7 +30,7 @@
                         <div class="btn-container text-center">
                             <el-button @click="currentDayIndex--" :disabled="currentDayIndex === 0">Anterior</el-button>
                             <el-button @click="currentDayIndex++" :disabled="currentDayIndex >= eventCalendarData.length - 1">Próximo</el-button>
-                            <button type="button" class="btn btn-danger btn-cancelar" style="margin-left:12px;"@click="closeEventCalendarModal">Sair</button>
+                            <button type="button" class="btn btn-danger btn-cancelar" style="margin-left:12px;" @click="closeEventCalendarModal">Sair</button>
                         </div>
                     </div>
                 </div>
@@ -39,39 +39,34 @@
     </transition>
 </template>
 
-
 <script>
     import axios from 'axios';
     import Swal from 'sweetalert2';
     import { authState } from '../../../auth';
 
     export default {
+        name: 'ModalEventCalendar',
+        props: ['modalEventCalendarActive'],
         data() {
             return {
+                authState,
                 eventCalendarData: [],
-                currentDayIndex: 0,
+                currentDayIndex: 0
             };
         },
-
         computed: {
             currentDay() {
                 return this.eventCalendarData[this.currentDayIndex];
             }
-        },
-
-        props: ['modalEventCalendarActive'],
-        setup(props, { emit }) {
-            const closeEventCalendarModal = () => {
-                emit('closeEventCalendarModal');
-            }
-
-            return { closeEventCalendarModal }
         },
         mounted() {
             const eventId = this.$route.params.id;
             this.fetchEventCalendar(eventId);
         },
         methods: {
+            closeEventCalendarModal() {
+                this.$emit('closeEventCalendarModal');
+            },
             async fetchEventCalendar(eventId) {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Events/GetEventCalendar', {
@@ -79,19 +74,19 @@
                             eventId: eventId
                         }
                     });
-
                     this.eventCalendarData = response.data || [];
                     this.currentDayIndex = 0;
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             }
         }
-    }
+    };
 </script>
 
 <style scoped>
+    /* Unchanged styles */
     .modal-animation-enter-active,
     .modal-animation-leave-active {
         transition: opacity 0.3s ease;
@@ -152,7 +147,8 @@
                 color: crimson;
             }
 
-    .fade-slide-enter-active, .fade-slide-leave-active {
+    .fade-slide-enter-active,
+    .fade-slide-leave-active {
         transition: all 0.1s ease;
     }
 

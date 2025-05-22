@@ -1,26 +1,19 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateArtistActive" class="modal">
+        <div v-show="modalCreateMusicGenreActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateArtistActive" class="modal-inner">
-                    <i @click="closeCreateArtistModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreateMusicGenreActive" class="modal-inner">
+                    <i @click="closeCreateMusicGenreModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Artista</h2>
+                        <h2 class="mb-3 text-center">Novo Género Musical</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="artistName" class="form-label">Nome</label>
-                                <input type="text" v-model="artistName" id="artistName" class="form-control" required>
-
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
-                                    <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
-                                    </option>
-                                </select>
+                                <label for="genreName" class="form-label">Nome</label>
+                                <input type="text" v-model="genreName" id="genreName" class="form-control" required>
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateArtistModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateMusicGenreModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -36,52 +29,37 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateArtistModal',
-        props: ['modalCreateArtistActive'],
+        name: 'CreateMusicGenreModal',
+        props: ['modalCreateMusicGenreActive'],
         data() {
             return {
-                nationsList: [],
-                artistName: '',
-                artistNacionalidade: '',
+                genreName: '',
             };
         },
-        watch: {
-            modalCreateArtistActive(val) {
-                if (val) {
-                    this.GetNations();
-                }
-            }
-        },
         methods: {
-            async GetNations() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
-                    this.nationsList = response.data;
-                } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
-                }
-            },
             async create() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
-                    });
+                    await axios.post(
+                        'https://localhost:7216/api/Admin/CreateGenre',
+                        JSON.stringify(this.genreName),
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
 
-                    Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
-                    this.closeCreateArtistModal();
+                    Swal.fire('Sucesso', 'Género criado com sucesso!', 'success');
+                    this.closeCreateMusicGenreModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateArtistModal() {
-                this.artistName = '';
-                this.artistNacionalidade = '';
-                this.$emit('closeCreateArtistModal');
+            closeCreateMusicGenreModal() {
+                this.genreName = '';
+                this.$emit('closeCreateMusicGenreModal');
             },
         }
     };

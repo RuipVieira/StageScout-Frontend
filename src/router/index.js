@@ -23,7 +23,7 @@ import AdminUserSearch from '../views/Admin/UserSearch.vue'
 import AdminVenueSearch from '../views/Admin/VenueSearch.vue'
 import AdminEventDetails from '../views/Admin/EventDetails.vue'
 import AdminPerformerDetails from '../views/Admin/PerformerDetails.vue'
-
+import AdminLocationSearch from '../views/Admin/LocationSearch.vue'
 
 const routes = [
     {
@@ -149,6 +149,12 @@ const routes = [
         path: '/admin/performer/:id',
         name: 'AdminPerformerDetails',
         component: AdminPerformerDetails,
+        meta: { requiresAuth: true, roles: ['admin'] }
+    },
+    {
+        path: '/admin/locations/',
+        name: 'AdminLocationSearch',
+        component: AdminLocationSearch,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {

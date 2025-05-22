@@ -60,7 +60,7 @@
                                        size="small" />
 
                         <div class="btn-container">
-                            <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
+                            <button type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
                         </div>
                     </div>
                 </div>
@@ -136,13 +136,12 @@
             </div>
         </div>
     </div>
-    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive"/>
+    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive" />
     <ModalSubmitReview @submitReviewCompleted="handleSubmitReviewCompleted" :modalSubmitReviewActive="modalSubmitReviewActive" />
 </template>
 
 <script>
     import Swal from 'sweetalert2';
-    import { ref } from 'vue';
     import axios from 'axios';
     import { authState } from '../../auth';
     import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue';
@@ -151,18 +150,14 @@
     export default {
         name: 'EventDetails',
         components: {
-            ModalEventCalendar, ModalSubmitReview
-        },
-        setup() {
-            let modalEventCalendarActive = ref(false);
-            let modalSubmitReviewActive = ref(false);
-
-            return {
-                authState, modalEventCalendarActive, modalSubmitReviewActive
-            }
+            ModalEventCalendar,
+            ModalSubmitReview
         },
         data() {
             return {
+                authState,
+                modalEventCalendarActive: false,
+                modalSubmitReviewActive: false,
                 avaliacoesPagination: { page: 1, pageSize: 4 },
                 performersPagination: { page: 1, pageSize: 6 },
                 palcosPagination: { page: 1, pageSize: 4 },
@@ -174,13 +169,11 @@
                 }
             };
         },
-
         mounted() {
             const eventId = this.$route.params.id;
             this.fetchEventDetails(eventId);
             this.checkFollowerStatus(eventId);
         },
-
         computed: {
             paginatedPerformers() {
                 const start = (this.performersPagination.page - 1) * this.performersPagination.pageSize;
@@ -195,7 +188,6 @@
                 return this.event.avaliacoes.slice(start, start + this.avaliacoesPagination.pageSize);
             }
         },
-
         methods: {
             onAvaliacoesPageChange(page) {
                 this.avaliacoesPagination.page = page;
@@ -207,11 +199,11 @@
                 this.palcosPagination.page = page;
             },
             GoToPerformerDetails(row) {
-                this.$router.push({ name: 'PerformerDetails', params: { id: row.id } })
+                this.$router.push({ name: 'PerformerDetails', params: { id: row.id } });
             },
             handleSubmitReviewCompleted() {
-                this.toggleModalSubmitReview();   // This closes the modal
-                this.refreshEventDetails();       // This reloads the event data
+                this.toggleModalSubmitReview();
+                this.refreshEventDetails();
             },
             toggleModalSubmitReview() {
                 this.modalSubmitReviewActive = !this.modalSubmitReviewActive;
@@ -238,11 +230,15 @@
                         }
                     });
 
-                    this.event = response.data || [];
+                    this.event = response.data || {
+                        performers: [],
+                        palcos: [],
+                        avaliacoes: []
+                    };
                     console.log(this.event);
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             },
             async ToggleFollowState() {
@@ -252,16 +248,16 @@
                         ProfileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor == true) {
+                    if (response.data.seguidor === true) {
                         this.followerState = true;
-                        Swal.fire('Sucesso', 'Começou a seguir este evento.', 'success')
+                        Swal.fire('Sucesso', 'Começou a seguir este evento.', 'success');
                     } else {
                         this.followerState = false;
-                        Swal.fire('Sucesso', 'Deixou de seguir este evento.', 'success')
+                        Swal.fire('Sucesso', 'Deixou de seguir este evento.', 'success');
                     }
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             },
             async checkFollowerStatus() {
@@ -271,20 +267,16 @@
                         ProfileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor == true) {
-                        this.followerState = true;
-                    } else {
-                        this.followerState = false;
-                    }
-
+                    this.followerState = response.data.seguidor === true;
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             }
-        },
+        }
     };
 </script>
+
 
 
 

@@ -1,26 +1,36 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateArtistActive" class="modal">
+        <div v-show="modalCreatePerformerActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateArtistActive" class="modal-inner">
-                    <i @click="closeCreateArtistModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreatePerformerActive" class="modal-inner">
+                    <i @click="closeCreatePerformerModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Artista</h2>
+                        <h2 class="mb-3 text-center">Novo Performer</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="artistName" class="form-label">Nome</label>
-                                <input type="text" v-model="artistName" id="artistName" class="form-control" required>
+                                <label for="performerName" class="form-label">Nome</label>
+                                <input type="text" v-model="performerName" id="performerName" class="form-control" required>
 
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
+                                <label for="performerYear" class="form-label">Ano de Formação</label>
+                                <input type="number" v-model="performerYear" id="performerYear" class="form-control" required min="1200" step="1">
+
+                                <label for="performerNacionalidade" class="form-label">Nacionalidade</label>
+                                <select id="performerNacionalidade" v-model="performerNacionalidade" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
+                                    </option>
+                                </select>
+
+                                <label for="performerGeneroMusical" class="form-label">Género Musical</label>
+                                <select id="performerGeneroMusical" v-model="performerGeneroMusical" class="form-control">
+                                    <option v-for="genre in genresList" :key="genre.id" :value="genre.id">
+                                        {{ genre.descricao }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateArtistModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreatePerformerModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -36,19 +46,23 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateArtistModal',
-        props: ['modalCreateArtistActive'],
+        name: 'CreatePerformerModal',
+        props: ['modalCreatePerformerActive'],
         data() {
             return {
                 nationsList: [],
-                artistName: '',
-                artistNacionalidade: '',
+                genresList:[],
+                performerName: '',
+                performerNacionalidade: '',
+                performerYear: '',
+                performerGeneroMusical: '',
             };
         },
         watch: {
-            modalCreateArtistActive(val) {
+            modalCreatePerformerActive(val) {
                 if (val) {
                     this.GetNations();
+                    this.GetMusicGenres();
                 }
             }
         },
@@ -63,25 +77,39 @@
                     Swal.fire('Erro', message, 'error');
                 }
             },
+            async GetMusicGenres() {
+                try {
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllMusicGenres');
+                    this.genresList = response.data;
+                } catch (error) {
+                    const message =
+                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
+                }
+            },
             async create() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
+                    await axios.post('https://localhost:7216/api/Admin/CreatePerformer', {
+                        Nome: this.performerName,
+                        NacionalidadeId: this.performerNacionalidade,
+                        AnoFormacao: this.performerYear,
+                        GeneroMusicalId: this.performerGeneroMusical
                     });
 
-                    Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
-                    this.closeCreateArtistModal();
+                    Swal.fire('Sucesso', 'Performer criado com sucesso!', 'success');
+                    this.closeCreatePerformerModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateArtistModal() {
-                this.artistName = '';
-                this.artistNacionalidade = '';
-                this.$emit('closeCreateArtistModal');
+            closeCreatePerformerModal() {
+                this.PerformerName = '';
+                this.PerformerNacionalidade = '';
+                this.PerformerYear = '';
+                this.PerformerGeneroMusical = '';
+                this.$emit('closeCreatePerformerModal');
             },
         }
     };

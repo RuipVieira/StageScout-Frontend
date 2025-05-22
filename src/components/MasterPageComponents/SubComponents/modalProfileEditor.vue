@@ -118,7 +118,7 @@
 
             async GetNations() {
                 try {
-                    const response = await axios.get('https://localhost:7216/api/Account/GetAllNations');
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
                     this.nationsList = response.data;
                 } catch (error) {
                     const message =

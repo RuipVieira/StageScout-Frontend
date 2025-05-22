@@ -96,7 +96,7 @@
                         authState.profileId = response.data.perfilId;
 
                         switch (response.data.tipoContaId) {
-                            case 1:
+                            case 3:
                                 authState.role = 'admin';
                                 localStorage.setItem('role', 'admin');
                                 break;
@@ -104,7 +104,7 @@
                                 authState.role = 'promoter';
                                 localStorage.setItem('role', 'promoter');
                                 break;
-                            case 3:
+                            case 1:
                                 authState.role = 'user';
                                 localStorage.setItem('role', 'user');
                                 break;

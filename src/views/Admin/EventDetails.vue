@@ -130,13 +130,10 @@
             </div>
         </div>
     </div>
-    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar" :modalEventCalendarActive="modalEventCalendarActive" />
-    <ModalSubmitReview @submitReviewCompleted="handleSubmitReviewCompleted" :modalSubmitReviewActive="modalSubmitReviewActive" />
 </template>
 
 <script>
     import Swal from 'sweetalert2';
-    import { ref } from 'vue';
     import axios from 'axios';
     import { authState } from '../../auth';
     import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue';
@@ -146,15 +143,10 @@
         components: {
             ModalEventCalendar
         },
-        setup() {
-            let modalEventCalendarActive = ref(false);
-
-            return {
-                authState, modalEventCalendarActive
-            }
-        },
         data() {
             return {
+                authState,
+                modalEventCalendarActive: false,
                 avaliacoesPagination: { page: 1, pageSize: 4 },
                 performersPagination: { page: 1, pageSize: 6 },
                 palcosPagination: { page: 1, pageSize: 4 },
@@ -162,17 +154,20 @@
                 event: {
                     performers: [],
                     palcos: [],
-                    avaliacoes: []
+                    avaliacoes: [],
+                    nome: '',
+                    promotora: '',
+                    local: '',
+                    dataInicio: '',
+                    dataFim: '',
+                    estado: ''
                 }
             };
         },
-
         mounted() {
             const eventId = this.$route.params.id;
             this.fetchEventDetails(eventId);
-            this.checkFollowerStatus(eventId);
         },
-
         computed: {
             paginatedPerformers() {
                 const start = (this.performersPagination.page - 1) * this.performersPagination.pageSize;
@@ -187,7 +182,6 @@
                 return this.event.avaliacoes.slice(start, start + this.avaliacoesPagination.pageSize);
             }
         },
-
         methods: {
             onAvaliacoesPageChange(page) {
                 this.avaliacoesPagination.page = page;
@@ -199,17 +193,10 @@
                 this.palcosPagination.page = page;
             },
             GoToPerformerDetails(row) {
-                this.$router.push({ name: 'AdminPerformerDetails', params: { id: row.id } })
+                this.$router.push({ name: 'AdminPerformerDetails', params: { id: row.id } });
             },
             refreshEventDetails() {
                 this.fetchEventDetails(this.$route.params.id);
-            },
-            toggleModalEventCalendar() {
-                this.modalEventCalendarActive = !this.modalEventCalendarActive;
-                return this.modalEventCalendarActive;
-            },
-            openEventCalendarModal() {
-                this.modalEventCalendarActive = true;
             },
             async fetchEventDetails(eventId) {
                 try {
@@ -220,17 +207,15 @@
                         }
                     });
 
-                    this.event = response.data || [];
-                    console.log(this.event);
+                    this.event = response.data || {};
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             },
-        },
+        }
     };
 </script>
-
 
 
 <style scoped>

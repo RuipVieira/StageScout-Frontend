@@ -1,26 +1,22 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateArtistActive" class="modal">
+        <div v-show="modalCreateAlbumActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateArtistActive" class="modal-inner">
-                    <i @click="closeCreateArtistModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreateAlbumActive" class="modal-inner">
+                    <i @click="closeCreateAlbumModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Artista</h2>
+                        <h2 class="mb-3 text-center">Novo Album</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="artistName" class="form-label">Nome</label>
-                                <input type="text" v-model="artistName" id="artistName" class="form-control" required>
+                                <label for="albumName" class="form-label">Nome</label>
+                                <input type="text" v-model="albumName" id="albumName" class="form-control" required>
 
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
-                                    <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
-                                    </option>
-                                </select>
+                                <label for="albumYear" class="form-label">Ano de Lançamento</label>
+                                <input type="number" v-model="albumYear" id="albumYear" class="form-control" required min="1200" step="1">
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateArtistModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateAlbumModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -36,52 +32,35 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateArtistModal',
-        props: ['modalCreateArtistActive'],
+        name: 'CreateAlbumModal',
+        props: ['modalCreateAlbumActive'],
         data() {
             return {
                 nationsList: [],
-                artistName: '',
-                artistNacionalidade: '',
+                albumName: '',
+                albumYear: '',
             };
         },
-        watch: {
-            modalCreateArtistActive(val) {
-                if (val) {
-                    this.GetNations();
-                }
-            }
-        },
         methods: {
-            async GetNations() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
-                    this.nationsList = response.data;
-                } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
-                }
-            },
             async create() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
+                    await axios.post('https://localhost:7216/api/Admin/CreateAlbum', {
+                        Nome: this.albumName,
+                        AnoLancamento: this.albumYear
                     });
 
-                    Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
-                    this.closeCreateArtistModal();
+                    Swal.fire('Sucesso', 'Album criado com sucesso!', 'success');
+                    this.closeCreateAlbumModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateArtistModal() {
-                this.artistName = '';
-                this.artistNacionalidade = '';
-                this.$emit('closeCreateArtistModal');
+            closeCreateAlbumModal() {
+                this.albumName = '';
+                this.albumYear = '';
+                this.$emit('closeCreateAlbumModal');
             },
         }
     };
