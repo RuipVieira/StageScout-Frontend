@@ -92,7 +92,7 @@
         methods: {
             async fetchPerformers() {
                 try {
-                    const response = await axios.get('https://localhost:7216/api/Performers/GetAllPerformers')
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllPerformers')
                     this.performers = response.data || [];
 
                 } catch (error) {

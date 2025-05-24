@@ -100,7 +100,7 @@
         methods: {
             async fetchEvents() {
                 try {
-                    const response = await axios.get('https://localhost:7216/api/Events/GetAllEvents')
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllEvents')
                     this.events = response.data || []
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
@@ -134,10 +134,5 @@
 
 
 <style scoped>
-    .custom-no-data-text {
-        color: #999;
-        font-size: 14px;
-        text-align: center;
-        padding: 20px;
-    }
+    
 </style>

@@ -1,26 +1,28 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalEditArtistActive" class="modal">
+        <div v-show="modalEditAlbumActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalEditArtistActive" class="modal-inner">
-                    <i @click="closeEditArtistModal" class="far fa-times-circle" style="cursor:pointer; font-size: 1.5rem;"></i>
+                <div v-show="modalEditAlbumActive" class="modal-inner">
+                    <i @click="closeEditAlbumModal" class="far fa-times-circle" style="cursor:pointer; font-size: 1.5rem;"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Editar Artista</h2>
+                        <h2 class="mb-3 text-center">Editar Album</h2>
                         <form @submit.prevent="Edit">
                             <div class="form-control form-container text-center">
-                                <label for="selectedArtistName" class="form-label">Nome</label>
+                                <label for="selectedAlbumName" class="form-label">Nome</label>
                                 <input type="text"
-                                       v-model="selectedArtistName"
-                                       id="selectedArtistName"
+                                       v-model="selectedAlbumName"
+                                       id="selectedAlbumName"
                                        class="form-control"
                                        required />
 
-                                <label for="selectedArtistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="selectedArtistNacionalidade" v-model="selectedArtistNacionalidade" class="form-control">
-                                    <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
-                                    </option>
-                                </select>
+                                <label for="selectedAlbumYear" class="form-label">Ano de Lançamento</label>
+                                <input type="number"
+                                       v-model="selectedAlbumYear"
+                                       id="selectedAlbumYear"
+                                       class="form-control"
+                                       required
+                                       min="1200"
+                                       step="1" />
 
 
                                 <div class="mt-4 mb-2 text-center">
@@ -32,29 +34,23 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
+                            </div>  
                             <div class="text-center">
                                 <table class="table table-striped table-hover" style="cursor: pointer;">
                                     <thead>
                                         <tr>
                                             <th>Performers Selecionados</th>
-                                            <th class="text-center">É Membro Atual?</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="performer in pagedSelectedPerformers"
-                                            :key="performer.id">
-                                            <td @click="removePerformer(performer.id)" title="Clique para remover">
-                                                {{ performer.nome }}
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="checkbox"
-                                                       v-model="performer.membroAtual"
-                                                       title="Membro atual" />
-                                            </td>
+                                            :key="performer.id"
+                                            @click="removePerformer(performer.id)"
+                                            title="Clique para remover">
+                                            <td>{{ performer.nome }}</td>
                                         </tr>
                                         <tr v-if="pagedSelectedPerformers.length === 0">
-                                            <td colspan="2" class="text-center">Nenhum performer selecionado</td>
+                                            <td class="text-center">Nenhum performer selecionado</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -85,7 +81,7 @@
                             <div class="btn-container text-center mt-4">
                                 <button type="button"
                                         class="btn btn-danger btn-cancelar"
-                                        @click="closeEditArtistModal()">
+                                        @click="closeEditAlbumModal()">
                                     Cancelar
                                 </button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
@@ -104,19 +100,18 @@
     import Swal from "sweetalert2";
 
     export default {
-        name: "EditArtistModal",
+        name: "EditAlbumModal",
         props: {
-            modalEditArtistActive: Boolean,
-            artist: Object,
+            modalEditAlbumActive: Boolean,
+            album: Object,
         },
         data() {
             return {
-                nationsList: [],
-                selectedArtistName: "",
-                selectedArtistNacionalidade: "",
-                allPerformers: [],
-                selectedPerformers: [],
-                performerToAdd: "",
+                selectedAlbumName: "",
+                selectedAlbumYear: "",
+                allPerformers: [], 
+                selectedPerformers: [], 
+                performerToAdd: "", 
                 paginationPage: 1,
                 performersPerPage: 5,
             };
@@ -135,27 +130,20 @@
             },
         },
         watch: {
-            modalEditArtistActive(val) {
-                if (val) {
-                    this.GetNations();
-                }
-            },
-            artist: {
+            album: {
                 immediate: true,
-                handler(artist) {
-                    console.log(artist);
-                    if (artist) {
-                        console.log(artist)
-                        this.selectedArtistName = artist.nome || "";
-                        this.selectedArtistNacionalidade = artist.nacionalidade.id || "";
-                        this.selectedPerformers = (artist.performers || []).map((p) => ({
-                            id: p.id,
-                            nome: p.nome,
-                            membroAtual: p.membroAtual ?? false,
-                        })) || [];
+                handler(album) {
+                    if (album) {
+                        this.selectedAlbumName = album.nome || "";
+                        this.selectedAlbumYear = album.anoLancamento || "";
+                        this.selectedPerformers =
+                            (album.albumPerformers || []).map((p) => ({
+                                id: p.id,
+                                nome: p.nome,
+                            })) || [];
                     } else {
-                        this.selectedArtistName = "";
-                        this.selectedArtistNacionalidade = "";
+                        this.selectedAlbumName = "";
+                        this.selectedAlbumYear = "";
                         this.selectedPerformers = [];
                     }
                     this.paginationPage = 1;
@@ -167,16 +155,6 @@
             await this.fetchAllPerformers();
         },
         methods: {
-            async GetNations() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
-                    this.nationsList = response.data;
-                } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
-                }
-            },
             async fetchAllPerformers() {
                 try {
                     const response = await axios.get(
@@ -194,11 +172,7 @@
                     (p) => p.id === Number(this.performerToAdd)
                 );
                 if (performer) {
-                    this.selectedPerformers.push({
-                        id: performer.id,
-                        nome: performer.nome,
-                        membroAtual: true, 
-                    });
+                    this.selectedPerformers.push(performer);
                     this.performerToAdd = "";
                     this.paginationPage = this.pageCount;
                 }
@@ -221,31 +195,28 @@
             },
             async Edit() {
                 try {
-                    await axios.post("https://localhost:7216/api/Admin/EditArtist", {
-                        ArtistId: this.artist?.id,
-                        Nome: this.selectedArtistName,
-                        NacionalidadeId: this.selectedArtistNacionalidade,
-                        Performers: this.selectedPerformers.map((p) => ({
-                            PerformerId: p.id,
-                            MembroAtual: p.membroAtual,
-                        })),
+                    await axios.post("https://localhost:7216/api/Admin/EditAlbum", {
+                        AlbumId: this.album?.id,
+                        Nome: this.selectedAlbumName,
+                        AnoLancamento: this.selectedAlbumYear,
+                        Performers: this.selectedPerformers.map((p) => p.id),
                     });
 
-                    Swal.fire("Sucesso", "Artista atualizado com sucesso!", "success");
-                    this.closeEditArtistModal();
+                    Swal.fire("Sucesso", "Album atualizado com sucesso!", "success");
+                    this.closeEditAlbumModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || "Erro ao atualizar. Tente novamente.";
                     Swal.fire("Erro", message, "error");
                 }
             },
-            closeEditArtistModal() {
-                this.selectedArtistName = "";
-                this.selectedArtistYear = "";
+            closeEditAlbumModal() {
+                this.selectedAlbumName = "";
+                this.selectedAlbumYear = "";
                 this.selectedPerformers = [];
                 this.performerToAdd = "";
                 this.paginationPage = 1;
-                this.$emit("closeEditArtistModal");
+                this.$emit("closeEditAlbumModal");
             },
         },
     };
