@@ -25,14 +25,38 @@
                             <label class="form-label mb-0 small">Estado</label>
                             <div class="text-muted">{{ event.estado }}</div>
                         </div>
+                        <div class="btn-container text-center">
+                            <button type="button" class="btn btn-primary" style="margin-right: 10px;" @click="openEditEventInformationModal()">Editar Informação</button>
+                            <button type="button" class="btn btn-primary" @click="openAddPerformerModal()">Adicionar Performer</button>
+                        </div>
                     </div>
 
                     <div class="col-md-3 border-start">
                         <h6>Artistas Confirmados</h6>
-                        <el-table empty-text="Nenhum dado disponível" :data="paginatedPerformers" @row-click="GoToPerformerDetails" class="short-table" size="small" border>
+                        <el-table empty-text="Nenhum dado disponível" :data="paginatedPerformers" class="short-table" size="small" border>
                             <el-table-column prop="id" label="id" v-if="false" />
-                            <el-table-column prop="groupName" label="Performer" width="250" />
+                            <el-table-column prop="groupName" label="Performer" />
                             <el-table-column prop="date" label="Data" />
+                            <el-table-column align="center">
+                                <template #default="scope">
+                                    <div v-if="paginatedPerformers.length">
+                                        <el-button type="primary"
+                                                   size="small"
+                                                   class="btn-editar"
+                                                   circle
+                                                   @click="openEditEventPerformerModal(scope.row.id)">
+                                            <el-icon><Edit /></el-icon>
+                                        </el-button>
+                                        <el-button class="btn-cancelar"
+                                                   type="danger"
+                                                   size="small"
+                                                   circle
+                                                   @click="deleteEventPerformer(scope.row.id)">
+                                            <el-icon><Delete /></el-icon>
+                                        </el-button>
+                                    </div>
+                                </template>
+                            </el-table-column>
                         </el-table>
                         <el-pagination layout="prev, pager, next"
                                        :total="event.performers.length"
@@ -56,8 +80,9 @@
                                        @current-change="onPalcosPageChange"
                                        size="small" />
 
-                        <div class="btn-container">
-                            <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-primary" @click="openEventCalendarModal()">Consultar Horários</button>
+                        <div class="btn-container text-center">
+                            <button type="button" class="btn btn-primary" style="margin-right: 10px;" @click="openEventCalendarModal()">Consultar Horários</button>
+                            <button type="button" class="btn btn-primary" @click="openEditEventStagesModal()">Alterar Palcos</button>
                         </div>
                     </div>
                 </div>
@@ -130,26 +155,43 @@
             </div>
         </div>
     </div>
+    <ModalEventCalendar @closeEventCalendarModal="toggleModalEventCalendar"
+                        :modalEventCalendarActive="modalEventCalendarActive" />
+    <ModalEditEventStages @closeEditEventStagesModal="toggleModalEditEventStages"
+                        :modalEditEventStagesActive="modalEditEventStagesActive" :eventDetails="event" @refreshEventDetails="refreshEventDetails"/>
+    <ModalAddPerformer @closeAddPerformerModal="toggleModalAddPerformer" :modalAddPerformerActive="modalAddPerformerActive" :eventDetails="event" @refreshEventDetails="refreshEventDetails" />
+    <ModalEditEventPerformer @closeEditEventPerformerModal="toggleModalEditEventPerformer" :modalEditEventPerformerActive="modalEditEventPerformerActive" :eventPerformerId="eventPerformerId" :eventDetails="event" @refreshEventDetails="refreshEventDetails" />
+    <ModalEditEventInformation @closeEditEventInformationModal="toggleModalEditEventInformation" :modalEditEventInformationActive="modalEditEventInformationActive" @refreshEventDetails="refreshEventDetails" :eventDetails="event" />
 </template>
 
 <script>
     import Swal from 'sweetalert2';
     import axios from 'axios';
     import { authState } from '../../auth';
-    import ModalEventCalendar from '@/components/PublicComponents/SubComponents/modalEventCalendar.vue';
+    import ModalEventCalendar from '@/components/AdminComponents/SubComponents/modalEventCalendar.vue';
+    import ModalAddPerformer from '@/components/AdminComponents/SubComponents/modalAddPerformer.vue';
+    import ModalEditEventStages from '@/components/AdminComponents/SubComponents/modalEditEventStages.vue';
+    import ModalEditEventInformation from '@/components/AdminComponents/SubComponents/modalEditEventInformation.vue';
+    import ModalEditEventPerformer from '@/components/AdminComponents/SubComponents/modalEditEventPerformer.vue';
+    import { Edit, Delete } from '@element-plus/icons-vue'
 
     export default {
         name: 'EventDetails',
         components: {
-            ModalEventCalendar
+            Edit, Delete, ModalEventCalendar, ModalAddPerformer, ModalEditEventInformation, ModalEditEventPerformer, ModalEditEventStages
         },
         data() {
             return {
                 authState,
                 modalEventCalendarActive: false,
+                modalAddPerformerActive: false,
+                modalEditEventStagesActive: false,
+                modalEditEventInformationActive: false,
+                modalEditEventPerformerActive: false,
+                eventPerformerId: null,
                 avaliacoesPagination: { page: 1, pageSize: 4 },
-                performersPagination: { page: 1, pageSize: 6 },
-                palcosPagination: { page: 1, pageSize: 4 },
+                performersPagination: { page: 1, pageSize: 4 },
+                palcosPagination: { page: 1, pageSize: 5 },
                 followerState: false,
                 event: {
                     performers: [],
@@ -198,6 +240,54 @@
             refreshEventDetails() {
                 this.fetchEventDetails(this.$route.params.id);
             },
+            toggleModalEventCalendar() {
+                this.modalEventCalendarActive = !this.modalEventCalendarActive;
+                return this.modalEventCalendarActive;
+            },
+            openEventCalendarModal() {
+                this.modalEventCalendarActive = true;
+            },
+            toggleModalEditEventStages() {
+                this.modalEditEventStagesActive = !this.modalEditEventStagesActive;
+                if (!this.modalEditEventStagesActive) {
+                    this.refreshEventDetails();
+                }
+                return this.modalEditEventStagesActive;
+            },
+            openEditEventStagesModal() {
+                this.modalEditEventStagesActive = true;
+            },
+            toggleModalEditEventInformation() {
+                this.modalEditEventInformationActive = !this.modalEditEventInformationActive;
+                if (!this.modalEditEventInformationActive) {
+                    this.refreshEventDetails();
+                }
+                return this.modalEditEventInformationActive;
+            },
+            openEditEventInformationModal() {
+                this.modalEditEventInformationActive = true;
+            },
+            toggleModalAddPerformer() {
+                this.modalAddPerformerActive = !this.modalAddPerformerActive;
+                if (!this.modalAddPerformerActive) {
+                    this.refreshEventDetails();
+                }
+                return this.modalAddPerformerActive;
+            },
+            openAddPerformerModal() {
+                this.modalAddPerformerActive = true;
+            },
+            toggleModalEditEventPerformer() {
+                this.modalEditEventPerformerActive = !this.modalEditEventPerformerActive;
+                if (!this.modalEditEventPerformerActive) {
+                    this.refreshEventDetails();
+                }
+                return this.modalEditEventPerformerActive;
+            },
+            openEditEventPerformerModal(id) {
+                this.eventPerformerId = id;
+                this.modalEditEventPerformerActive = true;
+            },
             async fetchEventDetails(eventId) {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Events/GetEventDetails', {
@@ -213,6 +303,29 @@
                     Swal.fire('Erro', message, 'error');
                 }
             },
+            deleteEventPerformer(id) {
+                Swal.fire({
+                    title: 'Aviso!',
+                    text: "Tem a certeza que pretende remover este Performer do Evento?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            await axios.delete(`https://localhost:7216/api/Admin/DeleteEventPerformer/${id}`);
+                            this.refreshEventDetails()
+                            Swal.fire('Aviso!', 'Performer do Evento apagado com sucesso.', 'success')
+                        } catch (error) {
+                            const message = error.response?.data?.message || 'Erro ao apagar. Tente novamente.'
+                            Swal.fire('Erro', message, 'error')
+                        }
+                    }
+                })
+            }
         }
     };
 </script>

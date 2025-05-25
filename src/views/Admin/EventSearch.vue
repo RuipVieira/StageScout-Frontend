@@ -30,7 +30,7 @@
                 </div>
             </form>
 
-            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToEventDetails">
+            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4">
                 <el-table-column prop="nome" label="Nome" />
                 <el-table-column prop="local" label="Local" />
                 <el-table-column prop="dataInicio" label="Data de Início" />
@@ -39,6 +39,26 @@
                 <el-table-column prop="terminado" label="A Decorrer">
                     <template #default="{ row }">
                         <span>{{ row.terminado ? 'Não' : 'Sim' }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center">
+                    <template #default="scope">
+                        <div v-if="paginatedData.length">
+                            <el-button type="primary"
+                                       size="small"
+                                       class="btn-editar"
+                                       circle
+                                       @click="GoToEventDetails(scope.row)">
+                                <el-icon><Edit /></el-icon>
+                            </el-button>
+                            <el-button class="btn-cancelar"
+                                       type="danger"
+                                       size="small"
+                                       circle
+                                       @click="deleteEvent(scope.row.id)">
+                                <el-icon><Delete /></el-icon>
+                            </el-button>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,10 +79,14 @@
     import axios from 'axios'
     import Swal from 'sweetalert2'
     import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
+    import { Edit, Delete } from '@element-plus/icons-vue'
 
     export default {
         name: 'EventSearchPage',
-
+        components: {
+            Edit,
+            Delete,
+        },
         data() {
             return {
                 events: [],
@@ -123,6 +147,29 @@
             },
             GoToEventDetails(row) {
                 this.$router.push({ name: 'AdminEventDetails', params: { id: row.id } })
+            },
+            deleteEvent(id) {
+                Swal.fire({
+                    title: 'Aviso!',
+                    text: "Tem a certeza que pretende remover este Evento?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            await axios.delete(`https://localhost:7216/api/Admin/DeleteEvent/${id}`);
+                            this.fetchEvents()
+                            Swal.fire('Aviso!', 'Evento apagado com sucesso.', 'success')
+                        } catch (error) {
+                            const message = error.response?.data?.message || 'Erro ao apagar. Tente novamente.'
+                            Swal.fire('Erro', message, 'error')
+                        }
+                    }
+                })
             }
         },
 
@@ -134,5 +181,4 @@
 
 
 <style scoped>
-    
 </style>

@@ -1,12 +1,12 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateEventActive" class="modal">
+        <div v-show="modalEditEventInformationActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateEventActive" class="modal-inner">
-                    <i @click="closeCreateEventModal" class="far fa-times-circle"></i>
+                <div v-show="modalEditEventInformationActive" class="modal-inner">
+                    <i @click="closeEditEventInformationModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Evento</h2>
-                        <form @submit.prevent="create">
+                        <h2 class="mb-3 text-center">Editar Evento</h2>
+                        <form @submit.prevent="edit">
                             <div class="form-control form-container text-center">
                                 <label for="eventName" class="form-label">Nome</label>
                                 <input type="text" v-model="eventName" id="eventName" class="form-control" required>
@@ -30,9 +30,16 @@
                                         {{ venue.nome }}
                                     </option>
                                 </select>
+
+                                <label for="eventState" class="form-label">Estado</label>
+                                <select id="eventState" v-model="eventState" class="form-control">
+                                    <option v-for="state in eventStatesList" :key="state.id" :value="state.id">
+                                        {{ state.name }}
+                                    </option>
+                                </select>
                             </div>
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateEventModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeEditEventInformationModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -48,49 +55,89 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateEventModal',
-        props: ['modalCreateEventActive'],
+        name: 'EditEventInformationModal',
+        props: {
+            modalEditEventInformationActive: Boolean,
+            eventDetails: Object,
+        },
         data() {
             return {
                 venuesList: [],
                 promotersList: [],
+                eventStatesList:[],
                 eventName: '',
                 eventStartDate: '',
                 eventEndDate: '',
                 eventVenue: '',
                 eventPromoter: '',
+                eventState:''
             };
         },
         watch: {
-            modalCreateEventActive(val) {
+            modalEditEventInformationActive(val) {
                 if (val) {
                     this.GetVenues();
                     this.GetPromoters();
+                    this.GetEventStates();
+                    this.populateEventData();
                 }
-            }
+            },
+            eventDetails: {
+                immediate: true,
+                handler() {
+                    this.populateEventData();
+                },
+            },
         },
         methods: {
-            async GetVenues() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllVenues');
-                    this.venuesList = response.data;
-                } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
+            populateEventData() {
+                if (this.eventDetails) {
+                    this.eventName = this.eventDetails.nome || '';
+                    this.eventStartDate = this.eventDetails.dataInicio || '';
+                    this.eventEndDate = this.eventDetails.dataFim || '';
+                    const promoter = this.promotersList.find(p => p.descricao === this.eventDetails.promotora);
+                    this.eventPromoter = promoter ? promoter.id : "";
+                    const venue = this.venuesList.find(v => v.nome === this.eventDetails.local);
+                    this.eventVenue = venue ? venue.id : "";
+                    const state = this.eventStatesList.find(v => v.name === this.eventDetails.estado);
+                    this.eventState = state ? state.id : "";
                 }
             },
             async GetPromoters() {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllPromoters');
                     this.promotersList = response.data;
+
+                    // Call this *after* both lists are available
+                    if (this.venuesList.length) this.populateEventData();
                 } catch (error) {
-                    const message =
-                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
+                    Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
                 }
             },
-            async create() {
+
+            async GetEventStates() {
+                try {
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllEventStates');
+                    this.eventStatesList = response.data;
+
+                    // Call this *after* both lists are available
+                    if (this.eventStatesList.length) this.populateEventData();
+                } catch (error) {
+                    Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
+                }
+            },
+
+            async GetVenues() {
+                try {
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllVenues');
+                    this.venuesList = response.data;
+
+                    if (this.promotersList.length) this.populateEventData();
+                } catch (error) {
+                    Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
+                }
+            },
+            async edit() {
                 const start = new Date(this.eventStartDate);
                 const end = new Date(this.eventEndDate);
 
@@ -100,7 +147,8 @@
                 }
 
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateEvent', {
+                    await axios.post('https://localhost:7216/api/Admin/EditEventInformation', {
+                        EventoId: this.eventDetails.id,
                         Nome: this.eventName,
                         DataInicio: this.eventStartDate,
                         DataFim: this.eventEndDate,
@@ -108,21 +156,23 @@
                         PromotoraId: parseInt(this.eventPromoter),
                     });
 
-                    Swal.fire('Sucesso', 'Evento criado com sucesso!', 'success');
-                    this.closeCreateEventModal();
+                    Swal.fire('Sucesso', 'Evento editado com sucesso!', 'success');
+                    this.closeEditEventInformationModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateEventModal() {
+            closeEditEventInformationModal() {
                 this.eventName = '';
                 this.eventStartDate = '';
                 this.eventEndDate = '';
                 this.eventVenue = '';
                 this.eventPromoter = '';
-                this.$emit('closeCreateEventModal');
+                this.eventState = '';
+                this.$emit('closeEditEventInformationModal');
+                this.$emit('refreshEventDetails');
             },
         }
     };

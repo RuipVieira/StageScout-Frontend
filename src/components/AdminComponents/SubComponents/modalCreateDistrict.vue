@@ -1,19 +1,26 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateNationalityActive" class="modal">
+        <div v-show="modalCreateDistrictActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateNationalityActive" class="modal-inner">
-                    <i @click="closeCreateNationalityModal" class="far fa-times-circle"></i>
+                <div v-show="modalCreateDistrictActive" class="modal-inner">
+                    <i @click="closeCreateDistrictModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Nova Nacionalidade</h2>
+                        <h2 class="mb-3 text-center">Novo Distrito</h2>
                         <form @submit.prevent="create">
                             <div class="form-control form-container text-center">
-                                <label for="nationName" class="form-label">Nome</label>
-                                <input type="text" v-model="nationName" id="nationName" class="form-control" required>
+                                <label for="districtName" class="form-label">Nome</label>
+                                <input type="text" v-model="districtName" id="districtName" class="form-control" required>
+
+                                <label for="districtNacionalidade" class="form-label">País</label>
+                                <select id="districtNacionalidade" v-model="districtNacionalidade" class="form-control">
+                                    <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
+                                        {{ nation.descricao }}
+                                    </option>
+                                </select>
                             </div>
 
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateNationalityModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateDistrictModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -29,37 +36,52 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreateNationalityModal',
-        props: ['modalCreateNationalityActive'],
+        name: 'CreateDistrictModal',
+        props: ['modalCreateDistrictActive'],
         data() {
             return {
-                nationName: '',
+                nationsList: [],
+                districtName: '',
+                districtNacionalidade: '',
             };
         },
+        watch: {
+            modalCreateDistrictActive(val) {
+                if (val) {
+                    this.GetNations();
+                }
+            }
+        },
         methods: {
+            async GetNations() {
+                try {
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
+                    this.nationsList = response.data;
+                } catch (error) {
+                    const message =
+                        error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
+                }
+            },
             async create() {
                 try {
-                    await axios.post(
-                        'https://localhost:7216/api/Admin/CreateNationality',
-                        JSON.stringify(this.nationName), 
-                        {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    );
+                    await axios.post('https://localhost:7216/api/Admin/CreateDistrict', {
+                        Nome: this.districtName,
+                        NacionalidadeId: this.districtNacionalidade
+                    });
 
-                    Swal.fire('Sucesso', 'Nacionalidade criada com sucesso!', 'success');
-                    this.closeCreateNationalityModal();
+                    Swal.fire('Sucesso', 'Naturalidade criada com sucesso!', 'success');
+                    this.closeCreateDistrictModal();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro ao criar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreateNationalityModal() {
-                this.nationName = '';
-                this.$emit('closeCreateNationalityModal');
+            closeCreateDistrictModal() {
+                this.DistrictName = '';
+                this.DistrictNacionalidade = '';
+                this.$emit('closeCreateDistrictModal');
             },
         }
     };

@@ -1,4 +1,5 @@
 ﻿<template>
+    toggleModalCreateNationality
     <div class="page-content-container">
         <h1 class="mb-4 text-center">StageScout - Administração</h1>
         <div class="row">
@@ -7,16 +8,6 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ entity.name }}</h5>
                         <div class="d-flex gap-2 mt-3">
-                            <button v-if="entity.name === 'Nacionalidades e Naturalidades'"
-                                    class="btn btn-success"
-                                    @click="openCreateNationalityModal()">
-                                Nova Nacionalidade
-                            </button>
-                            <button v-if="entity.name === 'Nacionalidades e Naturalidades'"
-                                    class="btn btn-info"
-                                    @click="openCreateNaturalityModal()">
-                                Nova Naturalidade
-                            </button>
                             <button v-if="entity.name === 'Albums'"
                                     class="btn btn-success"
                                     @click="openCreateAlbumModal()">
@@ -57,9 +48,9 @@
                                     @click="openCreateArtistModal()">
                                 Criar Novo
                             </button>
-                            <button v-else-if="entity.name !== 'Nacionalidades e Naturalidades'"
+                            <button v-else-if="entity.name === 'Distritos'"
                                     class="btn btn-success"
-                                    @click="$emit(entity.createModal)">
+                                    @click="openCreateDistrictModal()">
                                 Criar Novo
                             </button>
                             <button class="btn btn-primary" @click="goTo(entity.manageRoute)">Gerir e Editar</button>
@@ -74,8 +65,7 @@
     <CreateMusicGenreModal @closeCreateMusicGenreModal="toggleModalCreateMusicGenre" :modalCreateMusicGenreActive="modalCreateMusicGenreActive" />
     <CreateEventModal @closeCreateEventModal="toggleModalCreateEvent" :modalCreateEventActive="modalCreateEventActive" />
     <CreateVenueModal @closeCreateVenueModal="toggleModalCreateVenue" :modalCreateVenueActive="modalCreateVenueActive" />
-    <CreateNationalityModal @closeCreateNationalityModal="toggleModalCreateNationality" :modalCreateNationalityActive="modalCreateNationalityActive" />
-    <CreateNaturalityModal @closeCreateNaturalityModal="toggleModalCreateNaturality" :modalCreateNaturalityActive="modalCreateNaturalityActive" />
+    <CreateDistrictModal @closeCreateDistrictModal="toggleModalCreateDistrict" :modalCreateDistrictActive="modalCreateDistrictActive" />
     <CreatePerformerModal @closeCreatePerformerModal="toggleModalCreatePerformer" :modalCreatePerformerActive="modalCreatePerformerActive" />
     <CreatePromoterModal @closeCreatePromoterModal="toggleModalCreatePromoter" :modalCreatePromoterActive="modalCreatePromoterActive" />
     <CreateUserModal @closeCreateUserModal="toggleModalCreateUser" :modalCreateUserActive="modalCreateUserActive" />
@@ -87,8 +77,7 @@
     import CreateMusicGenreModal from '../../Components/AdminComponents/SubComponents/modalCreateMusicGenre.vue';
     import CreateEventModal from '../../Components/AdminComponents/SubComponents/modalCreateEvent.vue';
     import CreateVenueModal from '../../Components/AdminComponents/SubComponents/modalCreateVenue.vue';
-    import CreateNationalityModal from '../../Components/AdminComponents/SubComponents/modalCreateNationality.vue';
-    import CreateNaturalityModal from '../../Components/AdminComponents/SubComponents/modalCreateNaturality.vue';
+    import CreateDistrictModal from '../../Components/AdminComponents/SubComponents/modalCreateDistrict.vue';
     import CreatePerformerModal from '../../Components/AdminComponents/SubComponents/modalCreatePerformer.vue';
     import CreatePromoterModal from '../../Components/AdminComponents/SubComponents/modalCreatePromoter.vue';
     import CreateUserModal from '../../Components/AdminComponents/SubComponents/modalCreateUser.vue';
@@ -96,7 +85,7 @@
     export default {
         name: 'AdminDashboard',
         components: {
-            CreateArtistModal, CreateAlbumModal, CreateMusicGenreModal, CreateEventModal, CreateVenueModal, CreateNationalityModal, CreateNaturalityModal, CreatePerformerModal, CreatePromoterModal, CreateUserModal
+            CreateArtistModal, CreateAlbumModal, CreateMusicGenreModal, CreateEventModal, CreateVenueModal, CreateDistrictModal, CreatePerformerModal, CreatePromoterModal, CreateUserModal
         },
         data() {
             return {
@@ -105,8 +94,7 @@
                 modalCreateMusicGenreActive: false,
                 modalCreateEventActive: false,
                 modalCreateVenueActive: false,
-                modalCreateNationalityActive: false,
-                modalCreateNaturalityActive: false,
+                modalCreateDistrictActive: false,
                 modalCreatePerformerActive: false,
                 modalCreatePromoterActive: false,
                 modalCreateUserActive: false,
@@ -116,7 +104,7 @@
                     { name: 'Eventos', createModal: 'openEventCreateModal', manageRoute: 'AdminEventSearch' },
                     { name: 'Géneros Musicais', createModal: 'openGenreCreateModal', manageRoute: 'AdminGenreSearch' },
                     { name: 'Localizações', createModal: 'openVenueCreateModal', manageRoute: 'AdminVenueSearch' },
-                    { name: 'Nacionalidades e Naturalidades', createModal: null, manageRoute: 'AdminLocationSearch' },
+                    { name: 'Distritos', createModal: 'openDistrictCreateModal', manageRoute: 'AdminDistrictSearch' },
                     { name: 'Performers', createModal: 'openPerformerCreateModal', manageRoute: 'AdminPerformerSearch' },
                     { name: 'Promotoras', createModal: 'openPromoterCreateModal', manageRoute: 'AdminPromoterSearch' },
                     { name: 'Utilizadores', createModal: 'openUserCreateModal', manageRoute: 'AdminUserSearch' }
@@ -162,19 +150,12 @@
             openCreateVenueModal() {
                 this.modalCreateVenueActive = true;
             },
-            toggleModalCreateNationality() {
-                this.modalCreateNationalityActive = !this.modalCreateNationalityActive;
-                return this.modalCreateNationalityActive;
+            toggleModalCreateDistrict() {
+                this.modalCreateDistrictActive = !this.modalCreateDistrictActive;
+                return this.modalCreateDistrictActive;
             },
-            openCreateNationalityModal() {
-                this.modalCreateNationalityActive = true;
-            },
-            toggleModalCreateNaturality() {
-                this.modalCreateNaturalityActive = !this.modalCreateNaturalityActive;
-                return this.modalCreateNaturalityActive;
-            },
-            openCreateNaturalityModal() {
-                this.modalCreateNaturalityActive = true;
+            openCreateDistrictModal() {
+                this.modalCreateDistrictActive = true;
             },
             toggleModalCreatePerformer() {
                 this.modalCreatePerformerActive = !this.modalCreatePerformerActive;

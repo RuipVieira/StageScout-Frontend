@@ -1,35 +1,36 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreateVenueActive" class="modal">
+        <div v-show="modalEditDistrictActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreateVenueActive" class="modal-inner">
-                    <i @click="closeCreateVenueModal" class="far fa-times-circle"></i>
+                <div v-show="modalEditDistrictActive" class="modal-inner">
+                    <i @click="closeEditDistrictModal" class="far fa-times-circle" style="cursor:pointer; font-size: 1.5rem;"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Nova Localização</h2>
-                        <form @submit.prevent="create">
+                        <h2 class="mb-3 text-center">Editar Localização</h2>
+                        <form @submit.prevent="Edit">
                             <div class="form-control form-container text-center">
-                                <label for="venueName" class="form-label">Nome</label>
-                                <input type="text" v-model="venueName" id="venueName" class="form-control" required>
+                                <label for="selectedDistrictName" class="form-label">Nome</label>
+                                <input type="text"
+                                       v-model="selectedDistrictName"
+                                       id="selectedDistrictName"
+                                       class="form-control"
+                                       required />
 
-                                <label for="venueNacionalidade" class="form-label">País</label>
-                                <select id="venueNacionalidade" v-model="venueNacionalidade" class="form-control">
+                                <label for="selectedDistrictCountry" class="form-label">País</label>
+                                <select id="selectedDistrictCountry" v-model="selectedDistrictCountry" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
                                     </option>
                                 </select>
-                                <label for="venueNaturalidade" class="form-label">Distrito</label>
-                                <select id="venueNaturalidade" v-model="venueNaturalidade" class="form-control" :disabled="!venueNacionalidade">
-                                    >
-                                    <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
-                                        {{ district.descricao }}
-                                    </option>
-                                </select>
                             </div>
-
-                            <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreateVenueModal()">Cancelar</button>
+                            <div class="btn-container text-center mt-4">
+                                <button type="button"
+                                        class="btn btn-danger btn-cancelar"
+                                        @click="closeEditDistrictModal()">
+                                    Cancelar
+                                </button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -39,68 +40,79 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import Swal from 'sweetalert2';
+    import axios from "axios";
+    import Swal from "sweetalert2";
 
     export default {
-        name: 'CreateVenueModal',
-        props: ['modalCreateVenueActive'],
+        name: "EditDistrictModal",
+        props: {
+            modalEditDistrictActive: Boolean,
+            district: Object,
+        },
         data() {
             return {
-                selectedNationDistricts: [],
+                selectedDistrictName: "",
                 nationsList: [],
-                venueName: '',
-                venueNacionalidade: '',
-                venueNaturalidade: ''
+                selectedDistrictCountry: '',
             };
         },
         watch: {
-            modalCreateVenueActive(val) {
+            modalEditDistrictActive(val) {
                 if (val) {
                     this.GetNations();
                 }
             },
-            venueNacionalidade(newVal) {
-                const selectedNation = this.nationsList.find(nation => nation.id === newVal);
-                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
-            }
+            district: {
+                immediate: true,
+                handler(district) {
+                    if (district) {
+                        this.selectedDistrictName = district.nome || "";
+                        this.selectedDistrictCountry = district.pais?.id || '';
+                    } else {
+                        this.selectedDistrictName = "";
+                        this.selectedDistrictCountry = '';
+                    }
+                },
+            },
         },
         methods: {
             async GetNations() {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
                     this.nationsList = response.data;
-                } catch (error) {
+                }
+                catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
+
             },
-            async create() {
+            async Edit() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateVenue', {
-                        Nome: this.venueName,
-                        NaturalidadeId: this.venueNaturalidade
+                    await axios.post("https://localhost:7216/api/Admin/EditDistrict", {
+                        NaturalidadeId: this.district?.id,
+                        Nome: this.selectedDistrictName,
+                        NacionalidadeId: this.selectedDistrictCountry
                     });
 
-                    Swal.fire('Sucesso', 'Localização criada com sucesso!', 'success');
-                    this.closeCreateVenueModal();
+                    Swal.fire("Sucesso", "Localização atualizada com sucesso!", "success");
+                    this.closeEditDistrictModal();
                 } catch (error) {
                     const message =
-                        error.response?.data?.message || 'Erro ao criar. Tente novamente.';
-                    Swal.fire('Erro', message, 'error');
+                        error.response?.data?.message || "Erro ao atualizar. Tente novamente.";
+                    Swal.fire("Erro", message, "error");
                 }
             },
-            closeCreateVenueModal() {
-                this.VenueName = '';
-                this.VenueNacionalidade = '';
-                this.VenueNaturalidade = '';
-                this.$emit('closeCreateVenueModal');
+            closeEditDistrictModal() {
+                this.selectedDistrictName = "";
+                this.selectedDistrictCountry = '';
+                this.selectedDistrictDistrict = '';
+                this.$emit("closeEditDistrictModal");
             },
-        }
+        },
     };
 </script>
-
 <style scoped>
     .modal-animation-enter-active,
     .modal-animation-leave-active {

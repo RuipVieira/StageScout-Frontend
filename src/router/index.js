@@ -16,14 +16,13 @@ import AdminAlbumSearch from '../views/Admin/AlbumSearch.vue'
 import AdminArtistSearch from '../views/Admin/ArtistSearch.vue'
 import AdminEventSearch from '../views/Admin/EventSearch.vue'
 import AdminGenreSearch from '../views/Admin/GenreSearch.vue'
-import AdminNacionalidadeSearch from '../views/Admin/NacionalidadeSearch.vue'
 import AdminPerformerSearch from '../views/Admin/PerformerSearch.vue'
 import AdminPromoterSearch from '../views/Admin/PromoterSearch.vue'
 import AdminUserSearch from '../views/Admin/UserSearch.vue'
 import AdminVenueSearch from '../views/Admin/VenueSearch.vue'
 import AdminEventDetails from '../views/Admin/EventDetails.vue'
 import AdminPerformerDetails from '../views/Admin/PerformerDetails.vue'
-import AdminLocationSearch from '../views/Admin/LocationSearch.vue'
+import AdminDistrictSearch from '../views/Admin/DistrictSearch.vue'
 
 const routes = [
     {
@@ -110,12 +109,6 @@ const routes = [
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
-        path: '/admin/nationalities',
-        name: 'AdminNacionalidadeSearch',
-        component: AdminNacionalidadeSearch,
-        meta: { requiresAuth: true, roles: ['admin'] }
-    },
-    {
         path: '/admin/performers',
         name: 'AdminPerformerSearch',
         component: AdminPerformerSearch,
@@ -152,9 +145,9 @@ const routes = [
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {
-        path: '/admin/locations/',
-        name: 'AdminLocationSearch',
-        component: AdminLocationSearch,
+        path: '/admin/districts/',
+        name: 'AdminDistrictSearch',
+        component: AdminDistrictSearch,
         meta: { requiresAuth: true, roles: ['admin'] }
     },
     {

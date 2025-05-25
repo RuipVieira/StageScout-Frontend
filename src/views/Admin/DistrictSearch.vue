@@ -1,14 +1,18 @@
 ﻿<template>
     <div class="page-content-container">
-        <h1 class="mb-3 text-center">Administração - Gestão de Géneros Musicais</h1>
+        <h1 class="mb-3 text-center">Administração - Gestão de Localizações</h1>
         <div class="d-flex flex-row flex-wrap">
             <div class="filter-section me-4">
                 <form @submit.prevent>
                     <div class="form-control p-4">
                         <h4 class="mb-3">Filtrar Pesquisa</h4>
                         <div class="mb-3">
-                            <label for="genreName" class="form-label">Nome</label>
-                            <input v-model="filters.name" type="text" id="genreName" class="form-control" />
+                            <label for="districtName" class="form-label">Nome</label>
+                            <input v-model="filters.name" type="text" id="districtName" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="districtCountry" class="form-label">País</label>
+                            <input v-model="filters.country" type="text" id="districtCountry" class="form-control" />
                         </div>
                         <button type="button" class="btn btn-danger btn-cancelar mt-2" @click="clearFilters">Limpar</button>
                     </div>
@@ -22,24 +26,19 @@
                           class="mb-4">
                     <el-table-column prop="nome"
                                      label="Nome"
-                                     width="900"
                                      sortable>
                         <template #default="scope">
                             <span v-if="scope.row.nome">{{ scope.row.nome }}</span>
                             <span v-else-if="!paginatedData.length" class="text-muted">Nenhum dado disponível</span>
                         </template>
                     </el-table-column>
-
-                    <el-table-column prop="performersCount"
-                                     label="Contagem Performers"
-                                     width="200"
-                                     align="center"
+                    <el-table-column prop="pais"
+                                     label="País"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.performersCount">{{ scope.row.performersCount }}</span>
+                            <span v-if="scope.row.pais">{{ scope.row.pais.nome }}</span>
                         </template>
                     </el-table-column>
-
                     <el-table-column width="150"
                                      align="center">
                         <template #default="scope">
@@ -48,14 +47,14 @@
                                            size="small"
                                            class="btn-editar"
                                            circle
-                                           @click="openEditMusicGenreModal(scope.row.id)">
+                                           @click="openEditDistrictModal(scope.row.id)">
                                     <el-icon><Edit /></el-icon>
                                 </el-button>
                                 <el-button class="btn-cancelar"
                                            type="danger"
                                            size="small"
                                            circle
-                                           @click="deleteMusicGenre(scope.row.id)">
+                                           @click="deleteDistrict(scope.row.id)">
                                     <el-icon><Delete /></el-icon>
                                 </el-button>
                             </div>
@@ -73,7 +72,7 @@
             </div>
         </div>
     </div>
-    <EditMusicGenreModal @closeEditMusicGenreModal="toggleModalEditMusicGenre" :modalEditMusicGenreActive="modalEditMusicGenreActive" :genre="selectedMusicGenre" />
+    <EditDistrictModal @closeEditDistrictModal="toggleModalEditDistrict" :modalEditDistrictActive="modalEditDistrictActive" :district="selectedDistrict" />
 </template>
 
 
@@ -83,34 +82,36 @@
     import Swal from 'sweetalert2'
     import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
     import { Edit, Delete } from '@element-plus/icons-vue'
-    import EditMusicGenreModal from '@/components/AdminComponents/SubComponents/modalEditMusicGenre.vue'
+    import EditDistrictModal from '@/components/AdminComponents/SubComponents/modalEditDistrict.vue'
 
     export default {
-        name: 'MusicGenreSearchPage',
+        name: 'DistrictSearchPage',
         components: {
             Edit,
             Delete,
-            EditMusicGenreModal
+            EditDistrictModal
         },
         data() {
             return {
-                modalEditMusicGenreActive: false,
-                genres: [],
-                selectedMusicGenre: null,
+                modalEditDistrictActive: false,
+                districts: [],
+                selectedDistrict: null,
                 pagination: {
                     page: 1,
                     pageSize: 15
                 },
                 filters: {
                     name: '',
+                    country: '',
                 }
             }
         },
 
         computed: {
             filteredData() {
-                return this.genres.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase()))
+                return this.districts.filter(e =>
+                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.country || e.pais.nome.toLowerCase().includes(this.filters.country.toLowerCase()))
                 )
             },
 
@@ -121,10 +122,10 @@
         },
 
         methods: {
-            async fetchGenres() {
+            async fetchDistricts() {
                 try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllMusicGenres')
-                    this.genres = response.data || []
+                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllDistricts')
+                    this.districts = response.data || []
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
                     Swal.fire('Erro', message, 'error')
@@ -138,32 +139,31 @@
             clearFilters() {
                 this.filters = {
                     name: '',
-                    year: '',
+                    country: ''
                 }
             },
-            toggleModalEditMusicGenre() {
-                this.modalEditMusicGenreActive = !this.modalEditMusicGenreActive;
-                if (!this.modalEditMusicGenreActive) {
-                    this.selectedMusicGenre = null;
-                    this.fetchGenres();
+            toggleModalEditDistrict() {
+                this.modalEditDistrictActive = !this.modalEditDistrictActive;
+                if (!this.modalEditDistrictActive) {
+                    this.selectedDistrict = null;
+                    this.fetchDistricts();
                 }
-                return this.modalEditMusicGenreActive;
+                return this.modalEditDistrictActive;
             },
-            openEditMusicGenreModal(id) {
-                this.selectedMusicGenre = this.genres.find(genre => genre.id === id) || null;
+            openEditDistrictModal(id) {
+                this.selectedDistrict = this.districts.find(district => district.id === id) || null;
 
-                if (!this.selectedMusicGenre) {
-                    console.warn('MusicGenre not found for id:', id);
+                if (!this.selectedDistrict) {
+                    console.warn('District not found for id:', id);
                     return;
                 }
 
-                this.modalEditMusicGenreActive = true;
+                this.modalEditDistrictActive = true;
             },
-            deleteMusicGenre(id) {
-                console.log(id)
+            deleteDistrict(id) {
                 Swal.fire({
                     title: 'Aviso!',
-                    text: "Tem a certeza que pretende remover este Género?",
+                    text: "Tem a certeza que pretende remover este Distrito?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -173,9 +173,9 @@
                 }).then(async (result) => {
                     if (result.isConfirmed) {
                         try {
-                            await axios.delete(`https://localhost:7216/api/Admin/DeleteGenre/${id}`);
-                            this.fetchGenres()
-                            Swal.fire('Aviso!', 'Género Musical apagado com sucesso.', 'success')
+                            await axios.delete(`https://localhost:7216/api/Admin/DeleteDistrict/${id}`);
+                            this.fetchDistricts()
+                            Swal.fire('Aviso!', 'Distrito apagado com sucesso.', 'success')
                         } catch (error) {
                             const message = error.response?.data?.message || 'Erro ao apagar. Tente novamente.'
                             Swal.fire('Erro', message, 'error')
@@ -186,7 +186,7 @@
         },
 
         mounted() {
-            this.fetchGenres()
+            this.fetchDistricts()
         }
     }
 </script>

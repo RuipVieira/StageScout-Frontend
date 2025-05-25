@@ -1,12 +1,12 @@
 ﻿<template>
     <transition name="modal-animation">
-        <div v-show="modalCreatePerformerActive" class="modal">
+        <div v-show="modalEditPerformerInformationActive" class="modal">
             <transition name="modal-animation-inner">
-                <div v-show="modalCreatePerformerActive" class="modal-inner">
-                    <i @click="closeCreatePerformerModal" class="far fa-times-circle"></i>
+                <div v-show="modalEditPerformerInformationActive" class="modal-inner">
+                    <i @click="closeEditPerformerInformationModal" class="far fa-times-circle"></i>
                     <div class="modal-content">
-                        <h2 class="mb-3 text-center">Novo Performer</h2>
-                        <form @submit.prevent="create">
+                        <h2 class="mb-3 text-center">Editar Performer</h2>
+                        <form @submit.prevent="edit">
                             <div class="form-control form-container text-center">
                                 <label for="performerName" class="form-label">Nome</label>
                                 <input type="text" v-model="performerName" id="performerName" class="form-control" required>
@@ -28,9 +28,8 @@
                                     </option>
                                 </select>
                             </div>
-
                             <div class="btn-container text-center">
-                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeCreatePerformerModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger btn-cancelar" @click="closeEditPerformerInformationModal()">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Confirmar</button>
                             </div>
                         </form>
@@ -46,12 +45,15 @@
     import Swal from 'sweetalert2';
 
     export default {
-        name: 'CreatePerformerModal',
-        props: ['modalCreatePerformerActive'],
+        name: 'EditPerformerInformationModal',
+        props: {
+            modalEditPerformerInformationActive: Boolean,
+            performerDetails: Object,
+        },
         data() {
             return {
                 nationsList: [],
-                genresList:[],
+                genresList: [],
                 performerName: '',
                 performerNacionalidade: '',
                 performerYear: '',
@@ -59,18 +61,35 @@
             };
         },
         watch: {
-            modalCreatePerformerActive(val) {
+            modalEditPerformerInformationActive(val) {
                 if (val) {
                     this.GetNations();
                     this.GetMusicGenres();
                 }
-            }
+            },
+            performerDetails: {
+                immediate: true,
+                handler() {
+                    this.populatePerformerData();
+                },
+            },
         },
         methods: {
+            populatePerformerData() {
+                if (this.performerDetails) {
+                    this.performerName = this.performerDetails.nome || '';
+                    this.performerYear = this.performerDetails.anoFormacao || '';
+                    const country = this.nationsList.find(v => v.descricao === this.performerDetails.nacionalidade);
+                    this.performerNacionalidade = country ? country.id : "";
+                    const genre = this.genresList.find(v => v.nome === this.performerDetails.generoMusical);
+                    this.performerGeneroMusical = genre ? genre.id : "";
+                }
+            },
             async GetNations() {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllNations');
                     this.nationsList = response.data;
+                    this.populatePerformerData();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
@@ -81,35 +100,36 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllMusicGenres');
                     this.genresList = response.data;
+                    this.populatePerformerData();
                 } catch (error) {
                     const message =
                         error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            async create() {
+            async edit() {
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreatePerformer', {
+                    console.log(this.performerDetails);
+                    await axios.post('https://localhost:7216/api/Admin/EditPerformerInformation', {
+                        PerformerId: this.performerDetails.id,
                         Nome: this.performerName,
-                        NacionalidadeId: this.performerNacionalidade,
                         AnoFormacao: this.performerYear,
-                        GeneroMusicalId: this.performerGeneroMusical
+                        NacionalidadeId: this.performerNacionalidade,
+                        GeneroMusicalId: this.performerGeneroMusical,                        
                     });
 
-                    Swal.fire('Sucesso', 'Performer criado com sucesso!', 'success');
-                    this.closeCreatePerformerModal();
+                    Swal.fire('Sucesso', 'Performer editado com sucesso!', 'success');
+                    this.closeEditPerformerInformationModal();
                 } catch (error) {
                     const message =
-                        error.response?.data?.message || 'Erro ao criar. Tente novamente.';
+                        error.response?.data?.message || 'Erro ao editar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            closeCreatePerformerModal() {
-                this.PerformerName = '';
-                this.PerformerNacionalidade = '';
-                this.PerformerYear = '';
-                this.PerformerGeneroMusical = '';
-                this.$emit('closeCreatePerformerModal');
+            closeEditPerformerInformationModal() {
+                
+                this.$emit('closeEditPerformerInformationModal');
+                this.$emit('refreshPerformerDetails');
             },
         }
     };
