@@ -90,7 +90,17 @@
     <ModalEditPerformerInformation @closeEditPerformerInformationModal="toggleModalEditPerformerInformation"
                                    :modalEditPerformerInformationActive="modalEditPerformerInformationActive"
                                    @refreshPerformerDetails="refreshPerformerDetails"
-                                   :performerDetails="group"/>
+                                   :performerDetails="group" />
+
+    <ModalEditPerformerArtists @closeEditPerformerArtistsModal="toggleModalEditPerformerArtists"
+                               :modalEditPerformerArtistsActive="modalEditPerformerArtistsActive"
+                               @refreshPerformerDetails="refreshPerformerDetails"
+                               :performerDetails="group" />
+
+    <ModalEditPerformerAlbums @closeEditPerformerAlbumsModal="toggleModalEditPerformerAlbums"
+                               :modalEditPerformerAlbumsActive="modalEditPerformerAlbumsActive"
+                               @refreshPerformerDetails="refreshPerformerDetails"
+                               :performerDetails="group" />
 </template>
 
 <script>
@@ -99,11 +109,13 @@
     import Swal from 'sweetalert2'
     import { authState } from '../../auth';
     import ModalEditPerformerInformation from '@/components/AdminComponents/SubComponents/modalEditPerformerInformation.vue';
+    import ModalEditPerformerArtists from '@/components/AdminComponents/SubComponents/modalEditPerformerArtists.vue';
+    import ModalEditPerformerAlbums from '@/components/AdminComponents/SubComponents/modalEditPerformerAlbums.vue';
 
     export default {
         name: 'ArtistDetails',
         components: {
-            ElTable, ElTableColumn, ElPagination, ModalEditPerformerInformation
+            ElTable, ElTableColumn, ElPagination, ModalEditPerformerInformation, ModalEditPerformerArtists, ModalEditPerformerAlbums
         },
         data() {
             return {
@@ -116,9 +128,11 @@
                 performerId: null,
                 followerState: false,
                 eventsPagination: { page: 1, pageSize: 5 },
-                membersPagination: { page: 1, pageSize: 6 },
-                albumsPagination: { page: 1, pageSize: 6 },
+                membersPagination: { page: 1, pageSize: 4 },
+                albumsPagination: { page: 1, pageSize: 4 },
                 modalEditPerformerInformationActive: false,
+                modalEditPerformerArtistsActive: false,
+                modalEditPerformerAlbumsActive: false
             }
         },
         computed: {
@@ -198,12 +212,6 @@
                     Swal.fire('Erro', message, 'error');
                 }
             },
-            openEditPerformerInformationModal() {
-                this.modalEditPerformerInformationActive = true;
-            },
-            toggleModalEditPerformerInformation() {
-                this.modalEditPerformerInformationActive = !this.modalEditPerformerInformationActive;
-            },
             refreshPerformerDetails() {
                 this.fetchPerformerDetails(this.$route.params.id);
             },
@@ -217,6 +225,26 @@
             openEditPerformerInformationModal() {
                 this.modalEditPerformerInformationActive = true;
             },
+            openEditPerformerArtistsModal() {
+                this.modalEditPerformerArtistsActive = true;
+            },
+            toggleModalEditPerformerArtists() {
+                this.modalEditPerformerArtistsActive = !this.modalEditPerformerArtistsActive;
+                if (!this.modalEditPerformerArtistsActive) {
+                    this.refreshPerformerDetails();
+                }
+                return this.modalEditPerformerArtistsActive;
+            },
+            openEditPerformerAlbumsModal() {
+                this.modalEditPerformerAlbumsActive = true;
+            },
+            toggleModalEditPerformerAlbums() {
+                this.modalEditPerformerAlbumsActive = !this.modalEditPerformerAlbumsActive;
+                if (!this.modalEditPerformerAlbumsActive) {
+                    this.refreshPerformerDetails();
+                }
+                return this.modalEditPerformerAlbumsActive;
+            }
         }
     }
 </script>

@@ -17,13 +17,6 @@
                                 <label for="eventEndDate" class="form-label">Data de Fim</label>
                                 <input type="date" v-model="eventEndDate" id="eventEndDate" class="form-control" required>
 
-                                <label for="eventPromoter" class="form-label">Promotora</label>
-                                <select id="eventPromoter" v-model="eventPromoter" class="form-control">
-                                    <option v-for="promoter in promotersList" :key="promoter.id" :value="promoter.id">
-                                        {{ promoter.descricao }}
-                                    </option>
-                                </select>
-
                                 <label for="eventVenue" class="form-label">Localização</label>
                                 <select id="eventVenue" v-model="eventVenue" class="form-control">
                                     <option v-for="venue in venuesList" :key="venue.id" :value="venue.id">
@@ -69,15 +62,15 @@
                 eventStartDate: '',
                 eventEndDate: '',
                 eventVenue: '',
-                eventPromoter: '',
-                eventState:''
+                eventState: '',
+                venuesLoaded: false,
+                statesLoaded: false,
             };
         },
         watch: {
             modalEditEventInformationActive(val) {
                 if (val) {
                     this.GetVenues();
-                    this.GetPromoters();
                     this.GetEventStates();
                     this.populateEventData();
                 }
@@ -95,33 +88,24 @@
                     this.eventName = this.eventDetails.nome || '';
                     this.eventStartDate = this.eventDetails.dataInicio || '';
                     this.eventEndDate = this.eventDetails.dataFim || '';
-                    const promoter = this.promotersList.find(p => p.descricao === this.eventDetails.promotora);
-                    this.eventPromoter = promoter ? promoter.id : "";
                     const venue = this.venuesList.find(v => v.nome === this.eventDetails.local);
                     this.eventVenue = venue ? venue.id : "";
                     const state = this.eventStatesList.find(v => v.name === this.eventDetails.estado);
                     this.eventState = state ? state.id : "";
                 }
             },
-            async GetPromoters() {
-                try {
-                    const response = await axios.get('https://localhost:7216/api/Helper/GetAllPromoters');
-                    this.promotersList = response.data;
-
-                    // Call this *after* both lists are available
-                    if (this.venuesList.length) this.populateEventData();
-                } catch (error) {
-                    Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
+            tryPopulateEventData() {
+                if (this.venuesLoaded && this.statesLoaded) {
+                    this.populateEventData();
                 }
             },
-
+            
             async GetEventStates() {
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllEventStates');
                     this.eventStatesList = response.data;
-
-                    // Call this *after* both lists are available
-                    if (this.eventStatesList.length) this.populateEventData();
+                    this.statesLoaded = true;
+                    this.tryPopulateEventData();
                 } catch (error) {
                     Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
                 }
@@ -131,8 +115,9 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllVenues');
                     this.venuesList = response.data;
+                    this.venuesLoaded = true;
+                    this.tryPopulateEventData();
 
-                    if (this.promotersList.length) this.populateEventData();
                 } catch (error) {
                     Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
                 }
@@ -153,7 +138,7 @@
                         DataInicio: this.eventStartDate,
                         DataFim: this.eventEndDate,
                         LocalizacaoId: parseInt(this.eventVenue),
-                        PromotoraId: parseInt(this.eventPromoter),
+                        PromotoraId: parseInt(localStorage.getItem('profileId')),
                         EstadoId: parseInt(this.eventState)
                     });
 
@@ -170,7 +155,6 @@
                 this.eventStartDate = '';
                 this.eventEndDate = '';
                 this.eventVenue = '';
-                this.eventPromoter = '';
                 this.eventState = '';
                 this.$emit('closeEditEventInformationModal');
                 this.$emit('refreshEventDetails');

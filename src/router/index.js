@@ -7,7 +7,6 @@ import EventDetailsView from '../views/public/EventDetails.vue'
 import UnauthorizedView from '../views/public/Unauthorized.vue'
 
 import BackOfficeHomeView from '../views/BackOffice/HomePage.vue'
-import BackOfficeCreateEventView from '../views/BackOffice/CreateEvent.vue'
 import BackOfficeEditEventView from '../views/BackOffice/EditEvent.vue'
 import BackOfficeEventStatsView from '../views/BackOffice/EventStatistics.vue'
 
@@ -61,19 +60,13 @@ const routes = [
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
-        path: '/backoffice/eventcreate',
-        name: 'BackOfficeCreateEventView',
-        component: BackOfficeCreateEventView,
-        meta: { requiresAuth: true, roles: ['promoter'] }
-    },
-    {
-        path: '/backoffice/edit',
+        path: '/backoffice/edit/:id',
         name: 'BackOfficeEditEventView',
         component: BackOfficeEditEventView,
         meta: { requiresAuth: true, roles: ['promoter'] }
     },
     {
-        path: '/backoffice/stats',
+        path: '/backoffice/stats/:id',
         name: 'BackOfficeEventStatsView',
         component: BackOfficeEventStatsView,
         meta: { requiresAuth: true, roles: ['promoter'] }

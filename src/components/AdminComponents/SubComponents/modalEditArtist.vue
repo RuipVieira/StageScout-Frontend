@@ -143,9 +143,7 @@
             artist: {
                 immediate: true,
                 handler(artist) {
-                    console.log(artist);
                     if (artist) {
-                        console.log(artist)
                         this.selectedArtistName = artist.nome || "";
                         this.selectedArtistNacionalidade = artist.nacionalidade.id || "";
                         this.selectedPerformers = (artist.performers || []).map((p) => ({

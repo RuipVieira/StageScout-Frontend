@@ -29,7 +29,6 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Left: Events Table -->
                     <div class="col-md-6">
                         <h6>Eventos</h6>
                         <el-table :data="followedEvents" empty-text="Nenhum dado disponível" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
@@ -40,7 +39,6 @@
                             <el-table-column prop="estado" label="Estado" width="100"></el-table-column>
                         </el-table>
 
-                        <!-- Pagination -->
                         <el-pagination :current-page="eventsPagination.page"
                                        :page-size="eventsPagination.pageSize"
                                        :total="followedEvents.length"
@@ -49,7 +47,6 @@
                         </el-pagination>
                     </div>
 
-                    <!-- Right: Artists Table -->
                     <div class="col-md-6">
                         <h6>Artistas</h6>
                         <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
@@ -60,7 +57,6 @@
                             <el-table-column prop="hora" label="Hora" width="100"></el-table-column>
                         </el-table>
 
-                        <!-- Pagination -->
                         <el-pagination :current-page="artistsPagination.page"
                                        :page-size="artistsPagination.pageSize"
                                        :total="followedArtists.length"
@@ -77,97 +73,82 @@
 <script>
     import { authState } from '../../auth';
     import Swal from 'sweetalert2';
-    import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
     import axios from 'axios';
+    import { useRouter } from 'vue-router';
 
     export default {
         name: 'HeaderComponent',
-        setup() {
-            const router = useRouter();
-
-            // Pagination State
-            const eventsPagination = ref({
-                page: 1,
-                pageSize: 6,
-            });
-
-            const artistsPagination = ref({
-                page: 1,
-                pageSize: 6,
-            });
-
-            // Pagination Change Handlers
-            const onEventsPageChange = (page) => {
-                eventsPagination.value.page = page;
-            };
-
-            const onArtistsPageChange = (page) => {
-                artistsPagination.value.page = page;
-            };
-
-            const GoToEventDetails = (rowData) => {
-                router.push({ name: 'EventDetails', params: { id: rowData.id } });
-            };
-
-            const GoToArtistDetails = (rowData) => {
-                router.push({ name: 'PerformerDetails', params: { id: rowData.id } });
-            };
-
-            // Columns Configuration
-            const artistsColumns = [
-                { title: 'Id', key: 'id' },
-                { title: 'Performer', key: 'nomePerformer' },
-                { title: 'Evento', key: 'nomeEvento' },
-                { title: 'Palco', key: 'palco' },
-                { title: 'Data', key: 'data' },
-                { title: 'Hora', key: 'hora' },
-            ];
-
-            const eventsColumns = [
-                { title: 'Id', key: 'id' },
-                { title: 'Nome', key: 'nome' },
-                { title: 'Local', key: 'local' },
-                { title: 'Data de Início', key: 'dataInicio' },
-                { title: 'Data de Fim', key: 'dataFim' },
-                { title: 'Estado', key: 'estado' },
-            ];
-
-            return {
-                eventsPagination,
-                artistsPagination,
-                onEventsPageChange,
-                onArtistsPageChange,
-                artistsColumns,
-                eventsColumns,
-                authState,
-                GoToEventDetails,
-                GoToArtistDetails,
-            };
-        },
 
         data() {
             return {
+                eventsPagination: {
+                    page: 1,
+                    pageSize: 6,
+                },
+                artistsPagination: {
+                    page: 1,
+                    pageSize: 6,
+                },
                 followedEvents: [],
                 followedArtists: [],
+                artistsColumns: [
+                    { title: 'Id', key: 'id' },
+                    { title: 'Performer', key: 'nomePerformer' },
+                    { title: 'Evento', key: 'nomeEvento' },
+                    { title: 'Palco', key: 'palco' },
+                    { title: 'Data', key: 'data' },
+                    { title: 'Hora', key: 'hora' },
+                ],
+                eventsColumns: [
+                    { title: 'Id', key: 'id' },
+                    { title: 'Nome', key: 'nome' },
+                    { title: 'Local', key: 'local' },
+                    { title: 'Data de Início', key: 'dataInicio' },
+                    { title: 'Data de Fim', key: 'dataFim' },
+                    { title: 'Estado', key: 'estado' },
+                ],
             };
         },
 
-        watch: {
-            'authState.isLoggedIn'() {
-                if (authState.isLoggedIn) {
-                    this.GetFollowedEntities();
-                }
-            },
+        computed: {
+            authState() {
+                return authState;
+            }
         },
 
-        mounted() {
+        created() {
             if (authState.isLoggedIn) {
                 this.GetFollowedEntities();
             }
         },
 
+        watch: {
+            'authState.isLoggedIn'(newVal) {
+                if (newVal) {
+                    this.GetFollowedEntities();
+                }
+            }
+        },
+
         methods: {
+            onEventsPageChange(page) {
+                this.eventsPagination.page = page;
+            },
+
+            onArtistsPageChange(page) {
+                this.artistsPagination.page = page;
+            },
+
+            GoToEventDetails(rowData) {
+                const router = useRouter();
+                router.push({ name: 'EventDetails', params: { id: rowData.id } });
+            },
+
+            GoToArtistDetails(rowData) {
+                const router = useRouter();
+                router.push({ name: 'PerformerDetails', params: { id: rowData.id } });
+            },
+
             async GetFollowedEntities() {
                 try {
                     const response = await axios.get('https://localhost:7216/api/home/GetFollowedEntities', {
@@ -186,6 +167,7 @@
         },
     };
 </script>
+
 
 <style scoped>
     .about-container {

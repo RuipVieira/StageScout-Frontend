@@ -65,9 +65,6 @@
                                        @current-change="onPerformersPageChange"
                                        size="small" />
                     </div>
-
-
-
                     <div class="col-md-3 border-start">
                         <h6>Palcos</h6>
                         <el-table empty-text="Nenhum dado disponível" :data="paginatedPalcos" class="short-table" size="small" border>
@@ -132,6 +129,26 @@
                             <el-tooltip class="item" effect="dark" :content="row.observacoes" placement="top">
                                 <span class="truncate-text">{{ row.observacoes }}</span>
                             </el-tooltip>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center">
+                        <template #default="scope">
+                            <div v-if="paginatedPerformers.length">
+                                <el-button v-if="scope.row.estadoId !=2" type="primary"
+                                           size="small"
+                                           class="btn-editar"
+                                           circle
+                                           @click="toggleReviewVisibility(scope.row.id)">
+                                    <el-icon><Edit /></el-icon>
+                                </el-button>
+                                <el-button v-else class="btn-cancelar"
+                                           type="danger"
+                                           size="small"
+                                           circle
+                                           @click="toggleReviewVisibility(scope.row.id)">
+                                    <el-icon><Delete /></el-icon>
+                                </el-button>
+                            </div>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -290,7 +307,7 @@
             },
             async fetchEventDetails(eventId) {
                 try {
-                    const response = await axios.get('https://localhost:7216/api/Events/GetEventDetails', {
+                    const response = await axios.get('https://localhost:7216/api/Admin/GetEventDetails', {
                         params: {
                             eventId: eventId,
                             profileId: localStorage.getItem('profileId')
@@ -302,6 +319,30 @@
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
+            },
+            async toggleReviewVisibility(avaliacaoId) {
+                Swal.fire({
+                    title: 'Aviso!',
+                    text: "Vai alterar a visibilidade desta avaliação. Pretende continuar?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            console.log(avaliacaoId)
+                            await axios.delete(`https://localhost:7216/api/Admin/ToggleReviewVisibility/${avaliacaoId}`);
+                            this.refreshEventDetails()
+                            Swal.fire('Aviso!', 'Avaliação alterada com sucesso.', 'success')
+                        } catch (error) {
+                            const message = error.response?.data?.message || 'Erro ao apagar. Tente novamente.'
+                            Swal.fire('Erro', message, 'error')
+                        }
+                    }
+                })
             },
             deleteEventPerformer(id) {
                 Swal.fire({
