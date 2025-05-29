@@ -5,7 +5,6 @@
 </template>
 
 <script setup>
-  /*import ModalRequestForm from './SubComponents/modalContactAdmin.vue'*/
 </script>
 
 <style scoped>

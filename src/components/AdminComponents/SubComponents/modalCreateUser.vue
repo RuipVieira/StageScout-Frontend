@@ -58,12 +58,10 @@
         },
         methods: {
             isValidEmail(email) {
-                //regex validação de email
                 const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return re.test(email);
             },
             isValidPassword(password) {
-                //Regex valida password com os seguintes parametros: pelo menos 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo especial.
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 return re.test(password);
             },
@@ -78,7 +76,6 @@
                 }
             },
             async create() {
-                // Validações
                 if (!this.isValidEmail(this.userEmail)) {
                     Swal.fire('Erro', 'Por favor insira um e-mail válido.', 'error');
                     return;

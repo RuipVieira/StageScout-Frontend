@@ -253,31 +253,29 @@
 
 
 <style scoped>
-    /* Fixed size for all cards */
     .fixed-card-top {
-        width: 100%; /* Full width or specify custom width */
-        height: 370px; /* Fixed height for all cards */
-        overflow: hidden; /* Prevent content overflow from being visible */
-        margin-bottom: 1rem; /* Space between cards */
+        width: 100%; 
+        height: 370px; 
+        overflow: hidden; 
+        margin-bottom: 1rem;
     }
 
-        /* Make the card body scrollable if content overflows */
+        
         .fixed-card-top .card-body {
             overflow-y: auto;
             padding: 0.75rem;
         }
 
-        /* Optional: Adjust the header styling for consistency */
         .fixed-card-top .card-header {
             background-color: transparent;
             border-bottom: 1px solid #dee2e6;
         }
 
     .fixed-card {
-        width: 100%; /* Full width or specify custom width */
-        height: 400px; /* Fixed height for all cards */
-        overflow: hidden; /* Prevent content overflow from being visible */
-        margin-bottom: 1rem; /* Space between cards */
+        width: 100%; 
+        height: 400px;
+        overflow: hidden; 
+        margin-bottom: 1rem; 
     }
 
         .fixed-card .card-body {

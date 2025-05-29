@@ -108,7 +108,6 @@
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllPromoters');
                     this.promotersList = response.data;
 
-                    // Call this *after* both lists are available
                     if (this.venuesList.length) this.populateEventData();
                 } catch (error) {
                     Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');
@@ -120,7 +119,6 @@
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllEventStates');
                     this.eventStatesList = response.data;
 
-                    // Call this *after* both lists are available
                     if (this.eventStatesList.length) this.populateEventData();
                 } catch (error) {
                     Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');

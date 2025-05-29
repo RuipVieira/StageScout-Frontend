@@ -64,15 +64,6 @@
     export default {
         name: 'EventReviewModal',
         props: ['modalSubmitReviewActive'],
-
-        setup(props, { emit }) {
-            const closeSubmitReviewModal = () => {
-                emit('closeSubmitReviewModal');
-            }
-
-            return { closeSubmitReviewModal }
-        },
-
         data() {
             return {
                 ratingCartaz: 0,
@@ -135,7 +126,6 @@
                     });
 
                     Swal.fire('Sucesso', 'Avaliação submetida com sucesso!', 'success');
-
                     this.$emit('submitReviewCompleted');
                 } catch (error) {
                     const message =
@@ -150,6 +140,7 @@
         }
     };
 </script>
+
 
 <style scoped>
     .rating-row {

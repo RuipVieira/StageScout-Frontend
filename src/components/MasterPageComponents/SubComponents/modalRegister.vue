@@ -36,6 +36,7 @@
     import axios from 'axios';
 
     export default {
+        props: ['registerModalActive'],
         data() {
             return {
                 registerEmail: '',
@@ -43,34 +44,30 @@
                 registerConfirmPassword: '',
             };
         },
-        props: ['registerModalActive'],
-        setup(props, { emit }) {
-            const closeRegisterModal = () => {
-                emit('closeRegisterModal');
-            }
-
-            return { closeRegisterModal }
-        },
         methods: {
+            closeRegisterModal() {
+                this.$emit('closeRegisterModal');
+            },
             isValidEmail(email) {
-                //regex validação de email
                 const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return re.test(email);
             },
             isValidPassword(password) {
-                //Regex valida password com os seguintes parametros: pelo menos 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo especial.
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 return re.test(password);
             },
             async register() {
-                // Validações
                 if (!this.isValidEmail(this.registerEmail)) {
                     Swal.fire('Erro', 'Por favor insira um e-mail válido.', 'error');
                     return;
                 }
 
                 if (!this.isValidPassword(this.registerPassword)) {
-                    Swal.fire('Erro', 'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.', 'error');
+                    Swal.fire(
+                        'Erro',
+                        'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.',
+                        'error'
+                    );
                     return;
                 }
 
@@ -89,13 +86,15 @@
                     this.closeRegisterModal();
                 } catch (error) {
                     const message =
-                        error.response?.data?.message || 'Erro ao registar. Tente novamente.';
+                        error.response?.data?.message ||
+                        'Erro ao registar. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
             },
-        }
-    }
+        },
+    };
 </script>
+
 
 <style scoped>
     .modal-animation-enter-active,

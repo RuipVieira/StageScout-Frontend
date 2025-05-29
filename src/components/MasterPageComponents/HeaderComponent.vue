@@ -64,7 +64,6 @@
         },
 
         mounted() {
-            // Optionally update state on page refresh
             authState.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             authState.role = localStorage.getItem('role') || null;
             authState.profileId = localStorage.getItem('profileId') || null;
@@ -178,6 +177,6 @@
                 }
 
                     .fixed-header nav ul li a:hover {
-                        color: #ee6c4d; /* Lighter background on hover */
+                        color: #ee6c4d; 
                     }
 </style>

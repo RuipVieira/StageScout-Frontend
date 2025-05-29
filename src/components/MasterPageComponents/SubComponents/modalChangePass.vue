@@ -37,35 +37,29 @@
     import { authState } from '../../../auth';
 
     export default {
+        props: ['changePassModalActive'],
         data() {
             return {
                 changePassOldPassword: '',
                 changePassNewPassword: '',
                 changePassConfirmPassword: '',
+                authState: authState
             };
         },
-        props: ['changePassModalActive'],
-        setup(props, { emit }) {
-            const closeChangePassModal = () => {
-                emit('closeChangePassModal');
-            }
-
-            return { closeChangePassModal, authState }
-        },
         methods: {
+            closeChangePassModal() {
+                this.$emit('closeChangePassModal');
+            },
             isValidPassword(password) {
-                //Regex valida password com os seguintes parametros: pelo menos 8 caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo especial.
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
                 return re.test(password);
             },
             async changePass() {
-                // Validações
                 if (!this.isValidPassword(this.changePassOldPassword)) {
                     Swal.fire('Erro', 'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.', 'error');
                     return;
                 }
 
-                // Validações
                 if (!this.isValidPassword(this.changePassNewPassword)) {
                     Swal.fire('Erro', 'A palavra passe deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um símbolo.', 'error');
                     return;
@@ -90,10 +84,11 @@
                         error.response?.data?.message || 'Erro ao alterar palavra passe. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
                 }
-            },
+            }
         }
-    }
+    };
 </script>
+
 
 <style scoped>
     .modal-animation-enter-active,

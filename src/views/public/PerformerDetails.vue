@@ -89,21 +89,21 @@
 
 
 <script>
-    import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
-    import axios from 'axios'
-    import Swal from 'sweetalert2'
+    import { ElTable, ElTableColumn, ElPagination } from 'element-plus';
+    import axios from 'axios';
+    import Swal from 'sweetalert2';
     import { authState } from '../../auth';
 
     export default {
         name: 'ArtistDetails',
-        setup() {
-            return {
-                authState
-            }
+        components: {
+            ElTable,
+            ElTableColumn,
+            ElPagination
         },
-        
         data() {
             return {
+                authState,
                 group: {
                     artistas: [],
                     albums: [],
@@ -113,20 +113,20 @@
                 eventsPagination: { page: 1, pageSize: 5 },
                 membersPagination: { page: 1, pageSize: 6 },
                 albumsPagination: { page: 1, pageSize: 6 }
-            }
+            };
         },
         computed: {
             pagedMembers() {
-                const start = (this.membersPagination.page - 1) * this.membersPagination.pageSize
-                return this.group.artistas.slice(start, start + this.membersPagination.pageSize)
+                const start = (this.membersPagination.page - 1) * this.membersPagination.pageSize;
+                return this.group.artistas.slice(start, start + this.membersPagination.pageSize);
             },
             pagedAlbums() {
-                const start = (this.albumsPagination.page - 1) * this.albumsPagination.pageSize
-                return this.group.albums.slice(start, start + this.albumsPagination.pageSize)
+                const start = (this.albumsPagination.page - 1) * this.albumsPagination.pageSize;
+                return this.group.albums.slice(start, start + this.albumsPagination.pageSize);
             },
             pagedEvents() {
-                const start = (this.eventsPagination.page - 1) * this.eventsPagination.pageSize
-                return this.group.eventosMarcados.slice(start, start + this.eventsPagination.pageSize)
+                const start = (this.eventsPagination.page - 1) * this.eventsPagination.pageSize;
+                return this.group.eventosMarcados.slice(start, start + this.eventsPagination.pageSize);
             }
         },
         mounted() {
@@ -136,16 +136,16 @@
         },
         methods: {
             onEventsPageChange(page) {
-                this.eventsPagination.page = page
+                this.eventsPagination.page = page;
             },
             onMembersPageChange(page) {
-                this.membersPagination.page = page
+                this.membersPagination.page = page;
             },
             onAlbumsPageChange(page) {
-                this.albumsPagination.page = page
+                this.albumsPagination.page = page;
             },
             GoToEventDetails(row) {
-                this.$router.push({ name: 'EventDetails', params: { id: row.id } })
+                this.$router.push({ name: 'EventDetails', params: { id: row.id } });
             },
             async ToggleFollowState() {
                 try {
@@ -154,16 +154,16 @@
                         profileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor == true) {
+                    if (response.data.seguidor === true) {
                         this.followerState = true;
-                        Swal.fire('Sucesso', 'Começou a seguir este Performer.', 'success')
+                        Swal.fire('Sucesso', 'Começou a seguir este Performer.', 'success');
                     } else {
                         this.followerState = false;
-                        Swal.fire('Sucesso', 'Deixou de seguir este Performer.', 'success')
+                        Swal.fire('Sucesso', 'Deixou de seguir este Performer.', 'success');
                     }
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             },
             async fetchPerformerDetails(performerId) {
@@ -180,77 +180,68 @@
                         eventosMarcados: []
                     };
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             },
-
-            async checkFollowerStatus() {
+            async checkFollowerStatus(performerId) {
                 try {
                     const response = await axios.post('https://localhost:7216/api/Performers/CheckFollowingStatus', {
-                        performerId: this.$route.params.id,
+                        performerId: performerId,
                         profileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor == true) {
-                        this.followerState = true;
-                    } else {
-                        this.followerState = false;
-                    }
-
+                    this.followerState = response.data.seguidor === true;
                 } catch (error) {
-                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
-                    Swal.fire('Erro', message, 'error')
+                    const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
+                    Swal.fire('Erro', message, 'error');
                 }
             }
         }
-    }
+    };
 </script>
 
 
 
-<style scoped>
-    /* Fixed size for all cards */
+
+<style scoped> 
     .fixed-card-top {
-        width: 100%; /* Full width or specify custom width */
-        height: 370px; /* Fixed height for all cards */
-        overflow: hidden; /* Prevent content overflow from being visible */
-        margin-bottom: 1rem; /* Space between cards */
+        width: 100%; 
+        height: 370px; 
+        overflow: hidden; 
+        margin-bottom: 1rem; 
     }
 
-        /* Make the card body scrollable if content overflows */
+       
         .fixed-card-top .card-body {
             overflow-y: auto;
             padding: 0.75rem;
         }
 
-        /* Optional: Adjust the header styling for consistency */
         .fixed-card-top .card-header {
             background-color: transparent;
             border-bottom: 1px solid #dee2e6;
         }
 
     .fixed-card {
-        width: 100%; /* Full width or specify custom width */
-        height: 400px; /* Fixed height for all cards */
-        overflow: hidden; /* Prevent content overflow from being visible */
-        margin-bottom: 1rem; /* Space between cards */
+        width: 100%; 
+        height: 400px; 
+        overflow: hidden; 
+        margin-bottom: 1rem; 
     }
 
-        /* Make the card body scrollable if content overflows */
+       
         .fixed-card .card-body {
             overflow-y: auto;
             padding: 0.75rem;
         }
 
-        /* Optional: Adjust the header styling for consistency */
         .fixed-card .card-header {
             background-color: transparent;
             border-bottom: 1px solid #dee2e6;
         }
 
-    /* Adjust the DataTable's overall look */
     .n-data-table {
-        font-size: 0.8rem; /* Smaller font for compact view */
+        font-size: 0.8rem;
     }
 </style>

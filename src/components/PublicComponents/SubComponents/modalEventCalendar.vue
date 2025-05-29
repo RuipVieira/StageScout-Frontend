@@ -86,7 +86,6 @@
 </script>
 
 <style scoped>
-    /* Unchanged styles */
     .modal-animation-enter-active,
     .modal-animation-leave-active {
         transition: opacity 0.3s ease;

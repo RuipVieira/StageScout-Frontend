@@ -47,7 +47,6 @@
             },
 
             editUserModalActive(newVal) {
-                // Optionally reset the password when the modal is opened
                 if (newVal) {
                     this.selectedUserPassword = '';
                 }
