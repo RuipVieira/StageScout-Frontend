@@ -20,12 +20,12 @@
                           stripe
                           style="width: 100%; min-width: 1200px;"
                           class="mb-4">
-                    <el-table-column prop="nome"
+                    <el-table-column prop="name"
                                      label="Nome"
                                      width="900"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.nome">{{ scope.row.nome }}</span>
+                            <span v-if="scope.row.name">{{ scope.row.name }}</span>
                             <span v-else-if="!paginatedData.length" class="text-muted">Nenhum dado disponível</span>
                         </template>
                     </el-table-column>
@@ -110,7 +110,7 @@
         computed: {
             filteredData() {
                 return this.genres.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase()))
+                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase()))
                 )
             },
 

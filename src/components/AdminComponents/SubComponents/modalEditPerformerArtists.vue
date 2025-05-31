@@ -13,7 +13,7 @@
                                     <select v-model="artistToAdd" class="form-select" @change="addArtist">
                                         <option disabled value="">Selecione um artista</option>
                                         <option v-for="a in availableArtists" :key="a.id" :value="a.id">
-                                            {{ a.nome }}
+                                            {{ a.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -30,11 +30,11 @@
                                         <tr v-for="artist in pagedSelectedArtists"
                                             :key="artist.id">
                                             <td @click="removeArtist(artist.id)" title="Clique para remover">
-                                                {{ artist.nome }}
+                                                {{ artist.name }}
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox"
-                                                       v-model="artist.membroAtual"
+                                                       v-model="artist.activeMember"
                                                        title="Membro atual" />
                                             </td>
                                         </tr>
@@ -119,10 +119,10 @@
                 immediate: true,
                 handler(performerDetails) {
                     if (performerDetails) {
-                        this.selectedArtists = (performerDetails.artistas || []).map((p) => ({
+                        this.selectedArtists = (performerDetails.artists || []).map((p) => ({
                             id: p.id,
-                            nome: p.nome,
-                            membroAtual: p.ativo ?? false,
+                            name: p.name,
+                            activeMember: p.activeMember ?? false,
                         })) || [];
                     } else {
                         this.selectedArtists = [];
@@ -155,8 +155,8 @@
                 if (artist) {
                     this.selectedArtists.push({
                         id: artist.id,
-                        nome: artist.nome,
-                        membroAtual: true,
+                        name: artist.name,
+                        activeMember: true,
                     });
                     this.artistToAdd = "";
                     this.paginationPage = this.pageCount;
@@ -181,7 +181,7 @@
                         PerformerId: this.performerDetails.id,
                         Artists: this.selectedArtists.map((p) => ({
                             ArtistId: p.id,
-                            IsMember: p.membroAtual,
+                            ActiveMember: p.activeMember,
                         })),
                     });
 

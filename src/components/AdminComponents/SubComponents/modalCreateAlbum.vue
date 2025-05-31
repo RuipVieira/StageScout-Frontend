@@ -45,8 +45,8 @@
             async create() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateAlbum', {
-                        Nome: this.albumName,
-                        AnoLancamento: this.albumYear
+                        Name: this.albumName,
+                        ReleaseYear: this.albumYear
                     });
 
                     Swal.fire('Sucesso', 'Album criado com sucesso!', 'success');

@@ -18,7 +18,7 @@
                                 <label for="selectedDistrictCountry" class="form-label">País</label>
                                 <select id="selectedDistrictCountry" v-model="selectedDistrictCountry" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
                             </div>
@@ -66,8 +66,8 @@
                 immediate: true,
                 handler(district) {
                     if (district) {
-                        this.selectedDistrictName = district.nome || "";
-                        this.selectedDistrictCountry = district.pais?.id || '';
+                        this.selectedDistrictName = district.name || "";
+                        this.selectedDistrictCountry = district.country?.id || '';
                     } else {
                         this.selectedDistrictName = "";
                         this.selectedDistrictCountry = '';
@@ -91,9 +91,9 @@
             async Edit() {
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditDistrict", {
-                        NaturalidadeId: this.district?.id,
-                        Nome: this.selectedDistrictName,
-                        NacionalidadeId: this.selectedDistrictCountry
+                        DistrictId: this.district?.id,
+                        Name: this.selectedDistrictName,
+                        NationalityId: this.selectedDistrictCountry
                     });
 
                     Swal.fire("Sucesso", "Localização atualizada com sucesso!", "success");

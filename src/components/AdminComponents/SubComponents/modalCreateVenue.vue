@@ -11,17 +11,17 @@
                                 <label for="venueName" class="form-label">Nome</label>
                                 <input type="text" v-model="venueName" id="venueName" class="form-control" required>
 
-                                <label for="venueNacionalidade" class="form-label">País</label>
-                                <select id="venueNacionalidade" v-model="venueNacionalidade" class="form-control">
+                                <label for="VenueNationality" class="form-label">País</label>
+                                <select id="VenueNationality" v-model="VenueNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
-                                <label for="venueNaturalidade" class="form-label">Distrito</label>
-                                <select id="venueNaturalidade" v-model="venueNaturalidade" class="form-control" :disabled="!venueNacionalidade">
+                                <label for="venueDistrict" class="form-label">Distrito</label>
+                                <select id="venueDistrict" v-model="venueDistrict" class="form-control" :disabled="!VenueNationality">
                                     >
                                     <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
-                                        {{ district.descricao }}
+                                        {{ district.name }}
                                     </option>
                                 </select>
                             </div>
@@ -50,8 +50,8 @@
                 selectedNationDistricts: [],
                 nationsList: [],
                 venueName: '',
-                venueNacionalidade: '',
-                venueNaturalidade: ''
+                VenueNationality: '',
+                venueDistrict: ''
             };
         },
         watch: {
@@ -60,7 +60,7 @@
                     this.GetNations();
                 }
             },
-            venueNacionalidade(newVal) {
+            VenueNationality(newVal) {
                 const selectedNation = this.nationsList.find(nation => nation.id === newVal);
                 this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
             }
@@ -79,8 +79,8 @@
             async create() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateVenue', {
-                        Nome: this.venueName,
-                        NaturalidadeId: this.venueNaturalidade
+                        Name: this.venueName,
+                        DistrictId: this.venueDistrict
                     });
 
                     Swal.fire('Sucesso', 'Localização criada com sucesso!', 'success');
@@ -93,8 +93,8 @@
             },
             closeCreateVenueModal() {
                 this.VenueName = '';
-                this.VenueNacionalidade = '';
-                this.VenueNaturalidade = '';
+                this.VenueNationality = '';
+                this.venueDistrict = '';
                 this.$emit('closeCreateVenueModal');
             },
         }

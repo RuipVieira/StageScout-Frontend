@@ -67,7 +67,7 @@
                 immediate: true,
                 handler(promoter) {
                     if (promoter) {
-                        this.selectedPromoterName = promoter.nome || "";
+                        this.selectedPromoterName = promoter.name || "";
                         this.selectedPromoterUserEmail = promoter.accountEmail || '';
                     } else {
                         this.selectedPromoterName = "";
@@ -91,7 +91,7 @@
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditPromoter", {
                         PromoterId: this.promoter?.id,
-                        Nome: this.selectedPromoterName.trim(),
+                        Name: this.selectedPromoterName.trim(),
                         Email: this.selectedPromoterUserEmail,
                     });
 

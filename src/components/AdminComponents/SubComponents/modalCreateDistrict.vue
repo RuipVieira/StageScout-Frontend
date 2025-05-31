@@ -11,10 +11,10 @@
                                 <label for="districtName" class="form-label">Nome</label>
                                 <input type="text" v-model="districtName" id="districtName" class="form-control" required>
 
-                                <label for="districtNacionalidade" class="form-label">País</label>
-                                <select id="districtNacionalidade" v-model="districtNacionalidade" class="form-control">
+                                <label for="districtNationality" class="form-label">País</label>
+                                <select id="districtNationality" v-model="districtNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
                             </div>
@@ -42,7 +42,7 @@
             return {
                 nationsList: [],
                 districtName: '',
-                districtNacionalidade: '',
+                districtNationality: '',
             };
         },
         watch: {
@@ -66,8 +66,8 @@
             async create() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateDistrict', {
-                        Nome: this.districtName,
-                        NacionalidadeId: this.districtNacionalidade
+                        Name: this.districtName,
+                        NationalityId: this.districtNationality
                     });
 
                     Swal.fire('Sucesso', 'Naturalidade criada com sucesso!', 'success');

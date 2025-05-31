@@ -11,8 +11,8 @@
                                 <label for="artistName" class="form-label">Nome</label>
                                 <input type="text" v-model="artistName" id="artistName" class="form-control" required>
 
-                                <label for="artistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="artistNacionalidade" v-model="artistNacionalidade" class="form-control">
+                                <label for="artistNationality" class="form-label">Nacionalidade</label>
+                                <select id="artistNationality" v-model="artistNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
                                         {{ nation.descricao }}
                                     </option>
@@ -42,7 +42,7 @@
             return {
                 nationsList: [],
                 artistName: '',
-                artistNacionalidade: '',
+                artistNationality: '',
             };
         },
         watch: {
@@ -66,8 +66,8 @@
             async create() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
-                        Nome: this.artistName,
-                        NacionalidadeId: this.artistNacionalidade
+                        Name: this.artistName,
+                        NacionalidadeId: this.artistNationality
                     });
 
                     Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');
@@ -80,7 +80,7 @@
             },
             closeCreateArtistModal() {
                 this.artistName = '';
-                this.artistNacionalidade = '';
+                this.artistNationality = '';
                 this.$emit('closeCreateArtistModal');
             },
         }

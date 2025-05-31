@@ -30,7 +30,7 @@
                                     <select v-model="performerToAdd" class="form-select" @change="addPerformer">
                                         <option disabled value="">Selecione um performer</option>
                                         <option v-for="p in availablePerformers" :key="p.id" :value="p.id">
-                                            {{ p.nome }}
+                                            {{ p.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -47,7 +47,7 @@
                                             :key="performer.id"
                                             @click="removePerformer(performer.id)"
                                             title="Clique para remover">
-                                            <td>{{ performer.nome }}</td>
+                                            <td>{{ performer.name }}</td>
                                         </tr>
                                         <tr v-if="pagedSelectedPerformers.length === 0">
                                             <td class="text-center">Nenhum performer selecionado</td>
@@ -134,12 +134,12 @@
                 immediate: true,
                 handler(album) {
                     if (album) {
-                        this.selectedAlbumName = album.nome || "";
-                        this.selectedAlbumYear = album.anoLancamento || "";
+                        this.selectedAlbumName = album.name || "";
+                        this.selectedAlbumYear = album.releaseYear || "";
                         this.selectedPerformers =
                             (album.albumPerformers || []).map((p) => ({
                                 id: p.id,
-                                nome: p.nome,
+                                name: p.name,
                             })) || [];
                     } else {
                         this.selectedAlbumName = "";
@@ -197,8 +197,8 @@
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditAlbum", {
                         AlbumId: this.album?.id,
-                        Nome: this.selectedAlbumName,
-                        AnoLancamento: this.selectedAlbumYear,
+                        Name: this.selectedAlbumName,
+                        ReleaseYear: this.selectedAlbumYear,
                         Performers: this.selectedPerformers.map((p) => p.id),
                     });
 

@@ -2,7 +2,7 @@
     <div class="page-content-container py-4 px-3">
         <div class="card shadow-sm mb-4 fixed-card-top">
             <div class="card-header">
-                <h5 class="mb-0">{{ event.nome }}</h5>
+                <h5 class="mb-0">{{ event.name }}</h5>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -10,19 +10,19 @@
                         <h6>Informação Geral</h6>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Promotora</label>
-                            <div class="text-muted">{{ event.promotora }}</div>
+                            <div class="text-muted">{{ event.promoter }}</div>
                         </div>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Local</label>
-                            <div class="text-muted">{{ event.local }}</div>
+                            <div class="text-muted">{{ event.venue }}</div>
                         </div>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Datas</label>
-                            <div class="text-muted">{{ event.dataInicio }} - {{ event.dataFim }}</div>
+                            <div class="text-muted">{{ event.startDate }} - {{ event.endDate }}</div>
                         </div>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Estado</label>
-                            <div class="text-muted">{{ event.estado }}</div>
+                            <div class="text-muted">{{ event.venue }}</div>
                         </div>
                         <div class="btn-container">
                             <button v-if="followerState" type="button" class="btn btn-danger btn-cancelar" @click="ToggleFollowState">Deixar de Seguir</button>
@@ -49,14 +49,14 @@
 
                     <div class="col-md-3 border-start">
                         <h6>Palcos</h6>
-                        <el-table empty-text="Nenhum dado disponível" :data="paginatedPalcos" class="short-table" size="small" border>
-                            <el-table-column prop="nome" label="Nome" />
+                        <el-table empty-text="Nenhum dado disponível" :data="paginatedStages" class="short-table" size="small" border>
+                            <el-table-column prop="name" label="Nome" />
                         </el-table>
                         <el-pagination layout="prev, pager, next"
-                                       :total="event.palcos.length"
-                                       :page-size="palcosPagination.pageSize"
-                                       :current-page="palcosPagination.page"
-                                       @current-change="onPalcosPageChange"
+                                       :total="event.stages.length"
+                                       :page-size="stagesPagination.pageSize"
+                                       :current-page="stagesPagination.page"
+                                       @current-change="onStagesPageChange"
                                        size="small" />
 
                         <div class="btn-container">
@@ -67,35 +67,35 @@
             </div>
         </div>
 
-        <div v-if="event.estado === 'Concluído'" style="height: 100%;" class="card shadow-sm fixed-card">
+        <div v-if="event.state === 'Concluído'" style="height: 100%;" class="card shadow-sm fixed-card">
             <div class="card-header">
                 <h6 class="mb-0">Avaliações</h6>
             </div>
             <div class="card-body">
-                <el-table empty-text="Nenhum dado disponível" :data="paginatedAvaliacoes" size="small" border>
-                    <el-table-column prop="nomeAvaliador" label="Nome" />
-                    <el-table-column prop="dataSubmissao"
+                <el-table empty-text="Nenhum dado disponível" :data="paginatedReviews" size="small" border>
+                    <el-table-column prop="reviewer" label="Nome" />
+                    <el-table-column prop="submissionDate"
                                      label="Data"
                                      width="90">
                         <template #default="{ row }">
-                            {{ new Date(row.dataSubmissao).toLocaleDateString() }}
+                            {{ new Date(row.submissionDate).toLocaleDateString() }}
                         </template>
                     </el-table-column>
                     <el-table-column label="Cartaz" width="130">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingCartaz" disabled :max="5" />
+                            <el-rate :model-value="row.ratingLineup" disabled :max="5" />
                         </template>
                     </el-table-column>
 
                     <el-table-column label="Organização" width="130">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingOrganizacao" disabled :max="5" />
+                            <el-rate :model-value="row.ratingOrganization" disabled :max="5" />
                         </template>
                     </el-table-column>
 
                     <el-table-column label="Acessos" width="130">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingAcessos" disabled :max="5" />
+                            <el-rate :model-value="row.ratingInfrastructure" disabled :max="5" />
                         </template>
                     </el-table-column>
 
@@ -107,8 +107,8 @@
                     <el-table-column prop="performerMVP" label="Melhor Performance" />
                     <el-table-column label="Observações">
                         <template #default="{ row }">
-                            <el-tooltip class="item" effect="dark" :content="row.observacoes" placement="top">
-                                <span class="truncate-text">{{ row.observacoes }}</span>
+                            <el-tooltip class="item" effect="dark" :content="row.observations" placement="top">
+                                <span class="truncate-text">{{ row.observations }}</span>
                             </el-tooltip>
                         </template>
                     </el-table-column>
@@ -117,10 +117,10 @@
                     <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-danger btn-cancelar" @click="openSubmitReviewModal()">Avaliar</button>
                 </div>
                 <el-pagination layout="prev, pager, next"
-                               :total="event.avaliacoes.length"
-                               :page-size="avaliacoesPagination.pageSize"
-                               :current-page="avaliacoesPagination.page"
-                               @current-change="onAvaliacoesPageChange"
+                               :total="event.reviews.length"
+                               :page-size="reviewsPagination.pageSize"
+                               :current-page="reviewsPagination.page"
+                               @current-change="onReviewsPageChange"
                                size="small" />
             </div>
         </div>
@@ -158,14 +158,14 @@
                 authState,
                 modalEventCalendarActive: false,
                 modalSubmitReviewActive: false,
-                avaliacoesPagination: { page: 1, pageSize: 4 },
+                reviewsPagination: { page: 1, pageSize: 4 },
                 performersPagination: { page: 1, pageSize: 6 },
-                palcosPagination: { page: 1, pageSize: 4 },
+                stagesPagination: { page: 1, pageSize: 4 },
                 followerState: false,
                 event: {
                     performers: [],
-                    palcos: [],
-                    avaliacoes: []
+                    stages: [],
+                    reviews: []
                 }
             };
         },
@@ -179,24 +179,24 @@
                 const start = (this.performersPagination.page - 1) * this.performersPagination.pageSize;
                 return this.event.performers.slice(start, start + this.performersPagination.pageSize);
             },
-            paginatedPalcos() {
-                const start = (this.palcosPagination.page - 1) * this.palcosPagination.pageSize;
-                return this.event.palcos.slice(start, start + this.palcosPagination.pageSize);
+            paginatedStages() {
+                const start = (this.stagesPagination.page - 1) * this.stagesPagination.pageSize;
+                return this.event.stages.slice(start, start + this.stagesPagination.pageSize);
             },
-            paginatedAvaliacoes() {
-                const start = (this.avaliacoesPagination.page - 1) * this.avaliacoesPagination.pageSize;
-                return this.event.avaliacoes.slice(start, start + this.avaliacoesPagination.pageSize);
+            paginatedReviews() {
+                const start = (this.reviewsPagination.page - 1) * this.reviewsPagination.pageSize;
+                return this.event.reviews.slice(start, start + this.reviewsPagination.pageSize);
             }
         },
         methods: {
-            onAvaliacoesPageChange(page) {
-                this.avaliacoesPagination.page = page;
+            onReviewsPageChange(page) {
+                this.reviewsPagination.page = page;
             },
             onPerformersPageChange(page) {
                 this.performersPagination.page = page;
             },
-            onPalcosPageChange(page) {
-                this.palcosPagination.page = page;
+            ontagesPageChange(page) {
+                this.stagesPagination.page = page;
             },
             GoToPerformerDetails(row) {
                 this.$router.push({ name: 'PerformerDetails', params: { id: row.id } });
@@ -232,8 +232,8 @@
 
                     this.event = response.data || {
                         performers: [],
-                        palcos: [],
-                        avaliacoes: []
+                        stages: [],
+                        reviews: []
                     };
                     console.log(this.event);
                 } catch (error) {
@@ -248,7 +248,7 @@
                         ProfileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor === true) {
+                    if (response.data.following === true) {
                         this.followerState = true;
                         Swal.fire('Sucesso', 'Começou a seguir este evento.', 'success');
                     } else {
@@ -267,7 +267,7 @@
                         ProfileId: localStorage.getItem('profileId')
                     });
 
-                    this.followerState = response.data.seguidor === true;
+                    this.followerState = response.data.observations === true;
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');

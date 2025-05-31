@@ -14,17 +14,17 @@
                                 <label for="performerYear" class="form-label">Ano de Formação</label>
                                 <input type="number" v-model="performerYear" id="performerYear" class="form-control" required min="1200" step="1">
 
-                                <label for="performerNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="performerNacionalidade" v-model="performerNacionalidade" class="form-control">
+                                <label for="performerNationality" class="form-label">Nacionalidade</label>
+                                <select id="performerNationality" v-model="performerNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
 
-                                <label for="performerGeneroMusical" class="form-label">Género Musical</label>
-                                <select id="performerGeneroMusical" v-model="performerGeneroMusical" class="form-control">
+                                <label for="performerGenre" class="form-label">Género Musical</label>
+                                <select id="performerGenre" v-model="performerGenre" class="form-control">
                                     <option v-for="genre in genresList" :key="genre.id" :value="genre.id">
-                                        {{ genre.nome }}
+                                        {{ genre.name }}
                                     </option>
                                 </select>
                             </div>
@@ -55,9 +55,9 @@
                 nationsList: [],
                 genresList: [],
                 performerName: '',
-                performerNacionalidade: '',
+                performerNationality: '',
                 performerYear: '',
-                performerGeneroMusical: '',
+                performerGenre: '',
             };
         },
         watch: {
@@ -77,12 +77,12 @@
         methods: {
             populatePerformerData() {
                 if (this.performerDetails) {
-                    this.performerName = this.performerDetails.nome || '';
-                    this.performerYear = this.performerDetails.anoFormacao || '';
-                    const country = this.nationsList.find(v => v.descricao === this.performerDetails.nacionalidade);
-                    this.performerNacionalidade = country ? country.id : "";
-                    const genre = this.genresList.find(v => v.nome === this.performerDetails.generoMusical);
-                    this.performerGeneroMusical = genre ? genre.id : "";
+                    this.performerName = this.performerDetails.name || '';
+                    this.performerYear = this.performerDetails.yearFormed || '';
+                    const country = this.nationsList.find(v => v.name === this.performerDetails.nationality);
+                    this.performerNationality = country ? country.id : "";
+                    const genre = this.genresList.find(v => v.name === this.performerDetails.genre);
+                    this.performerGenre = genre ? genre.id : "";
                 }
             },
             async GetNations() {
@@ -112,10 +112,10 @@
                     console.log(this.performerDetails);
                     await axios.post('https://localhost:7216/api/Admin/EditPerformerInformation', {
                         PerformerId: this.performerDetails.id,
-                        Nome: this.performerName,
-                        AnoFormacao: this.performerYear,
-                        NacionalidadeId: this.performerNacionalidade,
-                        GeneroMusicalId: this.performerGeneroMusical,                        
+                        Name: this.performerName,
+                        YearFormed: this.performerYear,
+                        NationalityId: this.performerNationality,
+                        GenreId: this.performerGenre,                        
                     });
 
                     Swal.fire('Sucesso', 'Performer editado com sucesso!', 'success');

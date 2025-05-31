@@ -11,7 +11,7 @@
                                 <label for="epName" class="form-label">Performer</label>
                                 <select id="epName" v-model="epName" class="form-control">
                                     <option v-for="performer in performersList" :key="performer.id" :value="performer.id">
-                                        {{ performer.nome }}
+                                        {{ performer.name }}
                                     </option>
                                 </select>
 
@@ -122,12 +122,12 @@
             async edit() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/EditEventPerformer', {
-                        EventoPerformerId: this.eventPerformerId,
-                        EventoId: this.eventDetails.id,
+                        EventPerformerId: this.eventPerformerId,
+                        EventId: this.eventDetails.id,
                         PerformerId: this.epName,
-                        Data: this.epDate,
-                        Hora: this.epHour,
-                        PalcoId: this.epStage,
+                        Date: this.epDate,
+                        Time: this.epHour,
+                        StageId: this.epStage,
                     });
 
                     Swal.fire('Sucesso', 'Performer adicionado com sucesso!', 'success');

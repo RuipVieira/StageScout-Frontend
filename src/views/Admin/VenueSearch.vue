@@ -28,26 +28,26 @@
                           stripe
                           style="width: 100%; min-width: 1200px;"
                           class="mb-4">
-                    <el-table-column prop="nome"
+                    <el-table-column prop="name"
                                      label="Nome"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.nome">{{ scope.row.nome }}</span>
+                            <span v-if="scope.row.name">{{ scope.row.name }}</span>
                             <span v-else-if="!paginatedData.length" class="text-muted">Nenhum dado disponível</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="pais"
+                    <el-table-column prop="country"
                                      label="País"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.pais.nome">{{ scope.row.pais.nome }}</span>
+                            <span v-if="scope.row.country.name">{{ scope.row.country.name }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="district"
                                      label="Distrito"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.distrito.nome">{{ scope.row.distrito.nome }}</span>
+                            <span v-if="scope.row.district.name">{{ scope.row.district.name }}</span>
                         </template>
                     </el-table-column>
 
@@ -133,9 +133,9 @@
         computed: {
             filteredData() {
                 return this.venues.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.nationality || e.pais.nome.toLowerCase().includes(this.filters.nationality.toLowerCase())) &&
-                    (!this.filters.district || e.distrito.nome.toLowerCase().includes(this.filters.district.toLowerCase()))
+                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.nationality || e.country.name.toLowerCase().includes(this.filters.nationality.toLowerCase())) &&
+                    (!this.filters.district || e.district.name.toLowerCase().includes(this.filters.district.toLowerCase()))
                 )
             },
 
@@ -188,7 +188,7 @@
             deleteVenue(id) {
                 Swal.fire({
                     title: 'Aviso!',
-                    text: "Tem a certeza que pretende remover este Género?",
+                    text: "Tem a certeza que pretende remover esta Localização?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -200,7 +200,7 @@
                         try {
                             await axios.delete(`https://localhost:7216/api/Admin/DeleteVenue/${id}`);
                             this.fetchVenues()
-                            Swal.fire('Aviso!', 'Género Musical apagado com sucesso.', 'success')
+                            Swal.fire('Aviso!', 'Localização apagada com sucesso.', 'success')
                         } catch (error) {
                             const message = error.response?.data?.message || 'Erro ao apagar. Tente novamente.'
                             Swal.fire('Erro', message, 'error')

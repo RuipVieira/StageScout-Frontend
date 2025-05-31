@@ -31,14 +31,14 @@
             </form>
 
             <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToEventDetails">
-                <el-table-column prop="nome" label="Nome" />
-                <el-table-column prop="local" label="Local" />
-                <el-table-column prop="dataInicio" label="Data de Início" />
-                <el-table-column prop="dataFim" label="Data de Fim" />
-                <el-table-column prop="estado" label="Estado" />
-                <el-table-column prop="terminado" label="A Decorrer">
+                <el-table-column prop="name" label="Nome" />
+                <el-table-column prop="venue" label="Local" />
+                <el-table-column prop="startDate" label="Data de Início" />
+                <el-table-column prop="endDate" label="Data de Fim" />
+                <el-table-column prop="state" label="Estado" />
+                <el-table-column prop="isFinished" label="A Decorrer">
                     <template #default="{ row }">
-                        <span>{{ row.terminado ? 'Não' : 'Sim' }}</span>
+                        <span>{{ row.isFinished ? 'Não' : 'Sim' }}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -74,8 +74,7 @@
                     name: '',
                     location: '',
                     state: '',
-                    performer: '',
-                    isOngoing: false
+                    isFinished: false
                 }
             }
         },
@@ -83,11 +82,10 @@
         computed: {
             filteredData() {
                 return this.events.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.location || e.local.toLowerCase().includes(this.filters.location.toLowerCase())) &&
-                    (!this.filters.state || e.estado.toLowerCase().includes(this.filters.state.toLowerCase())) &&
-                    (!this.filters.performer || e.nomeArtista?.toLowerCase().includes(this.filters.performer.toLowerCase())) &&
-                    (!this.filters.isOngoing || e.terminado === false)
+                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.location || e.venue.toLowerCase().includes(this.filters.venue.toLowerCase())) &&
+                    (!this.filters.state || e.state.toLowerCase().includes(this.filters.state.toLowerCase())) &&
+                    (!this.filters.isFinished || e.isFinished === false)
                 )
             },
 
@@ -117,8 +115,7 @@
                     name: '',
                     location: '',
                     state: '',
-                    performer: '',
-                    isOngoing: false
+                    isFinished: false
                 }
             },
             GoToEventDetails(row) {

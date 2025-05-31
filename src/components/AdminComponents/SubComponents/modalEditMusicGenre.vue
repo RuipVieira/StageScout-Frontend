@@ -52,7 +52,7 @@
                 immediate: true,
                 handler(genre) {
                     if (genre) {
-                        this.selectedMusicGenreName = genre.nome || "";
+                        this.selectedMusicGenreName = genre.name || "";
                     } else {
                         this.selectedMusicGenreName = "";
                     }
@@ -63,8 +63,8 @@
             async Edit() {
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditMusicGenre", {
-                        GeneroMusicalId: this.genre?.id,
-                        Nome: this.selectedMusicGenreName,
+                        GenreId: this.genre?.id,
+                        Name: this.selectedMusicGenreName,
                     });
 
                     Swal.fire("Sucesso", "Género atualizado com sucesso!", "success");

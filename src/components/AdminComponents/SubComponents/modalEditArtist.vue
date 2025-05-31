@@ -15,10 +15,10 @@
                                        class="form-control"
                                        required />
 
-                                <label for="selectedArtistNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="selectedArtistNacionalidade" v-model="selectedArtistNacionalidade" class="form-control">
+                                <label for="selectedArtistNationality" class="form-label">Nacionalidade</label>
+                                <select id="selectedArtistNationality" v-model="selectedArtistNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
 
@@ -28,7 +28,7 @@
                                     <select v-model="performerToAdd" class="form-select" @change="addPerformer">
                                         <option disabled value="">Selecione um performer</option>
                                         <option v-for="p in availablePerformers" :key="p.id" :value="p.id">
-                                            {{ p.nome }}
+                                            {{ p.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -45,7 +45,7 @@
                                         <tr v-for="performer in pagedSelectedPerformers"
                                             :key="performer.id">
                                             <td @click="removePerformer(performer.id)" title="Clique para remover">
-                                                {{ performer.nome }}
+                                                {{ performer.name }}
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox"
@@ -113,7 +113,7 @@
             return {
                 nationsList: [],
                 selectedArtistName: "",
-                selectedArtistNacionalidade: "",
+                selectedArtistNationality: "",
                 allPerformers: [],
                 selectedPerformers: [],
                 performerToAdd: "",
@@ -144,16 +144,16 @@
                 immediate: true,
                 handler(artist) {
                     if (artist) {
-                        this.selectedArtistName = artist.nome || "";
-                        this.selectedArtistNacionalidade = artist.nacionalidade.id || "";
+                        this.selectedArtistName = artist.name || "";
+                        this.selectedArtistNationality = artist.nationality.id || "";
                         this.selectedPerformers = (artist.performers || []).map((p) => ({
                             id: p.id,
-                            nome: p.nome,
-                            membroAtual: p.membroAtual ?? false,
+                            name: p.name,
+                            activeMember: p.activeMember ?? false,
                         })) || [];
                     } else {
                         this.selectedArtistName = "";
-                        this.selectedArtistNacionalidade = "";
+                        this.selectedArtistNationality = "";
                         this.selectedPerformers = [];
                     }
                     this.paginationPage = 1;
@@ -194,8 +194,8 @@
                 if (performer) {
                     this.selectedPerformers.push({
                         id: performer.id,
-                        nome: performer.nome,
-                        membroAtual: true, 
+                        name: performer.name,
+                        activeMember: true, 
                     });
                     this.performerToAdd = "";
                     this.paginationPage = this.pageCount;
@@ -221,11 +221,11 @@
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditArtist", {
                         ArtistId: this.artist?.id,
-                        Nome: this.selectedArtistName,
-                        NacionalidadeId: this.selectedArtistNacionalidade,
+                        Name: this.selectedArtistName,
+                        NationalityId: this.selectedArtistNationality,
                         Performers: this.selectedPerformers.map((p) => ({
                             PerformerId: p.id,
-                            MembroAtual: p.membroAtual,
+                            ActiveMember: p.activeMember,
                         })),
                     });
 

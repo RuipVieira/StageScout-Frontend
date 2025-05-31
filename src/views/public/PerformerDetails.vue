@@ -1,26 +1,24 @@
 <template>
     <div class="page-content-container py-4 px-3">
-        <!-- Top Card: Group Info and Tables -->
         <div class="card shadow-sm mb-4 fixed-card-top">
             <div class="card-header">
-                <h5 class="mb-0">{{ group.nome }}</h5>
+                <h5 class="mb-0">{{ group.name }}</h5>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <!-- Left: General Info -->
                     <div class="col-md-4">
                         <h6>Informação Geral</h6>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Género</label>
-                            <div class="text-muted">{{ group.generoMusical }}</div>
+                            <div class="text-muted">{{ group.genre }}</div>
                         </div>
                         <div class="mb-2">
                             <label class="form-label mb-0 small">Origem</label>
-                            <div class="text-muted">{{ group.nacionalidade }}</div>
+                            <div class="text-muted">{{ group.nationality }}</div>
                         </div>
                         <div class="mb-2">
-                            <label class="form-label mb-0 small">Ano de Fundação</label>
-                            <div class="text-muted">{{ group.anoFormacao }}</div>
+                            <label class="form-label mb-0 small">Ano de Formação</label>
+                            <div class="text-muted">{{ group.yearFormed }}</div>
                         </div>
                         <div class="btn-container" style="margin-top: 50px;">
                             <button v-if="followerState" type="button" class="btn btn-danger btn-cancelar" @click="ToggleFollowState">Deixar de Seguir</button>
@@ -28,31 +26,29 @@
                         </div>
                     </div>
 
-                    <!-- Middle: Band Members Table -->
                     <div class="col-md-4 border-start">
                         <h6>Membros</h6>
                         <el-table :data="pagedMembers" empty-text="Nenhum dado disponível" class="short-table" style="width: 100%" size="small" border>
-                            <el-table-column prop="nome" label="Nome" />
-                            <el-table-column prop="nacionalidade" label="Nacionalidade" />
-                            <el-table-column prop="ativo" label="Membro Atual">
+                            <el-table-column prop="name" label="Nome" />
+                            <el-table-column prop="nationality" label="Nacionalidade" />
+                            <el-table-column prop="activeMember" label="Membro Atual">
                                 <template #default="{ row }">
-                                    <span>{{ row.ativo ? 'Sim' : 'Não' }}</span>
+                                    <span>{{ row.activeMember ? 'Sim' : 'Não' }}</span>
                                 </template>
                             </el-table-column>
                         </el-table>
                         <el-pagination layout="prev, pager, next" size="small"
                                        :current-page="membersPagination.page"
                                        :page-size="membersPagination.pageSize"
-                                       :total="group.artistas.length"
+                                       :total="group.artists.length"
                                        @current-change="onMembersPageChange" />
                     </div>
 
-                    <!-- Right: Albums Table -->
                     <div class="col-md-4 border-start">
                         <h6>Álbuns</h6>
                         <el-table :data="pagedAlbums" empty-text="Nenhum dado disponível" class="short-table" style="width: 100%" size="small" border>
-                            <el-table-column prop="titulo" label="Título" />
-                            <el-table-column prop="anoLancamento" label="Ano Lançamento" />
+                            <el-table-column prop="title" label="Título" />
+                            <el-table-column prop="releaseYear" label="Ano Lançamento" />
                         </el-table>
                         <el-pagination layout="prev, pager, next" size="small"
                                        :current-page="albumsPagination.page"
@@ -64,7 +60,6 @@
             </div>
         </div>
 
-        <!-- Bottom Card: Upcoming Events -->
         <div class="card shadow-sm fixed-card" style="height: 100%;">
             <div class="card-header">
                 <h6 class="mb-0">Próximos Eventos</h6>
@@ -72,15 +67,15 @@
             <div class="card-body">
                 <el-table :data="pagedEvents" empty-text="Nenhum dado disponível" style="width: 100%" @row-click="GoToEventDetails">
                     <el-table-column prop="id" label="id" v-if="false" />
-                    <el-table-column prop="nome" label="Nome" />
-                    <el-table-column prop="local" label="Local" />
-                    <el-table-column prop="dataInicio" label="Data de Início" />
-                    <el-table-column prop="dataFim" label="Data de Fim" />
+                    <el-table-column prop="name" label="Nome" />
+                    <el-table-column prop="venue" label="Local" />
+                    <el-table-column prop="startDate" label="Data de Início" />
+                    <el-table-column prop="endDate" label="Data de Fim" />
                 </el-table>
                 <el-pagination layout="prev, pager, next"
                                :current-page="eventsPagination.page"
                                :page-size="eventsPagination.pageSize"
-                               :total="group.eventosMarcados.length"
+                               :total="group.scheduledEvents.length"
                                @current-change="onEventsPageChange" />
             </div>
         </div>
@@ -154,7 +149,7 @@
                         profileId: localStorage.getItem('profileId')
                     });
 
-                    if (response.data.seguidor === true) {
+                    if (response.data.following === true) {
                         this.followerState = true;
                         Swal.fire('Sucesso', 'Começou a seguir este Performer.', 'success');
                     } else {

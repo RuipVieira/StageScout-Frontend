@@ -8,10 +8,10 @@
                         <h2 class="mb-3 text-center">Novo Performer</h2>
                         <form @submit.prevent="edit">
                             <div class="form-control form-container text-center">
-                                <label for="performerName" class="form-label">Performer</label>
-                                <select id="performerName" v-model="performerName" class="form-control">
+                                <label for="performerId" class="form-label">Performer</label>
+                                <select id="performerId" v-model="performerId" class="form-control">
                                     <option v-for="performer in performersList" :key="performer.id" :value="performer.id">
-                                        {{ performer.nome }}
+                                        {{ performer.name }}
                                     </option>
                                 </select>
 
@@ -62,7 +62,7 @@
             return {
                 performersList: [],
                 stagesList: [],
-                performerName: '',
+                performerId: '',
                 performerDate: '',
                 performerHour: '',
                 performerStage: '',
@@ -103,7 +103,7 @@
                 try {
                     await axios.post('https://localhost:7216/api/Admin/AddEventPerformer', {
                         EventoId: this.eventDetails.id,
-                        PerformerId: this.performerName,
+                        PerformerId: this.performerId,
                         Data: this.performerDate,
                         Hora: this.performerHour,
                         PalcoId: this.performerStage,
@@ -118,7 +118,7 @@
                 }
             },
             closeAddPerformerModal() {
-                this.performerName = '';
+                this.performerId = '';
                 this.performerDate = '';
                 this.performerHour = '';
                 this.performerStage = '';

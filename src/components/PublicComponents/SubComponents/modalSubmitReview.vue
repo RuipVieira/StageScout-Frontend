@@ -11,17 +11,17 @@
                             <div class="form-control form-container">
                                 <div class="rating-row">
                                     <label class="form-label">Cartaz</label>
-                                    <el-rate v-model="ratingCartaz" :max="5" />
+                                    <el-rate v-model="ratingLineup" :max="5" />
                                 </div>
 
                                 <div class="rating-row">
                                     <label class="form-label">Organização</label>
-                                    <el-rate v-model="ratingOrganizacao" :max="5" />
+                                    <el-rate v-model="ratingOrganization" :max="5" />
                                 </div>
 
                                 <div class="rating-row">
                                     <label class="form-label">Acessos</label>
-                                    <el-rate v-model="ratingAcessos" :max="5" />
+                                    <el-rate v-model="ratingInfrastructure" :max="5" />
                                 </div>
 
                                 <div class="rating-row">
@@ -33,13 +33,13 @@
                                 <select v-model="performerMVP" id="performerMVP" class="form-control" required>
                                     <option value="" disabled>Selecione um performer</option>
                                     <option v-for="performer in performersList" :key="performer.id" :value="performer.id">
-                                        {{ performer.nome }}
+                                        {{ performer.name }}
                                     </option>
                                 </select>
 
-                                <label for="observacoes" class="form-label mt-3">Observações</label>
-                                <textarea id="observacoes"
-                                          v-model="observacoes"
+                                <label for="observations" class="form-label mt-3">Observações</label>
+                                <textarea id="observations"
+                                          v-model="observations"
                                           class="form-control"
                                           rows="3"
                                           placeholder="Deixe aqui os seus comentários..."></textarea>
@@ -66,23 +66,23 @@
         props: ['modalSubmitReviewActive'],
         data() {
             return {
-                ratingCartaz: 0,
-                ratingOrganizacao: 0,
-                ratingAcessos: 0,
+                ratingLineup: 0,
+                ratingOrganization: 0,
+                ratingInfrastructure: 0,
                 ratingPerformers: 0,
                 performerMVP: '',
-                observacoes: '',
+                observations: '',
                 performersList: []
             };
         },
         methods: {
             closeSubmitReviewModal() {
-                this.ratingCartaz = 0;
-                this.ratingOrganizacao = 0;
-                this.ratingAcessos = 0;
+                this.ratingLineup = 0;
+                this.ratingOrganization = 0;
+                this.ratingInfrastructure = 0;
                 this.ratingPerformers = 0;
                 this.performerMVP = '';
-                this.observacoes = '';
+                this.observations = '';
                 this.$emit('submitReviewCompleted');
             },
             async fetchPerformers(eventId) {
@@ -99,9 +99,9 @@
             },
             async submitReview() {
                 if (
-                    this.ratingCartaz === 0 ||
-                    this.ratingOrganizacao === 0 ||
-                    this.ratingAcessos === 0 ||
+                    this.ratingLineup === 0 ||
+                    this.ratingOrganization === 0 ||
+                    this.ratingInfrastructure === 0 ||
                     this.ratingPerformers === 0
                 ) {
                     Swal.fire('Atenção', 'Preencha todas as classificações.', 'warning');
@@ -115,14 +115,14 @@
 
                 try {
                     await axios.post('https://localhost:7216/api/Events/SubmitReview', {
-                        PerfilId: localStorage.getItem('profileId'),
-                        ratingCartaz: this.ratingCartaz,
-                        ratingOrganizacao: this.ratingOrganizacao,
-                        ratingAcessos: this.ratingAcessos,
-                        ratingPerformers: this.ratingPerformers,
-                        performerMVP: this.performerMVP,
-                        observacoes: this.observacoes,
-                        EventoId: this.$route.params.id
+                        ProfileId: localStorage.getItem('profileId'),
+                        RatingLineup: this.ratingLineup,
+                        RatingOrganization: this.ratingOrganization,
+                        RatingInfrastructure: this.ratingInfrastructure,
+                        RatingPerformers: this.ratingPerformers,
+                        PerformerMVP: this.performerMVP,
+                        Observations: this.observations,
+                        EventId: this.$route.params.id
                     });
 
                     Swal.fire('Sucesso', 'Avaliação submetida com sucesso!', 'success');

@@ -30,11 +30,11 @@
                 </div>
             </form>
 
-            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToPerformerDetails" :default-sort="{ prop: 'nome', order: 'ascending' }">
-                <el-table-column prop="nome" label="Nome" width="540" />
-                <el-table-column prop="generoMusical" label="Género Musical" width="250" />
-                <el-table-column prop="nacionalidade" label="Nacionalidade" width="300" />
-                <el-table-column prop="anoFormacao" label="Ano de Formação" width="200" />
+            <el-table :data="paginatedData" empty-text="Nenhum dado disponível" stripe style="width: 100%;" class="mt-4" @row-click="GoToPerformerDetails" :default-sort="{ prop: 'name', order: 'ascending' }">
+                <el-table-column prop="name" label="Nome" width="540" />
+                <el-table-column prop="genre" label="Género Musical" width="250" />
+                <el-table-column prop="nationality" label="Nacionalidade" width="300" />
+                <el-table-column prop="yearFormed" label="Ano de Formação" width="200" />
             </el-table>
 
             <div class="mt-3 d-flex justify-content-center">
@@ -76,10 +76,10 @@
         computed: {
             filteredData() {
                 return this.performers.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.genre || e.nome.toLowerCase().includes(this.filters.genre.toLowerCase())) &&
-                    (!this.filters.foundingYear || e.anoFormacao?.toString().includes(this.filters.foundingYear)) &&
-                    (!this.filters.nationality || e.nacionalidade?.toLowerCase().includes(this.filters.nationality.toLowerCase()))
+                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.genre || e.name.toLowerCase().includes(this.filters.genre.toLowerCase())) &&
+                    (!this.filters.foundingYear || e.yearFormed?.toString().includes(this.filters.foundingYear)) &&
+                    (!this.filters.nationality || e.nationality?.toLowerCase().includes(this.filters.nationality.toLowerCase()))
                 )
             },
 

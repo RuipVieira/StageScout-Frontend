@@ -17,14 +17,14 @@
                                 <label for="performerNacionalidade" class="form-label">Nacionalidade</label>
                                 <select id="performerNacionalidade" v-model="performerNacionalidade" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
 
                                 <label for="performerGeneroMusical" class="form-label">Género Musical</label>
                                 <select id="performerGeneroMusical" v-model="performerGeneroMusical" class="form-control">
                                     <option v-for="genre in genresList" :key="genre.id" :value="genre.id">
-                                        {{ genre.nome }}
+                                        {{ genre.name }}
                                     </option>
                                 </select>
                             </div>
@@ -90,10 +90,10 @@
             async create() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreatePerformer', {
-                        Nome: this.performerName,
-                        NacionalidadeId: this.performerNacionalidade,
-                        AnoFormacao: this.performerYear,
-                        GeneroMusicalId: this.performerGeneroMusical
+                        Name: this.performerName,
+                        NationalityId: this.performerNacionalidade,
+                        YearFormed: this.performerYear,
+                        GenreId: this.performerGeneroMusical
                     });
 
                     Swal.fire('Sucesso', 'Performer criado com sucesso!', 'success');

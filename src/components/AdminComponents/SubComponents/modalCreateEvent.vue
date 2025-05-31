@@ -20,14 +20,14 @@
                                 <label for="eventPromoter" class="form-label">Promotora</label>
                                 <select id="eventPromoter" v-model="eventPromoter" class="form-control">
                                     <option v-for="promoter in promotersList" :key="promoter.id" :value="promoter.id">
-                                        {{ promoter.descricao }}
+                                        {{ promoter.name }}
                                     </option>
                                 </select>
 
                                 <label for="eventVenue" class="form-label">Localização</label>
                                 <select id="eventVenue" v-model="eventVenue" class="form-control">
                                     <option v-for="venue in venuesList" :key="venue.id" :value="venue.id">
-                                        {{ venue.nome }}
+                                        {{ venue.name }}
                                     </option>
                                 </select>
                             </div>
@@ -101,11 +101,11 @@
 
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateEvent', {
-                        Nome: this.eventName,
-                        DataInicio: this.eventStartDate,
-                        DataFim: this.eventEndDate,
-                        LocalizacaoId: parseInt(this.eventVenue),
-                        PromotoraId: parseInt(this.eventPromoter),
+                        Name: this.eventName,
+                        StartDate: this.eventStartDate,
+                        EndDate: this.eventEndDate,
+                        VenueId: parseInt(this.eventVenue),
+                        PromoterId: parseInt(this.eventPromoter),
                     });
 
                     Swal.fire('Sucesso', 'Evento criado com sucesso!', 'success');

@@ -10,14 +10,14 @@
                             <div v-if="currentDay" :key="currentDayIndex" class="table-scroll-wrapper">
                                 <h5 class="text-center">{{ currentDay.data }}</h5>
                                 <el-table :data="[{}]" empty-text="Nenhum dado disponível" border style="min-width: 800px">
-                                    <el-table-column v-for="palco in currentDay.palcos"
-                                                     :key="palco.nome"
-                                                     :label="palco.nome"
+                                    <el-table-column v-for="stage in currentDay.stages"
+                                                     :key="stage.name"
+                                                     :label="stage.name"
                                                      align="center">
                                         <template #default>
-                                            <div v-if="palco.performers.length">
-                                                <div v-for="performer in palco.performers" :key="performer.nome">
-                                                    {{ performer.hora ? performer.hora + ' - ' + performer.nome : performer.nome }}
+                                            <div v-if="stage.performers.length">
+                                                <div v-for="performer in stage.performers" :key="performer.name">
+                                                    {{ performer.time ? performer.time + ' - ' + performer.name : performer.name }}
                                                 </div>
                                             </div>
                                             <div v-else class="text-muted">Sem performers</div>
@@ -42,14 +42,12 @@
 <script>
     import axios from 'axios';
     import Swal from 'sweetalert2';
-    import { authState } from '../../../auth';
 
     export default {
         name: 'ModalEventCalendar',
         props: ['modalEventCalendarActive'],
         data() {
             return {
-                authState,
                 eventCalendarData: [],
                 currentDayIndex: 0
             };

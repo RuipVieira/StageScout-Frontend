@@ -32,11 +32,11 @@
                     <div class="col-md-6">
                         <h6>Eventos</h6>
                         <el-table :data="followedEvents" empty-text="Nenhum dado disponível" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
-                            <el-table-column prop="nome" label="Nome" width="250"></el-table-column>
-                            <el-table-column prop="local" label="Local" width="200"></el-table-column>
-                            <el-table-column prop="dataInicio" label="Início" width="100"></el-table-column>
-                            <el-table-column prop="dataFim" label="Fim" width="100"></el-table-column>
-                            <el-table-column prop="estado" label="Estado" width="100"></el-table-column>
+                            <el-table-column prop="name" label="Nome" width="250"></el-table-column>
+                            <el-table-column prop="venue" label="Local" width="200"></el-table-column>
+                            <el-table-column prop="startDate" label="Início" width="100"></el-table-column>
+                            <el-table-column prop="endDate" label="Fim" width="100"></el-table-column>
+                            <el-table-column prop="state" label="Estado" width="100"></el-table-column>
                         </el-table>
 
                         <el-pagination :current-page="eventsPagination.page"
@@ -50,11 +50,11 @@
                     <div class="col-md-6">
                         <h6>Artistas</h6>
                         <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
-                            <el-table-column prop="nomePerformer" label="Performer" width="200"></el-table-column>
-                            <el-table-column prop="nomeEvento" label="Evento" width="225"></el-table-column>
-                            <el-table-column prop="palco" label="Palco" width="125"></el-table-column>
-                            <el-table-column prop="data" label="Data" width="100"></el-table-column>
-                            <el-table-column prop="hora" label="Hora" width="100"></el-table-column>
+                            <el-table-column prop="performerName" label="Performer" width="200"></el-table-column>
+                            <el-table-column prop="eventName" label="Evento" width="225"></el-table-column>
+                            <el-table-column prop="stage" label="Palco" width="125"></el-table-column>
+                            <el-table-column prop="date" label="Data" width="100"></el-table-column>
+                            <el-table-column prop="time" label="Hora" width="100"></el-table-column>
                         </el-table>
 
                         <el-pagination :current-page="artistsPagination.page"
@@ -91,22 +91,6 @@
                 },
                 followedEvents: [],
                 followedArtists: [],
-                artistsColumns: [
-                    { title: 'Id', key: 'id' },
-                    { title: 'Performer', key: 'nomePerformer' },
-                    { title: 'Evento', key: 'nomeEvento' },
-                    { title: 'Palco', key: 'palco' },
-                    { title: 'Data', key: 'data' },
-                    { title: 'Hora', key: 'hora' },
-                ],
-                eventsColumns: [
-                    { title: 'Id', key: 'id' },
-                    { title: 'Nome', key: 'nome' },
-                    { title: 'Local', key: 'local' },
-                    { title: 'Data de Início', key: 'dataInicio' },
-                    { title: 'Data de Fim', key: 'dataFim' },
-                    { title: 'Estado', key: 'estado' },
-                ],
             };
         },
 

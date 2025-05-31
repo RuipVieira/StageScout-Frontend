@@ -21,17 +21,17 @@
                                     </option>
                                 </select>
 
-                                <label for="profileNacionalidade" class="form-label">Nacionalidade</label>
-                                <select id="profileNacionalidade" v-model="profileNacionalidade" class="form-control">
+                                <label for="profileNationality" class="form-label">Nacionalidade</label>
+                                <select id="profileNationality" v-model="profileNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
-                                <label for="profileNaturalidade" class="form-label">Naturalidade</label>
-                                <select id="profileNaturalidade" v-model="profileNaturalidade" class="form-control" :disabled="!profileNacionalidade">
+                                <label for="profileDistrict" class="form-label">Naturalidade</label>
+                                <select id="profileDistrict" v-model="profileDistrict" class="form-control" :disabled="!profileNationality">
                                     >
                                     <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
-                                        {{ district.descricao }}
+                                        {{ district.name }}
                                     </option>
                                 </select>
                             </div>
@@ -62,8 +62,8 @@
                 profileName: '',
                 profileBirthDate: '',
                 profileGender: '',
-                profileNacionalidade: '',
-                profileNaturalidade: '',
+                profileNationality: '',
+                profileDistrict: '',
                 selectedNationDistricts: [],
                 nationsList: [],
                 gendersList: [
@@ -82,9 +82,9 @@
                     this.GetNations();
                 }
             },
-            profileNacionalidade(newVal) {
+            profileNationality(newVal) {
                 const selectedNation = this.nationsList.find(nation => nation.id === newVal);
-                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
+                this.selectedNationDistricts = selectedNation ? selectedNation.districts : [];
             }
         },
         methods: {
@@ -92,19 +92,19 @@
                 this.profileName = '';
                 this.profileBirthDate = '';
                 this.profileGender = '';
-                this.profileNacionalidade = '';
-                this.profileNaturalidade = '';
+                this.profileNationality = '';
+                this.profileDistrict = '';
                 this.$emit('closeProfileModal');
             },
 
             async profile() {
                 try {
                     await axios.post('https://localhost:7216/api/account/EditProfile', {
-                        PerfilId: localStorage.getItem('profileId'),
-                        Nome: this.profileName,
-                        DataNascimento: this.profileBirthDate,
-                        NaturalidadeId: this.profileNaturalidade,
-                        GeneroId: this.profileGender
+                        ProfileId: localStorage.getItem('profileId'),
+                        Name: this.profileName,
+                        BirthDate: this.profileBirthDate,
+                        DistrictId: this.profileDistrict,
+                        GenderId: this.profileGender
                     });
 
                     Swal.fire('Sucesso', 'Perfil Editado com sucesso!', 'success');
@@ -138,9 +138,9 @@
 
                         this.profileName = response.data.name;
                         this.profileBirthDate = response.data.birthDate;
-                        this.profileGender = response.data.generoId;
-                        this.profileNacionalidade = response.data.nacionalidadeId;
-                        this.profileNaturalidade = response.data.naturalidadeId;
+                        this.profileGender = response.data.genderId;
+                        this.profileNationality = response.data.nationalityId;
+                        this.profileDistrict = response.data.districtId;
 
                     } catch (error) {
                         const message =

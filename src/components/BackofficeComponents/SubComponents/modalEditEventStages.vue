@@ -13,7 +13,7 @@
                                     <select v-model.number="stageToAdd" class="form-select" @change="addStage">
                                         <option disabled value="">Selecione um Palco:</option>
                                         <option v-for="p in availableStages" :key="p.id" :value="p.id">
-                                            {{ p.nome }}
+                                            {{ p.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -30,7 +30,7 @@
                                             :key="stage.id"
                                             @click="removeStage(stage.id)"
                                             title="Clique para remover">
-                                            <td>{{ stage.nome }}</td>
+                                            <td>{{ stage.name }}</td>
                                         </tr>
                                         <tr v-if="pagedSelectedStages.length === 0">
                                             <td class="text-center">Nenhum palco selecionado</td>
@@ -114,10 +114,10 @@
             eventDetails: {
                 immediate: true,
                 handler(event) {
-                    if (event && event.palcos) {
-                        this.selectedStages = event.palcos.map((p) => ({
+                    if (event && event.stages) {
+                        this.selectedStages = event.stages.map((p) => ({
                             id: p.id,
-                            nome: p.name,
+                            name: p.name,
                         }));
                     } else {
                         this.selectedStages = [];
@@ -128,10 +128,10 @@
             },
             modalEditEventStagesActive(newVal) {
                 if (newVal) {
-                    if (this.eventDetails && this.eventDetails.palcos) {
-                        this.selectedStages = this.eventDetails.palcos.map(p => ({
+                    if (this.eventDetails && this.eventDetails.stages) {
+                        this.selectedStages = this.eventDetails.stages.map(p => ({
                             id: p.id,
-                            nome: p.nome,
+                            name: p.name,
                         }));
                     } else {
                         this.selectedStages = [];
@@ -150,7 +150,7 @@
                     const response = await axios.get("https://localhost:7216/api/Helper/GetAllStages");
                     this.allStages = response.data.map(stage => ({
                         id: stage.id,
-                        nome: stage.name
+                        name: stage.name
                     }));
                 } catch (error) {
                     Swal.fire("Erro", "Não foi possível carregar palcos.", "error");
@@ -165,7 +165,7 @@
                 const alreadySelected = this.selectedStages.some(s => s.id === stageId);
 
                 if (stage && !alreadySelected) {
-                    this.selectedStages.push({ id: stage.id, nome: stage.nome });
+                    this.selectedStages.push({ id: stage.id, name: stage.name });
                     this.stageToAdd = "";
                     this.paginationPage = this.pageCount;
                 }
@@ -188,7 +188,7 @@
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditEventStages", {
                         EventId: this.eventDetails.id,
-                        Palcos: this.selectedStages.map((p) => p.id),
+                        Stages: this.selectedStages.map((p) => p.id),
                     });
 
                     Swal.fire("Sucesso", "Lista de Palcos atualizada com sucesso!", "success");

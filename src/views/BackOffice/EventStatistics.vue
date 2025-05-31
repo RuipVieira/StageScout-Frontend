@@ -62,19 +62,19 @@
                     </el-table-column>
                     <el-table-column label="Cartaz" :min-width="120">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingCartaz" disabled :max="5" />
+                            <el-rate :model-value="row.ratingLineup" disabled :max="5" />
                         </template>
                     </el-table-column>
 
                     <el-table-column label="Organização" :min-width="120">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingOrganizacao" disabled :max="5" />
+                            <el-rate :model-value="row.ratingOrganization" disabled :max="5" />
                         </template>
                     </el-table-column>
 
                     <el-table-column label="Acessos" :min-width="120">
                         <template #default="{ row }">
-                            <el-rate :model-value="row.ratingAcessos" disabled :max="5" />
+                            <el-rate :model-value="row.ratingInfrastructure" disabled :max="5" />
                         </template>
                     </el-table-column>
                     <el-table-column label="Performers" :min-width="120">
@@ -102,9 +102,9 @@
             </div>
             <div class="summary-section mt-4">
                 <h4>Resumo:</h4>
-                <p><strong>Média Cartaz:</strong> {{ averageRatings.cartaz }}</p>
-                <p><strong>Média Organização:</strong> {{ averageRatings.organizacao }}</p>
-                <p><strong>Média Acessos:</strong> {{ averageRatings.acessos }}</p>
+                <p><strong>Média Cartaz:</strong> {{ averageRatings.lineup }}</p>
+                <p><strong>Média Organização:</strong> {{ averageRatings.organization }}</p>
+                <p><strong>Média Acessos:</strong> {{ averageRatings.infrastructure }}</p>
                 <p><strong>Média Performers:</strong> {{ averageRatings.performers }}</p>
                 <p><strong>Performer MVP:</strong> {{ mostSelectedMVP }}</p>
             </div>
@@ -157,15 +157,15 @@
                 const getAvg = arr =>
                     arr.length ? (arr.reduce((sum, v) => sum + v, 0) / arr.length).toFixed(1) : 'N/A';
 
-                const cartaz = this.filteredData.map(i => i.ratingCartaz).filter(n => n != null);
-                const organizacao = this.filteredData.map(i => i.ratingOrganizacao).filter(n => n != null);
-                const acessos = this.filteredData.map(i => i.ratingAcessos).filter(n => n != null);
+                const lineup = this.filteredData.map(i => i.ratingLineup).filter(n => n != null);
+                const organization = this.filteredData.map(i => i.ratingOrganization).filter(n => n != null);
+                const infrastructure = this.filteredData.map(i => i.ratingInfrastructure).filter(n => n != null);
                 const performers = this.filteredData.map(i => i.ratingPerformers).filter(n => n != null);
 
                 return {
-                    cartaz: getAvg(cartaz),
-                    organizacao: getAvg(organizacao),
-                    acessos: getAvg(acessos),
+                    lineup: getAvg(lineup),
+                    organization: getAvg(organization),
+                    infrastructure: getAvg(infrastructure),
                     performers: getAvg(performers)
                 };
             },

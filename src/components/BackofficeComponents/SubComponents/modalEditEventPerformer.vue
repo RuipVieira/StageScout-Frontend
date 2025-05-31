@@ -8,10 +8,10 @@
                         <h2 class="mb-3 text-center">Novo Performer</h2>
                         <form @submit.prevent="edit">
                             <div class="form-control form-container text-center">
-                                <label for="epName" class="form-label">Performer</label>
-                                <select id="epName" v-model="epName" class="form-control">
+                                <label for="epPerformerId" class="form-label">Performer</label>
+                                <select id="epPerformerId" v-model="epPerformerId" class="form-control">
                                     <option v-for="performer in performersList" :key="performer.id" :value="performer.id">
-                                        {{ performer.nome }}
+                                        {{ performer.name }}
                                     </option>
                                 </select>
 
@@ -53,17 +53,17 @@
         },
         computed: {
             eventStartDate() {
-                return this.eventDetails?.dataInicio?.split('T')[0] || '';
+                return this.eventDetails?.startDate?.split('T')[0] || '';
             },
             eventEndDate() {
-                return this.eventDetails?.dataFim?.split('T')[0] || '';
+                return this.eventDetails?.endDate?.split('T')[0] || '';
             }
         },
         data() {
             return {
                 performersList: [],
                 stagesList: [],
-                epName: '',
+                epPerformerId: '',
                 epDate: '',
                 epHour: '',
                 epStage: '',
@@ -96,7 +96,7 @@
                         }
                     });
                     const data = response.data;
-                    this.epName = data.performerId;
+                    this.epPerformerId = data.performerId;
                     this.epDate = data.data;
                     this.epHour = data.hora;
                     this.epStage = data.palcoId;
@@ -122,12 +122,12 @@
             async edit() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/EditEventPerformer', {
-                        EventoPerformerId: this.eventPerformerId,
-                        EventoId: this.eventDetails.id,
-                        PerformerId: this.epName,
-                        Data: this.epDate,
-                        Hora: this.epHour,
-                        PalcoId: this.epStage,
+                        EventPerformerId: this.eventPerformerId,
+                        EventId: this.eventDetails.id,
+                        PerformerId: this.epPerformerId,
+                        Date: this.epDate,
+                        Time: this.epHour,
+                        StageId: this.epStage,
                     });
 
                     Swal.fire('Sucesso', 'Performer adicionado com sucesso!', 'success');
@@ -139,10 +139,10 @@
                 }
             },
             closeEditEventPerformerModal() {
-                this.performerName = '';
-                this.performerDate = '';
-                this.performerHour = '';
-                this.performerStage = '';
+                this.epPerformerId = '';
+                this.epDate = '';
+                this.epHour = '';
+                this.epStage = '';
                 this.$emit('closeEditEventPerformerModal');
                 this.$emit('refreshEventDetails');
             },

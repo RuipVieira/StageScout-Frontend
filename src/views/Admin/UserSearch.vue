@@ -44,11 +44,11 @@
                           stripe
                           style="width: 100%; min-width: 1200px;"
                           class="mb-4">
-                    <el-table-column prop="nome"
+                    <el-table-column prop="name"
                                      label="Nome"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.nome">{{ scope.row.nome }}</span>
+                            <span v-if="scope.row.name">{{ scope.row.name }}</span>
                             <span v-else-if="paginatedData.length">N/A</span>
                             <span v-else class="text-muted">Nenhum dado disponível</span>
                         </template>
@@ -63,24 +63,24 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="naturalidade.nacionalidade"
+                    <el-table-column prop="district.country"
                                      label="Nacionalidade"
                                      sortable  width="150">
                     </el-table-column>
-                    <el-table-column prop="naturalidade.descricao"
+                    <el-table-column prop="district.name"
                                      label="Naturalidade"
                                      sortable width="150">
                     </el-table-column>
 
-                    <el-table-column prop="tipoDeConta.descricao"
+                    <el-table-column prop="accountType.name"
                                      label="Tipo de Conta"
                                      sortable width="150">
                     </el-table-column>
 
-                    <el-table-column prop="estado" width="100" label="Estado" sortable>
+                    <el-table-column prop="state" width="100" label="Estado" sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.estado === 0">Ativo</span>
-                            <span v-else-if="scope.row.estado === 1">Bloqueado</span>
+                            <span v-if="scope.row.state === 0">Ativo</span>
+                            <span v-else-if="scope.row.state === 1">Bloqueado</span>
                             <span v-else>N/A</span>
                         </template>
                     </el-table-column>
@@ -102,7 +102,7 @@
                                            circle
                                            @click="toggleBlockUser(scope.row)">
                                     <el-icon>
-                                        <component :is="scope.row.estado === 1 ? 'Unlock' : 'Lock'" />
+                                        <component :is="scope.row.state === 1 ? 'Unlock' : 'Lock'" />
                                     </el-icon>
                                 </el-button>
                             </div>
@@ -162,11 +162,11 @@
         computed: {
             filteredData() {
                 return this.users.filter(user =>
-                    (!this.filters.name || user.nome?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.name || user.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
                     (!this.filters.email || user.email?.toLowerCase().includes(this.filters.email.toLowerCase())) &&
-                    (!this.filters.nation || user.naturalidade?.nacionalidade?.toLowerCase().includes(this.filters.nation.toLowerCase())) &&
-                    (!this.filters.district || user.naturalidade?.descricao?.toLowerCase().includes(this.filters.district.toLowerCase())) &&
-                    (!this.filters.accType || user.tipoDeConta?.id == this.filters.accType) &&
+                    (!this.filters.nation || user.district?.country?.toLowerCase().includes(this.filters.nation.toLowerCase())) &&
+                    (!this.filters.district || user.district?.name?.toLowerCase().includes(this.filters.district.toLowerCase())) &&
+                    (!this.filters.accType || user.accountType?.name == this.filters.accType) &&
                     (!this.filters.isBanned || user.estado == 1)
                 );
             },
@@ -225,7 +225,7 @@
                 this.editUserModalActive = true;
             },
             toggleBlockUser(user) {
-                const isCurrentlyBlocked = user.estado === 1;
+                const isCurrentlyBlocked = user.state === 1;
 
                 const actionText = isCurrentlyBlocked ? 'desbloquear' : 'bloquear';
                 const pastTense = isCurrentlyBlocked ? 'desbloqueado' : 'bloqueado';

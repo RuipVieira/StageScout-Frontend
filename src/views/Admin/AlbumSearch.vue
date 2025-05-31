@@ -24,23 +24,23 @@
                           stripe
                           style="width: 100%; min-width: 1200px;"
                           class="mb-4">
-                    <el-table-column prop="nome"
+                    <el-table-column prop="name"
                                      label="Nome"
                                      width="900"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.nome">{{ scope.row.nome }}</span>
+                            <span v-if="scope.row.name">{{ scope.row.name }}</span>
                             <span v-else-if="!paginatedData.length" class="text-muted">Nenhum dado disponível</span>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="anoLancamento"
+                    <el-table-column prop="releaseYear"
                                      label="Ano de Lançamento"
                                      width="200"
                                      align="center"
                                      sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.anoLancamento">{{ scope.row.anoLancamento }}</span>
+                            <span v-if="scope.row.releaseYear">{{ scope.row.releaseYear }}</span>
                         </template>
                     </el-table-column>
 
@@ -115,8 +115,8 @@
         computed: {
             filteredData() {
                 return this.albums.filter(e =>
-                    (!this.filters.name || e.nome.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.year || e.anoLancamento.toString().includes(this.filters.year))
+                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.year || e.releaseYear.toString().includes(this.filters.year))
                 )
             },
 

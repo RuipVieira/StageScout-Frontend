@@ -18,14 +18,14 @@
                                 <label for="selectedVenueCountry" class="form-label">País</label>
                                 <select id="selectedVenueCountry" v-model="selectedVenueCountry" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
                                 <label for="selectedVenueDistrict" class="form-label">Distrito</label>
                                 <select id="selectedVenueDistrict" v-model="selectedVenueDistrict" class="form-control" :disabled="!selectedVenueCountry">
                                     >
                                     <option v-for="district in selectedNationDistricts" :key="district.id" :value="district.id">
-                                        {{ district.descricao }}
+                                        {{ district.name }}
                                     </option>
                                 </select>
                             </div>
@@ -73,15 +73,15 @@
             },
             selectedVenueCountry(newVal) {
                 const selectedNation = this.nationsList.find(nation => nation.id === newVal);
-                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
+                this.selectedNationDistricts = selectedNation ? selectedNation.districts : [];
             },
             venue: {
                 immediate: true,
                 handler(venue) {
                     if (venue) {
-                        this.selectedVenueName = venue.nome || "";
-                        this.selectedVenueCountry = venue.pais?.id || '';
-                        this.selectedVenueDistrict = venue.distrito?.id || '';
+                        this.selectedVenueName = venue.name || "";
+                        this.selectedVenueCountry = venue.country?.id || '';
+                        this.selectedVenueDistrict = venue.district?.id || '';
                     } else {
                         this.selectedVenueName = "";
                     }
@@ -108,9 +108,9 @@
             async Edit() {
                 try {
                     await axios.post("https://localhost:7216/api/Admin/EditVenue", {
-                        LocalizacaoId: this.venue?.id,
-                        Nome: this.selectedVenueName,
-                        NaturalidadeId: this.selectedVenueDistrict
+                        VenueId: this.venue?.id,
+                        Name: this.selectedVenueName,
+                        DistrictId: this.selectedVenueDistrict
                     });
 
                     Swal.fire("Sucesso", "Localização atualizada com sucesso!", "success");
