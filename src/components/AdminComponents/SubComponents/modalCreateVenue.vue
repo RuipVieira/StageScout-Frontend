@@ -62,7 +62,7 @@
             },
             VenueNationality(newVal) {
                 const selectedNation = this.nationsList.find(nation => nation.id === newVal);
-                this.selectedNationDistricts = selectedNation ? selectedNation.naturalidades : [];
+                this.selectedNationDistricts = selectedNation ? selectedNation.districts : [];
             }
         },
         methods: {

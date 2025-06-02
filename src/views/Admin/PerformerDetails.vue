@@ -31,7 +31,7 @@
                             <el-table-column prop="id" label="id" v-if="false" />
                             <el-table-column prop="name" label="Nome" />
                             <el-table-column prop="nationality" label="Nacionalidade" />
-                            <el-table-column prop="ativo" label="Membro Atual">
+                            <el-table-column prop="activeMember" label="Membro Atual">
                                 <template #default="{ row }">
                                     <span>{{ row.activeMember ? 'Sim' : 'Não' }}</span>
                                 </template>
@@ -121,7 +121,7 @@
             return {
                 authState,
                 group: {
-                    artistss: [],
+                    artists: [],
                     albums: [],
                     scheduledEvents: []
                 },

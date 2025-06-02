@@ -14,10 +14,10 @@
                                 <label for="userPassword" class="form-label">Palavra Passe</label>
                                 <input type="password" v-model="userPassword" id="userPassword" class="form-control" required>
 
-                                <label for="userTipo" class="form-label">Tipo de Conta</label>
-                                <select id="userTipo" v-model="userTipo" class="form-control">
+                                <label for="userType" class="form-label">Tipo de Conta</label>
+                                <select id="userType" v-model="userType" class="form-control">
                                     <option v-for="type in accountTypes" :key="type.id" :value="type.id">
-                                        {{ type.descricao }}
+                                        {{ type.name }}
                                     </option>
                                 </select>
                             </div>
@@ -46,7 +46,7 @@
                 accountTypes: [],
                 userEmail: '',
                 userPassword: '',
-                userTipo:''
+                userType:''
             };
         },
         watch: {
@@ -90,7 +90,7 @@
                     await axios.post('https://localhost:7216/api/Admin/CreateUser', {
                         Email: this.userEmail,
                         Password: this.userPassword,
-                        TipoContaId: this.userTipo
+                        AccountTypeId: this.userType
                     });
 
                     Swal.fire('Sucesso', 'Utilizador criado com sucesso!', 'success');

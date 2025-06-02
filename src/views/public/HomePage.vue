@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h6>Eventos</h6>
-                        <el-table :data="followedEvents" empty-text="Nenhum dado disponível" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'dataInicio', order: 'ascending' }">
+                        <el-table :data="followedEvents" empty-text="Nenhum dado disponível" :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'startDate', order: 'ascending' }">
                             <el-table-column prop="name" label="Nome" width="250"></el-table-column>
                             <el-table-column prop="venue" label="Local" width="200"></el-table-column>
                             <el-table-column prop="startDate" label="Início" width="100"></el-table-column>
@@ -49,7 +49,7 @@
 
                     <div class="col-md-6">
                         <h6>Artistas</h6>
-                        <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'data', order: 'ascending' }">
+                        <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'date', order: 'ascending' }">
                             <el-table-column prop="performerName" label="Performer" width="200"></el-table-column>
                             <el-table-column prop="eventName" label="Evento" width="225"></el-table-column>
                             <el-table-column prop="stage" label="Palco" width="125"></el-table-column>
@@ -124,13 +124,11 @@
             },
 
             GoToEventDetails(rowData) {
-                const router = useRouter();
-                router.push({ name: 'EventDetails', params: { id: rowData.id } });
+                this.$router.push({ name: 'EventDetails', params: { id: rowData.id } });
             },
 
             GoToArtistDetails(rowData) {
-                const router = useRouter();
-                router.push({ name: 'PerformerDetails', params: { id: rowData.id } });
+                this.$router.push({ name: 'PerformerDetails', params: { id: rowData.id } });
             },
 
             async GetFollowedEntities() {

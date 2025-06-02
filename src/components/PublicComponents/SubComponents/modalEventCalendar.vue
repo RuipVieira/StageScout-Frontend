@@ -8,7 +8,7 @@
                         <h2 class="mb-3 text-center">Calendário</h2>
                         <transition name="fade-slide" mode="out-in">
                             <div v-if="currentDay" :key="currentDayIndex" class="table-scroll-wrapper">
-                                <h5 class="text-center">{{ currentDay.data }}</h5>
+                                <h5 class="text-center">{{ currentDay.date }}</h5>
                                 <el-table :data="[{}]" empty-text="Nenhum dado disponível" border style="min-width: 800px">
                                     <el-table-column v-for="stage in currentDay.stages"
                                                      :key="stage.name"

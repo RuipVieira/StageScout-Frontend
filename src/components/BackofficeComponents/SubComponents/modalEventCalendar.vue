@@ -8,9 +8,9 @@
                         <h2 class="mb-3 text-center">Calendário</h2>
                         <transition name="fade-slide" mode="out-in">
                             <div v-if="currentDay" :key="currentDayIndex" class="table-scroll-wrapper">
-                                <h5 class="text-center">{{ currentDay.data }}</h5>
+                                <h5 class="text-center">{{ currentDay.date }}</h5>
                                 <el-table :data="[{}]" empty-text="Nenhum dado disponível" border style="min-width: 800px">
-                                    <el-table-column v-for="palco in currentDay.palcos"
+                                    <el-table-column v-for="stage in currentDay.stages"
                                                      :key="stage.name"
                                                      :label="stage.name"
                                                      align="center">
@@ -42,6 +42,7 @@
 <script>
     import axios from 'axios';
     import Swal from 'sweetalert2';
+    import { ElTable, ElTableColumn, ElButton } from 'element-plus';
 
     export default {
         name: 'ModalEventCalendar',
@@ -57,9 +58,12 @@
                 return this.eventCalendarData[this.currentDayIndex];
             }
         },
-        mounted() {
-            const eventId = this.$route.params.id;
-            this.fetchEventCalendar(eventId);
+        watch: {
+            modalEventCalendarActive(val) {
+                if (val) {
+                    this.fetchEventCalendar(this.$route.params.id);
+                }
+            }
         },
         methods: {
             closeEventCalendarModal() {

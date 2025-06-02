@@ -52,10 +52,10 @@
         },
         computed: {
             eventStartDate() {
-                return this.eventDetails?.dataInicio?.split('T')[0] || '';
+                return this.eventDetails?.startDate?.split('T')[0] || '';
             },
             eventEndDate() {
-                return this.eventDetails?.dataFim?.split('T')[0] || '';
+                return this.eventDetails?.endDate?.split('T')[0] || '';
             }
         },
         data() {
@@ -102,11 +102,11 @@
             async edit() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/AddEventPerformer', {
-                        EventoId: this.eventDetails.id,
+                        EventId: this.eventDetails.id,
                         PerformerId: this.performerId,
-                        Data: this.performerDate,
-                        Hora: this.performerHour,
-                        PalcoId: this.performerStage,
+                        Date: this.performerDate,
+                        Time: this.performerHour,
+                        StageId: this.performerStage,
                     });
 
                     Swal.fire('Sucesso', 'Performer adicionado com sucesso!', 'success');

@@ -90,7 +90,7 @@
     import { authState } from '../../auth';
 
     export default {
-        name: 'ArtistDetails',
+        name: 'PerformerDetails',
         components: {
             ElTable,
             ElTableColumn,
@@ -100,9 +100,9 @@
             return {
                 authState,
                 group: {
-                    artistas: [],
+                    artists: [],
                     albums: [],
-                    eventosMarcados: []
+                    scheduledEvents: []
                 },
                 followerState: false,
                 eventsPagination: { page: 1, pageSize: 5 },
@@ -113,7 +113,7 @@
         computed: {
             pagedMembers() {
                 const start = (this.membersPagination.page - 1) * this.membersPagination.pageSize;
-                return this.group.artistas.slice(start, start + this.membersPagination.pageSize);
+                return this.group.artists.slice(start, start + this.membersPagination.pageSize);
             },
             pagedAlbums() {
                 const start = (this.albumsPagination.page - 1) * this.albumsPagination.pageSize;
@@ -121,7 +121,7 @@
             },
             pagedEvents() {
                 const start = (this.eventsPagination.page - 1) * this.eventsPagination.pageSize;
-                return this.group.eventosMarcados.slice(start, start + this.eventsPagination.pageSize);
+                return this.group.scheduledEvents.slice(start, start + this.eventsPagination.pageSize);
             }
         },
         mounted() {

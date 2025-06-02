@@ -49,7 +49,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox"
-                                                       v-model="performer.membroAtual"
+                                                       v-model="performer.activeMember"
                                                        title="Membro atual" />
                                             </td>
                                         </tr>

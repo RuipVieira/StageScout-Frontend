@@ -102,11 +102,11 @@
             async edit() {
                 try {
                     await axios.post('https://localhost:7216/api/Admin/AddEventPerformer', {
-                        EventoId: this.eventDetails.id,
+                        EventId: this.eventDetails.id,
                         PerformerId: this.performerId,
-                        Data: this.performerDate,
-                        Hora: this.performerHour,
-                        PalcoId: this.performerStage,
+                        Date: this.performerDate,
+                        Time: this.performerHour,
+                        StageId: this.performerStage,
                     });
 
                     Swal.fire('Sucesso', 'Performer adicionado com sucesso!', 'success');

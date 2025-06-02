@@ -111,8 +111,8 @@
         computed: {
             filteredData() {
                 return this.artists.filter(e =>
-                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.nationality || e.nationality.name.toString().includes(this.filters.nationality))
+                    (!this.filters.name || e.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.nationality || e.nationality?.name?.toLowerCase().includes(this.filters.nationality.toLowerCase()))
                 )
             },
 
@@ -140,7 +140,7 @@
             clearFilters() {
                 this.filters = {
                     name: '',
-                    year: '',
+                    nationality: '',
                 }
             },
             toggleModalEditArtist() {

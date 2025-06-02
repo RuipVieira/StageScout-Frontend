@@ -123,8 +123,8 @@
         data() {
             return {
                 filters: {
-                    username: '',
-                    userage: '',
+                    minAge: null,
+                    maxAge: null,
                     usernationality: '',
                     usercity: '',
                     mvp: ''
@@ -140,11 +140,11 @@
             filteredData() {
                 return this.reviewsList.filter(item => {
                     return (
-                        (!this.filters.username || item.username.toLowerCase().includes(this.filters.username.toLowerCase())) &&
-                        (!this.filters.userage || item.userage == this.filters.userage) &&
-                        (!this.filters.usernationality || item.usernationality.toLowerCase().includes(this.filters.usernationality.toLowerCase())) &&
-                        (!this.filters.usercity || item.usercity.toLowerCase().includes(this.filters.usercity.toLowerCase())) &&
-                        (!this.filters.mvp || item.performerMVP.toLowerCase().includes(this.filters.mvp.toLowerCase()))
+                        (!this.filters.minAge || item.userAge >= this.filters.minAge) &&
+                        (!this.filters.maxAge || item.userAge <= this.filters.maxAge) &&
+                        (!this.filters.usernationality || item.userNationality.toLowerCase().includes(this.filters.usernationality.toLowerCase())) &&
+                        (!this.filters.usercity || item.userDistrict.toLowerCase().includes(this.filters.usercity.toLowerCase())) &&
+                        (!this.filters.mvp || item.performerMVP?.toLowerCase().includes(this.filters.mvp.toLowerCase()))
                     );
                 });
             },
@@ -170,17 +170,19 @@
                 };
             },
             mostSelectedMVP() {
-                const mvpCount = this.filteredData.reduce(
-                    (acc, item) => {
-                        item.mvp ? acc.true++ : acc.false++;
-                        return acc;
-                    },
-                    { true: 0, false: 0 }
-                );
+                const counts = this.filteredData.reduce((acc, item) => {
+                    if (item.performerMVP && item.performerMVP.trim() !== '') {
+                        const name = item.performerMVP.trim();
+                        acc[name] = (acc[name] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
 
-                if (mvpCount.true === 0 && mvpCount.false === 0) return 'N/A';
-                return mvpCount.true >= mvpCount.false ? 'Sim' : 'Não';
+                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+                return sorted.length > 0 ? sorted[0][0] : 'N/A';
             }
+
         },
         mounted() {
             const eventId = this.$route.params.id;

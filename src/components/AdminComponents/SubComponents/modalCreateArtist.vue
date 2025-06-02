@@ -14,7 +14,7 @@
                                 <label for="artistNationality" class="form-label">Nacionalidade</label>
                                 <select id="artistNationality" v-model="artistNationality" class="form-control">
                                     <option v-for="nation in nationsList" :key="nation.id" :value="nation.id">
-                                        {{ nation.descricao }}
+                                        {{ nation.name }}
                                     </option>
                                 </select>
                             </div>
@@ -67,7 +67,7 @@
                 try {
                     await axios.post('https://localhost:7216/api/Admin/CreateArtist', {
                         Name: this.artistName,
-                        NacionalidadeId: this.artistNationality
+                        NationalityId: this.artistNationality
                     });
 
                     Swal.fire('Sucesso', 'Artista criado com sucesso!', 'success');

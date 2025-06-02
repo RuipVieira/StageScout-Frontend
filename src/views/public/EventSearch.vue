@@ -12,7 +12,7 @@
                         </div>
                         <div>
                             <label for="eventLocation" class="form-label">Localização</label>
-                            <input v-model="filters.location" type="text" id="eventLocation" class="form-control" />
+                            <input v-model="filters.venue" type="text" id="eventVenue" class="form-control" />
                         </div>
                         <div>
                             <label for="eventState" class="form-label">Estado</label>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="d-flex align-items-center" style="min-height: 38px;">
                             <label for="eventIsOver" class="form-label me-2 mb-0">A Decorrer</label>
-                            <input v-model="filters.isOngoing" type="checkbox" id="eventIsOver" class="form-check-input mt-0" />
+                            <input v-model="filters.isFinished" type="checkbox" id="eventIsOver" class="form-check-input mt-0" />
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@
                 },
                 filters: {
                     name: '',
-                    location: '',
+                    venue: '',
                     state: '',
                     isFinished: false
                 }
@@ -83,7 +83,7 @@
             filteredData() {
                 return this.events.filter(e =>
                     (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.location || e.venue.toLowerCase().includes(this.filters.venue.toLowerCase())) &&
+                    (!this.filters.venue || e.venue.toLowerCase().includes(this.filters.venue.toLowerCase())) &&
                     (!this.filters.state || e.state.toLowerCase().includes(this.filters.state.toLowerCase())) &&
                     (!this.filters.isFinished || e.isFinished === false)
                 )
@@ -113,7 +113,7 @@
             clearFilters() {
                 this.filters = {
                     name: '',
-                    location: '',
+                    venue: '',
                     state: '',
                     isFinished: false
                 }

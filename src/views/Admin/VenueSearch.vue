@@ -12,7 +12,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="venueNationality" class="form-label">País</label>
-                            <input v-model="filters.nationality" type="text" id="venueNationality" class="form-control" />
+                            <input v-model="filters.country" type="text" id="venueNationality" class="form-control" />
                         </div>
                         <div class="mb-3">
                             <label for="venueDistrict" class="form-label">Distrito</label>
@@ -24,7 +24,8 @@
             </div>
 
             <div class="table-section overflow-auto">
-                <el-table :data="paginatedData.length ? paginatedData : [{}]"
+                <el-table v-if="paginatedData.length"
+                          :data="paginatedData"
                           stripe
                           style="width: 100%; min-width: 1200px;"
                           class="mb-4">
@@ -83,6 +84,9 @@
                         </template>
                     </el-table-column>
                 </el-table>
+                <div v-else class="text-center text-muted my-4">
+                    Nenhum dado disponível
+                </div>
 
                 <div class="d-flex justify-content-center">
                     <el-pagination :current-page="pagination.page"
@@ -124,7 +128,7 @@
                 },
                 filters: {
                     name: '',
-                    nationality: '',
+                    country: '',
                     district: '',
                 }
             }
@@ -133,9 +137,9 @@
         computed: {
             filteredData() {
                 return this.venues.filter(e =>
-                    (!this.filters.name || e.name.toLowerCase().includes(this.filters.name.toLowerCase())) &&
-                    (!this.filters.nationality || e.country.name.toLowerCase().includes(this.filters.nationality.toLowerCase())) &&
-                    (!this.filters.district || e.district.name.toLowerCase().includes(this.filters.district.toLowerCase()))
+                    (!this.filters.name || e.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
+                    (!this.filters.country || e.country?.name?.toLowerCase().includes(this.filters.country.toLowerCase())) &&
+                    (!this.filters.district || e.district?.name?.toLowerCase().includes(this.filters.district.toLowerCase()))
                 )
             },
 
@@ -150,6 +154,7 @@
                 try {
                     const response = await axios.get('https://localhost:7216/api/Helper/GetAllVenues')
                     this.venues = response.data || []
+                    console.log(this.venues)
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.'
                     Swal.fire('Erro', message, 'error')
@@ -163,7 +168,7 @@
             clearFilters() {
                 this.filters = {
                     name: '',
-                    nationality: '',
+                    country: '',
                     district: ''
                 }
             },

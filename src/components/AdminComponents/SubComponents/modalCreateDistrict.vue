@@ -70,7 +70,7 @@
                         NationalityId: this.districtNationality
                     });
 
-                    Swal.fire('Sucesso', 'Naturalidade criada com sucesso!', 'success');
+                    Swal.fire('Sucesso', 'Distrito criado com sucesso!', 'success');
                     this.closeCreateDistrictModal();
                 } catch (error) {
                     const message =

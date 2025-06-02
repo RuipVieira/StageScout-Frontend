@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div v-if="event.estado === 'Concluído'" style="height: 100%;" class="card shadow-sm fixed-card">
+        <div v-if="event.state == 'Concluído'" style="height: 100%;" class="card shadow-sm fixed-card">
             <div class="card-header">
                 <h6 class="mb-0">Avaliações</h6>
             </div>
@@ -133,8 +133,8 @@
                     </el-table-column>
                     <el-table-column align="center">
                         <template #default="scope">
-                            <div v-if="paginatedPerformers.length">
-                                <el-button v-if="scope.row.estadoId !=2" type="primary"
+                            <div v-if="paginatedReviews.length">
+                                <el-button v-if="scope.row.stateId !=2" type="primary"
                                            size="small"
                                            class="btn-editar"
                                            circle
@@ -233,12 +233,12 @@
                 return this.event.performers.slice(start, start + this.performersPagination.pageSize);
             },
             paginatedStages() {
-                const start = (this.palcosPagination.page - 1) * this.palcosPagination.pageSize;
-                return this.event.palcos.slice(start, start + this.palcosPagination.pageSize);
+                const start = (this.stagesPagination.page - 1) * this.stagesPagination.pageSize;
+                return this.event.stages.slice(start, start + this.stagesPagination.pageSize);
             },
             paginatedReviews() {
                 const start = (this.reviewsPagination.page - 1) * this.reviewsPagination.pageSize;
-                return this.event.avaliacoes.slice(start, start + this.reviewsPagination.pageSize);
+                return this.event.reviews.slice(start, start + this.reviewsPagination.pageSize);
             }
         },
         methods: {
@@ -249,7 +249,7 @@
                 this.performersPagination.page = page;
             },
             onStagesPageChange(page) {
-                this.palcosPagination.page = page;
+                this.stagesPagination.page = page;
             },
             GoToPerformerDetails(row) {
                 this.$router.push({ name: 'AdminPerformerDetails', params: { id: row.id } });

@@ -8,11 +8,11 @@
                         <h2 class="mb-3 text-center">Calendário</h2>
                         <transition name="fade-slide" mode="out-in">
                             <div v-if="currentDay" :key="currentDayIndex" class="table-scroll-wrapper">
-                                <h5 class="text-center">{{ currentDay.data }}</h5>
+                                <h5 class="text-center">{{ currentDay.date }}</h5>
                                 <el-table :data="[{}]" empty-text="Nenhum dado disponível" border style="min-width: 800px">
                                     <el-table-column v-for="stage in currentDay.stages"
-                                                     :key="palco.name"
-                                                     :label="palco.name"
+                                                     :key="stage.name"
+                                                     :label="stage.name"
                                                      align="center">
                                         <template #default>
                                             <div v-if="stage.performers.length">
@@ -58,9 +58,12 @@
                 return this.eventCalendarData[this.currentDayIndex];
             }
         },
-        mounted() {
-            const eventId = this.$route.params.id;
-            this.fetchEventCalendar(eventId);
+        watch: {
+            modalEventCalendarActive(val) {
+                if (val) {
+                    this.fetchEventCalendar(this.$route.params.id);
+                }
+            }
         },
         methods: {
             closeEventCalendarModal() {

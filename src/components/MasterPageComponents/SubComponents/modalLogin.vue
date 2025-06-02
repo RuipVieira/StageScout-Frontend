@@ -86,16 +86,16 @@
                         password: this.loginPassword,
                     });
 
-                    if (response.data.estadoId == 1) {
+                    if (response.data.stateId == 1) {
                         Swal.fire('Erro', 'A conta está bloqueada. Contacte o suporte.', 'error');
                     } else {
                         authState.isLoggedIn = true;
                         localStorage.setItem('isLoggedIn', 'true');
 
-                        authState.role = response.data.TipoContaId;
-                        authState.profileId = response.data.perfilId;
+                        authState.role = response.data.accountTypeId;
+                        authState.profileId = response.data.profileId;
 
-                        switch (response.data.tipoContaId) {
+                        switch (response.data.accountTypeId) {
                             case 3:
                                 authState.role = 'admin';
                                 localStorage.setItem('role', 'admin');
@@ -112,7 +112,7 @@
                                 localStorage.setItem('role', 'user');
                         }
 
-                        localStorage.setItem('profileId', response.data.perfilId);
+                        localStorage.setItem('profileId', response.data.profileId);
 
                         Swal.fire('Sucesso', 'Login efectuado com sucesso!', 'success');
 

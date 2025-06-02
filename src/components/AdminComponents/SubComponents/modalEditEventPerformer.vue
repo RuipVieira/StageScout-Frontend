@@ -53,10 +53,10 @@
         },
         computed: {
             eventStartDate() {
-                return this.eventDetails?.dataInicio?.split('T')[0] || '';
+                return this.eventDetails?.startDate?.split('T')[0] || '';
             },
             eventEndDate() {
-                return this.eventDetails?.dataFim?.split('T')[0] || '';
+                return this.eventDetails?.endDate?.split('T')[0] || '';
             }
         },
         data() {
@@ -97,9 +97,9 @@
                     });
                     const data = response.data;
                     this.epName = data.performerId;
-                    this.epDate = data.data;
-                    this.epHour = data.hora;
-                    this.epStage = data.palcoId;
+                    this.epDate = data.date;
+                    this.epHour = data.time;
+                    this.epStage = data.stageId;
 
                 } catch (error) {
                     Swal.fire('Erro', error.response?.data?.message || 'Erro de pesquisa.', 'error');

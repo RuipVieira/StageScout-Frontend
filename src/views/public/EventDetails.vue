@@ -114,7 +114,7 @@
                     </el-table-column>
                 </el-table>
                 <div class="btn-container" v-if="this.event.reviewedByUser == false">
-                    <button v-if="event.estado === 'Concluído'" type="button" class="btn btn-danger btn-cancelar" @click="openSubmitReviewModal()">Avaliar</button>
+                    <button v-if="event.state === 'Concluído'" type="button" class="btn btn-danger btn-cancelar" @click="openSubmitReviewModal()">Avaliar</button>
                 </div>
                 <el-pagination layout="prev, pager, next"
                                :total="event.reviews.length"
@@ -195,7 +195,7 @@
             onPerformersPageChange(page) {
                 this.performersPagination.page = page;
             },
-            ontagesPageChange(page) {
+            onStagesPageChange(page) {
                 this.stagesPagination.page = page;
             },
             GoToPerformerDetails(row) {
@@ -235,7 +235,6 @@
                         stages: [],
                         reviews: []
                     };
-                    console.log(this.event);
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
@@ -267,7 +266,7 @@
                         ProfileId: localStorage.getItem('profileId')
                     });
 
-                    this.followerState = response.data.observations === true;
+                    this.followerState = response.data.following === true;
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');

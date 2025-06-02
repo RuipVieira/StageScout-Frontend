@@ -26,7 +26,7 @@
                             <label for="userAccType" class="form-label">Tipo de Conta</label>
                             <select v-model="filters.accType" id="userAccType" class="form-control">
                                 <option v-for="type in userTypes" :key="type.id" :value="type.id">
-                                    {{ type.descricao }}
+                                    {{ type.name }}
                                 </option>
                             </select>
                         </div>
@@ -63,7 +63,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="district.country"
+                    <el-table-column prop="district.nationality"
                                      label="Nacionalidade"
                                      sortable  width="150">
                     </el-table-column>
@@ -77,10 +77,10 @@
                                      sortable width="150">
                     </el-table-column>
 
-                    <el-table-column prop="state" width="100" label="Estado" sortable>
+                    <el-table-column prop="stateId" width="100" label="Estado" sortable>
                         <template #default="scope">
-                            <span v-if="scope.row.state === 0">Ativo</span>
-                            <span v-else-if="scope.row.state === 1">Bloqueado</span>
+                            <span v-if="scope.row.stateId === 0">Ativo</span>
+                            <span v-else-if="scope.row.stateId === 1">Bloqueado</span>
                             <span v-else>N/A</span>
                         </template>
                     </el-table-column>
@@ -102,7 +102,7 @@
                                            circle
                                            @click="toggleBlockUser(scope.row)">
                                     <el-icon>
-                                        <component :is="scope.row.state === 1 ? 'Unlock' : 'Lock'" />
+                                        <component :is="scope.row.stateId === 1 ? 'Unlock' : 'Lock'" />
                                     </el-icon>
                                 </el-button>
                             </div>
@@ -164,10 +164,10 @@
                 return this.users.filter(user =>
                     (!this.filters.name || user.name?.toLowerCase().includes(this.filters.name.toLowerCase())) &&
                     (!this.filters.email || user.email?.toLowerCase().includes(this.filters.email.toLowerCase())) &&
-                    (!this.filters.nation || user.district?.country?.toLowerCase().includes(this.filters.nation.toLowerCase())) &&
+                    (!this.filters.nation || user.district?.nationality?.toLowerCase().includes(this.filters.nation.toLowerCase())) &&
                     (!this.filters.district || user.district?.name?.toLowerCase().includes(this.filters.district.toLowerCase())) &&
-                    (!this.filters.accType || user.accountType?.name == this.filters.accType) &&
-                    (!this.filters.isBanned || user.estado == 1)
+                    (!this.filters.accType || user.accountType?.id == this.filters.accType) &&
+                    (!this.filters.isBanned || user.stateId == 1)
                 );
             },
 
@@ -225,7 +225,7 @@
                 this.editUserModalActive = true;
             },
             toggleBlockUser(user) {
-                const isCurrentlyBlocked = user.state === 1;
+                const isCurrentlyBlocked = user.stateId === 1;
 
                 const actionText = isCurrentlyBlocked ? 'desbloquear' : 'bloquear';
                 const pastTense = isCurrentlyBlocked ? 'desbloqueado' : 'bloqueado';

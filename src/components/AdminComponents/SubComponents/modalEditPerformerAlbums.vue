@@ -88,6 +88,7 @@
                 selectedAlbums: [],
                 paginationPage: 1,
                 albumsPerPage: 5,
+                AlbumToAdd: ""
             };
         },
         computed: {
@@ -148,7 +149,7 @@
                 if (Album) {
                     this.selectedAlbums.push({
                         id: Album.id,
-                        name: Album.title
+                        name: Album.name
                     });
                     this.AlbumToAdd = "";
                     this.paginationPage = this.pageCount;
@@ -170,7 +171,7 @@
                 try {
                     await axios.post('https://localhost:7216/api/Admin/EditPerformerAlbums', {
                         PerformerId: this.performerDetails.id,
-                        AlbumIds: this.selectedAlbums.map(album => album.id)
+                        Albums: this.selectedAlbums.map(album => album.id)
                     });
 
                     Swal.fire('Sucesso', 'Performer editado com sucesso!', 'success');
