@@ -130,6 +130,11 @@
             await this.fetchAllAlbums();
         },
         methods: {
+            changePage(page) {
+                if (page >= 1 && page <= this.pageCount) {
+                    this.paginationPage = page;
+                }
+            },
             async fetchAllAlbums() {
                 try {
                     const response = await axios.get(

@@ -49,7 +49,7 @@
 
                     <div class="col-md-6">
                         <h6>Artistas</h6>
-                        <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToArtistDetails" :default-sort="{ prop: 'date', order: 'ascending' }">
+                        <el-table :data="followedArtists" empty-text="Nenhum dado disponível" highlight-current-row :stripe="true" style="width: 100%" @row-click="GoToEventDetails" :default-sort="{ prop: 'date', order: 'ascending' }">
                             <el-table-column prop="performerName" label="Performer" width="200"></el-table-column>
                             <el-table-column prop="eventName" label="Evento" width="225"></el-table-column>
                             <el-table-column prop="stage" label="Palco" width="125"></el-table-column>

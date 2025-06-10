@@ -136,6 +136,11 @@
             await this.fetchAllArtists();
         },
         methods: {
+            changePage(page) {
+                if (page >= 1 && page <= this.pageCount) {
+                    this.paginationPage = page;
+                }
+            },
             async fetchAllArtists() {
                 try {
                     const response = await axios.get(
@@ -176,7 +181,6 @@
             },
             async edit() {
                 try {
-                    console.log(this.performerDetails);
                     await axios.post('https://localhost:7216/api/Admin/EditPerformerArtists', {
                         PerformerId: this.performerDetails.id,
                         Artists: this.selectedArtists.map((p) => ({
