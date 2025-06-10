@@ -186,7 +186,7 @@
                         profileId: localStorage.getItem('profileId')
                     });
 
-                    this.followerState = response.data.seguidor === true;
+                    this.followerState = response.data.following === true;
                 } catch (error) {
                     const message = error.response?.data?.message || 'Erro de pesquisa. Tente novamente.';
                     Swal.fire('Erro', message, 'error');
