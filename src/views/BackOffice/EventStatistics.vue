@@ -1,8 +1,8 @@
 ﻿<template>
     <div class="page-content-container">
-        <h1 class="mb-3 text-center">Administração - Gestão de Avaliações</h1>
-        <div class="d-flex flex-row flex-wrap">
-            <div class="filter-section me-4">
+        <h1 class="mb-3 text-center">Backoffice - Gestão de Avaliações</h1>
+        <div class="d-flex flex-row">
+            <div class="filter-section me-4 flex-shrink-0" style="width: 200px;">
                 <form @submit.prevent>
                     <div class="form-control p-3 filter-form">
                         <h4 class="mb-3">Filtros</h4>
@@ -28,9 +28,17 @@
                         <button type="button" class="btn btn-danger btn-cancelar mt-2" @click="clearFilters">Limpar</button>
                     </div>
                 </form>
+                <div class="summary-section mt-4">
+                    <h4>Resumo:</h4>
+                    <p><strong>Média Cartaz:</strong> {{ averageRatings.lineup }}</p>
+                    <p><strong>Média Organização:</strong> {{ averageRatings.organization }}</p>
+                    <p><strong>Média Acessos:</strong> {{ averageRatings.infrastructure }}</p>
+                    <p><strong>Média Performers:</strong> {{ averageRatings.performers }}</p>
+                    <p><strong>Performer MVP:</strong> {{ mostSelectedMVP }}</p>
+                </div>
             </div>
 
-            <div class="table-section overflow-auto">
+            <div class="table-section overflow-auto flex-grow-1">
                 <el-table :data="paginatedAvaliacoes.length ? paginatedAvaliacoes : [{}]"
                           stripe
                           style="width: 100%;"
@@ -99,14 +107,6 @@
                                    :current-page="pagination.page"
                                    @current-change="onPageChange" />
                 </div>
-            </div>
-            <div class="summary-section mt-4">
-                <h4>Resumo:</h4>
-                <p><strong>Média Cartaz:</strong> {{ averageRatings.lineup }}</p>
-                <p><strong>Média Organização:</strong> {{ averageRatings.organization }}</p>
-                <p><strong>Média Acessos:</strong> {{ averageRatings.infrastructure }}</p>
-                <p><strong>Média Performers:</strong> {{ averageRatings.performers }}</p>
-                <p><strong>Performer MVP:</strong> {{ mostSelectedMVP }}</p>
             </div>
         </div>
         

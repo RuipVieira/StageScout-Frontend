@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="page-content-container py-4 px-3">
-        <h1 class="mb-3 text-center">Administração - Gestão de Eventos</h1>
+        <h1 class="mb-3 text-center">Backoffice - Gestão de Eventos</h1>
         <div class="card shadow-sm mb-4">
             <div class="card-header">
                 <h5 class="mb-0">{{ event.name }}</h5>

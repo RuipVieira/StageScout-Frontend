@@ -92,7 +92,7 @@
                 }
 
                 try {
-                    await axios.post('https://localhost:7216/api/Admin/CreateEvent', {
+                    await axios.post('https://localhost:7216/api/Admin/PromoterCreateEvent', {
                         Name: this.eventName,
                         StartDate: this.eventStartDate,
                         EndDate: this.eventEndDate,
